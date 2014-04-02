@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "JIRA Assist",
+  "version": "0.0.0.1",
+  "minimum_chrome_version": "23",
+  "icons": {
+    "16": "img/logo-32.png",
+    "128": "img/logo-32.png"
+  },
+  "app": {
+    "background": {
+      "scripts": ["main.js"]
+    }
+  }
+}
