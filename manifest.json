@@ -7,9 +7,13 @@
     "16": "img/logo-32.png",
     "128": "img/logo-32.png"
   },
+  "permissions": [
+    "*://www.softomate.net/jira/*"
+  ],
+  "content_security_policy": "default-src 'self'; connect-src *; style-src 'self' 'unsafe-inline'",
   "app": {
-    "background": {
-      "scripts": ["main.js"]
-    }
+	"launch": {
+		"local_path": "index.html"
+	}
   }
 }

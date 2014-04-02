@@ -89,7 +89,6 @@ var CalendarView = Backbone.View.extend({
 						'title': issue.get('key') + ': ' + issue.get('summary'),
 						'start': startDate,
 						'end': new Date(startDate.getTime() + duration),
-						'summary': issue.get('summary'),
 						'duration': issue.get('estimate'),
 						'issue': issue
 					};	
@@ -97,10 +96,14 @@ var CalendarView = Backbone.View.extend({
         	}),
 			'eventRender': function(event, element) {
 				element.qtip({
-					'content': event['summary'],
+					'content': event.issue.get('key') + '<br />' + event.issue.get('summary') + '<hr />' + 
+						'Estimate: ' + moment.duration(event.issue.get('estimate'), 's').humanize() ,
+					'style': {
+        				'classes': 'qtip-tipsy qtip-shadow'
+   					},
 					'position': {
-						'my': 'top center',
-						'at': 'bottom center',
+						'my': 'bottom center',
+						'at': 'top center',
 					}
 				});
 			},
