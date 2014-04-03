@@ -95,16 +95,12 @@ var CalendarView = Backbone.View.extend({
         		}
         	}),
 			'eventRender': function(event, element) {
-				element.qtip({
-					'content': event.issue.get('key') + '<br />' + event.issue.get('summary') + '<hr />' + 
-						'Estimate: ' + moment.duration(event.issue.get('estimate'), 's').humanize() ,
-					'style': {
-        				'classes': 'qtip-tipsy qtip-shadow'
-   					},
-					'position': {
-						'my': 'bottom center',
-						'at': 'top center',
-					}
+				element.popover({
+					'title': event.issue.get('key'),
+					'content': event.issue.get('summary') + '<br />' + 'Estimate: ' + moment.duration(event.issue.get('estimate'), 's').humanize(),
+					'html': true,
+					'placement': 'top',
+					'trigger': 'hover'
 				});
 			},
 			eventDrop: function(event, delta) {
@@ -130,6 +126,7 @@ filters.on('ready', function(filter) {
 	console.log('ready', filter);
 	filter.view.render();
 });
+
 
 
 
