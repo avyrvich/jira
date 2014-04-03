@@ -73,6 +73,7 @@ var CalendarView = Backbone.View.extend({
 			    center: '',
 			    right:  'today prev,next'
 			},
+			'allDaySlot': false,
 			'editable': true,
         	'events': this.model.issues.map(function(issue, index, issues) {
         		if (issue.get('duedate')) {
