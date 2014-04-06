@@ -7,7 +7,28 @@
 
 function JIRA(serverURL) {
 
-	$.support.cors = true;
+	this.token = null;
+
+	this.login = function(username, password, callback) {
+		function make_base_auth(user, password) {
+			var tok = user + ':' + password;
+			var hash = btoa(tok);
+			return "Basic " + hash;
+		}
+		return $.ajax({
+			'url': serverURL + '/rest/auth/1/session',
+			beforeSend: function (xhr){ 
+				xhr.setRequestHeader('Authorization', make_base_auth(username, password)); 
+			},
+			'success': function(response) {
+				localStorage.setItem('token', make_base_auth(username, password));
+				callback(true);
+			},
+			'error': function() {
+				callback(false);
+			}
+		});
+	};
 
 	this.executeJQL = function(jql, callback, opt_fields) {
 		var fields = opt_fields || 'id,key,summary,timetracking,duedate';
