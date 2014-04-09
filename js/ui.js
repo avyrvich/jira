@@ -1,4 +1,0 @@
-
-$(function() {
-	$('#dlgConnect').modal('show');
-});

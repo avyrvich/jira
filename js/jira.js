@@ -5,9 +5,10 @@
 
 
 
-function JIRA(serverURL) {
+function JIRA(_serverURL, token) {
 
-	this.token = null;
+	var serverURL = _serverURL;
+	this.token = token;
 
 	this.login = function(username, password, callback) {
 		function make_base_auth(user, password) {
@@ -17,15 +18,31 @@ function JIRA(serverURL) {
 		}
 		return $.ajax({
 			'url': serverURL + '/rest/auth/1/session',
-			beforeSend: function (xhr){ 
+			'type': 'GET',
+			'beforeSend': function (xhr){ 
 				xhr.setRequestHeader('Authorization', make_base_auth(username, password)); 
 			},
 			'success': function(response) {
-				localStorage.setItem('token', make_base_auth(username, password));
-				callback(true);
+				this.token = make_base_auth(username, password);
+				callback(true, this.token);
 			},
-			'error': function() {
-				callback(false);
+			'error': function(xhr) {
+				var err = '';
+				switch (xhr.status) {
+					case 404: err = 'Server not found'; break;
+					case 403: 
+						if (xhr.getResponseHeader('X-Authentication-Denied-Reason')) {
+							var url = xhr.getResponseHeader('X-Authentication-Denied-Reason').split('url=').pop();
+							err = 'Unable to login. Please login manually at <a href="'+url+'">' + url + '</a>';
+						} else {
+							err = 'Encountered a 403 - Forbidden error while auth request';
+						}
+						break;
+					
+					case 401: err = 'Username or password is incorrect'; break;
+					default: err = 'Unknown error';
+				}
+				callback(false, err);
 			}
 		});
 	};
@@ -34,6 +51,9 @@ function JIRA(serverURL) {
 		var fields = opt_fields || 'id,key,summary,timetracking,duedate';
 		return $.ajax({
 			'url': serverURL + '/rest/api/2/search',
+			'beforeSend': function (xhr){ 
+				xhr.setRequestHeader('Authorization', this.token); 
+			},
 			'data': {
 				'jql': jql,
 				'fields': fields
@@ -47,7 +67,10 @@ function JIRA(serverURL) {
 	this.updateIssue = function(url, filds, callback) {
 		$.ajax({
 			'url': url, 
-			'type': 'PUT', 
+			'type': 'PUT',
+			'beforeSend': function (xhr){ 
+				xhr.setRequestHeader('Authorization', this.token); 
+			},
 			'contentType': 'application/json', 
 			'data': JSON.stringify({
 				'fields': filds

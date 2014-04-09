@@ -1,68 +1,9 @@
-var jira = new JIRA('http://www.softomate.net/jira');
-
-
-//-------------------------------------------------------
-//-- Models
-
-var Issue = Backbone.Model.extend({
-	initialize: function(issue) {
-		this.set({
-			'key': issue['key'],
-			'assignee': issue['fields']['assignee'],
-			'duedate': new Date(issue['fields']['duedate']),
-			'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds']),
-			'summary': issue['fields']['summary'],
-			'url': issue['self']
-		});
-
-		this.on('changeDueDate', function(e) {
-			jira.updateIssue(this.get('url'), {
-				'duedate': moment(e.start).format('YYYY-MM-DD')
-			});
-		});
-
-		this.on('changeEstiamte', function(e) {
-			jira.updateIssue(this.get('url'), {
-				'timetracking': {
-					'originalEstimateSeconds': (e.end - e.start)/1000
-				}
-			});
-		});
-	}
-});
-
-var Issues = Backbone.Collection.extend({
-	'model': Issue
-});
-
-var Filter = Backbone.Model.extend({
-	'issues': new Issues(),
-	'initialize': function(jql) {
-		var self = this;
-		self['view'] = new CalendarView({
-			'model': self
-		});
-		jira.executeJQL('assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC', function(issues) {
-			self['issues'] = new Issues(issues);
-			self.trigger('ready', self);
-		});
-	}
-});
-
-var Filters = Backbone.Collection.extend({ 
-    model: Filter
-});
-
-
-
-
 
 
 //-------------------------------------------------------
 //-- Views
 
 var CalendarView = Backbone.View.extend({
-	'tagName': 'div', 
 	'render': function() {
 		var view = this;
 		document.body.appendChild(this.el);
@@ -115,22 +56,45 @@ var CalendarView = Backbone.View.extend({
 });
 
 
-
-
 //-------------------------------------------------------
-//-- Controller
+//-- NavBar View
+
+var NavBarView = Backbone.View.extend({
+	events: {
+    	'click .btn.connect': 'connect'
+    },
+    'connect': function(e) {
+		//console.log($('#dlgConnect').modal('show'));
+    },
+    'initialize': function() {
+    	
+    	this.listenTo(app.server, 'login-error', function(e) {
+    		$('#dlgConnect .alert').empty().append(e).removeClass('hidden');
+    	});
+
+    	this.listenTo(app.server, 'connected', function(e) {
+    		$('#dropdown-filters').removeClass('hide');
+    		$('#dlgConnect').modal('hide');
+    	});
 
 
-var filters = new Filters;
-filters.add(['assignee=currentUser() ORDER BY duedate']);
-filters.on('ready', function(filter) {
-	console.log('ready', filter);
-	filter.view.render();
+    	$('#dlgConnect .btn-primary').click(function() {
+    		app.server.trigger('login', {
+    			'url': $('#dlgConnect #url').val(),
+    			'username': $('#dlgConnect #username').val(),
+    			'password': $('#dlgConnect #password').val()
+    		});
+    	});
+
+    	$('#dlgConnect').on('show.bs.modal', function() {
+    		$('#dlgConnect #url').val(app.server.get('url'));
+			$('#dlgConnect #username').val(app.server.get('username'))
+    	});
+    	$('#dlgConnect').on('hide.bs.modal', function() {
+    		$('#dlgConnect .alert').addClass('hidden').text('');
+    	});
+
+
+    }
 });
 
-
-
-
-// jira.executeJQL('assignee=currentUser() ORDER BY duedate', function(issues) {
-// 	issues.assingedToMe = new Filter(issues);
-// });

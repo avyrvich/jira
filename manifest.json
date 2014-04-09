@@ -10,7 +10,7 @@
   "permissions": [
     "*://www.softomate.net/jira/*"
   ],
-  "content_security_policy": "default-src 'self'; connect-src *; style-src 'self' 'unsafe-inline'",
+  "content_security_policy": "default-src 'self'; connect-src *; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://themes.googleusercontent.com",
   "app": {
 	"launch": {
 		"local_path": "index.html"
