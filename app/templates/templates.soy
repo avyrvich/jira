@@ -17,13 +17,14 @@
 
 
 /**
+ * @param cid unique id of filter
  * @param name Name of the filter
  * @param count count of issues in the filter
  */
 {template .filterButton}
-	<li class="dropdown">
+	<li class="dropdown" id="btn-filter-{$cid}">
 	  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-	  	<span class="badge pull-right">{$count} </span>
+	  	<span class="badge pull-right">{$count}</span>
 	  	{$name} 
 	  	<b class="caret"></b></a>
 	  <ul class="dropdown-menu">

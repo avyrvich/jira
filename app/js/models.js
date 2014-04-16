@@ -35,14 +35,23 @@ var Issues = Backbone.Collection.extend({
 
 var Filter = Backbone.Model.extend({
 	'issues': new Issues(),
-	'initialize': function(jql) {
-		var self = this;
-		self['view'] = new CalendarView({
-			'model': self
+	'initialize': function(filter) {
+		this.set({
+			'name': filter['name'],
+			'jql': filter['jql']
 		});
-		this.collection.server.api.executeJQL(jql, function(issues) {
-			self['issues'] = new Issues(issues);
-			self.trigger('ready', self);
+
+		this['view'] = new CalendarView({
+			'model': this
+		});
+		this.update();
+		this.collection.trigger('created', this);
+	},
+	'update': function() {
+		var this_ = this;
+		this.collection.server.api.executeJQL(this.get('jql'), function(issues) {
+			this_['issues'] = new Issues(issues);
+			this_.collection.trigger('udpated', this_);
 		});
 	}
 });
@@ -70,13 +79,12 @@ var ServerModel = Backbone.Model.extend({
 	},
 	initialize: function() {
 		this.filters.server = this;
-		this.filters.on('ready', function(filter) {
-			console.log('ready', filter);
-			filter.view.render();
-		});
 	
 		this.on('connected', function() {
-			this.filters.add(['assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC']);
+			this.filters.add([{
+				'name': 'Assigned to me',
+				'jql': 'assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC'
+			}]);
 		});
 
 		this.on('login', function(e) {
@@ -84,13 +92,11 @@ var ServerModel = Backbone.Model.extend({
 			var api = new JIRA(e.url);
 			api.login(e.username, e.password, function(res, data){
 				if (res) {
-
 					self.set({
 						'url': e.url,
 						'token': data,
 						'username': e.username
 					});
-
 					self.save();
 					self.api = api;
 					self.trigger('connected');
