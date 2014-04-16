@@ -84,6 +84,9 @@ var ServerModel = Backbone.Model.extend({
 			this.filters.add([{
 				'name': 'Assigned to me',
 				'jql': 'assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC'
+			}, {
+				'name': 'Issues created by me during this month',
+				'jql': 'assignee = currentUser() AND created > startOfMonth()'
 			}]);
 		});
 

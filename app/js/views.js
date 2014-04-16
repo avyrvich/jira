@@ -4,8 +4,8 @@
 var CalendarView = Backbone.View.extend({
 	'render': function() {
 		var view = this;
-		document.body.appendChild(this.el);
-		this.$el.fullCalendar({
+		$('.tab-content').append(this.el);
+		this.$el.attr('id', 'tab-filter-' + this.model['cid']).addClass('tab-pane').fullCalendar({
 			'defaultView': 'agendaWeek',
 			'header': {
 				left: 'agendaWeek,month',
@@ -87,11 +87,13 @@ var NavBarView = Backbone.View.extend({
 		//-- Listen to filters events
 
 		this.listenTo(app.server.filters, 'created', function(filter) {
-			$('.navbar-nav').append(templates.filterButton({
+			$('.nav').append(templates.filterButton({
 				'cid': filter['cid'],
 				'name': filter.get('name'),
 				'count': ''
-			}));
+			})).find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			  $(e.target.getAttribute('href')).fullCalendar('render');
+			});
 		});
 		this.listenTo(app.server.filters, 'udpated', function(filter) {
 			filter.view.render();
