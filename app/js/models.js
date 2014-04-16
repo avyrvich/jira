@@ -101,10 +101,21 @@ var ServerModel = Backbone.Model.extend({
 		});
 	},
 	load: function() {
+		var this_ = this;
 		this.fetch();
 		if (this.get('url') && this.get('token')) {
-			this.api = new JIRA(this.get('url'), this.get('url'));
-			this.trigger('connected');
+			var api = new JIRA(this.get('url'), this.get('url'));
+			api.checkAuthorization(function(res, msg) {
+				if (res) {
+					this_.api = api;
+					this_.trigger('connected');
+				} else {
+					this_.trigger('disconnected');
+					if (msg) {
+						this_.trigger('connection-error', msg);
+					}
+				}
+			});
 		} else {
 			this.trigger('disconnected');
 		}

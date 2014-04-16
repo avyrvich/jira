@@ -47,6 +47,26 @@ function JIRA(_serverURL, token) {
 		});
 	};
 
+	this.checkAuthorization = function(callback) {
+		$.ajax({
+			'url': serverURL + '/rest/auth/1/session',
+			'type': 'GET',
+			'beforeSend': function(xhr) { 
+				xhr.setRequestHeader('Authorization', this.token); 
+			},
+			'success': function(response) {
+				callback(true, this.token);
+			},
+			'error': function(xhr) {
+				var res = null;
+				if (xhr.responseText) {
+					res = JSON.stringify(xhr.responseText)['errorMessages'].join('\n');
+				}
+				callback(false, res);
+			}
+		});
+	};
+
 	this.executeJQL = function(jql, callback, opt_fields) {
 		var fields = opt_fields || 'id,key,summary,timetracking,duedate';
 		return $.ajax({

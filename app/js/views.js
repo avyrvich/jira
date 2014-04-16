@@ -68,14 +68,24 @@ var NavBarView = Backbone.View.extend({
     },
     'initialize': function() {
     	
-    	this.listenTo(app.server, 'login-error', function(e) {
-    		$('#dlgConnect .alert').empty().append(e).removeClass('hidden');
+    	this.listenTo(app.server, 'login-error', function(message) {
+    		$('#dlgConnect .alertsArea').append(templates.errorMessage({
+    			'message': message
+    		}));
+    	});
+
+    	this.listenTo(app.server, 'connection-error', function(message) {
+    		$('body').append(templates.errorMessage({
+    			'message': message
+    		}));
     	});
 
     	this.listenTo(app.server, 'connected', function(e) {
     		$('#dropdown-filters').removeClass('hide');
     		$('#dlgConnect').modal('hide');
     	});
+
+    	this.
 
 
     	$('#dlgConnect .btn-primary').click(function() {
@@ -94,6 +104,13 @@ var NavBarView = Backbone.View.extend({
     		$('#dlgConnect .alert').addClass('hidden').text('');
     	});
 
+
+
+
+    	$('.navbar-nav').append(templates.filterButton({
+    		'name': 'Assigned to me',
+    		'count': 12
+    	}));
 
     }
 });
