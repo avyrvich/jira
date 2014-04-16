@@ -5,7 +5,7 @@ if (typeof templates == 'undefined') { var templates = {}; }
 
 
 templates.errorMessage = function(opt_data, opt_ignored) {
-  return '<div class="alert alert-danger fade in"><button type="button" class="close glyphicon glyphicon-remove" data-dismiss="alert" aria-hidden="true"></button><h4>Oh snap! You got an error!</h4><p>' + soy.$$escapeHtml(opt_data.message) + '</p></div>';
+  return '<div class="alert alert-danger fade in"><button type="button" class="close glyphicon glyphicon-remove" data-dismiss="alert" aria-hidden="true"></button><h4>Oh snap! You got an error!</h4><p>' + soy.$$filterNoAutoescape(opt_data.message) + '</p></div>';
 };
 
 

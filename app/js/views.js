@@ -69,7 +69,7 @@ var NavBarView = Backbone.View.extend({
     'initialize': function() {
     	
     	this.listenTo(app.server, 'login-error', function(message) {
-    		$('#dlgConnect .alertsArea').append(templates.errorMessage({
+    		$('#dlgConnect .alertsArea').empty().append(templates.errorMessage({
     			'message': message
     		}));
     	});
@@ -84,8 +84,6 @@ var NavBarView = Backbone.View.extend({
     		$('#dropdown-filters').removeClass('hide');
     		$('#dlgConnect').modal('hide');
     	});
-
-    	this.
 
 
     	$('#dlgConnect .btn-primary').click(function() {

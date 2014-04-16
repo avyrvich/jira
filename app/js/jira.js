@@ -38,9 +38,13 @@ function JIRA(_serverURL, token) {
 							err = 'Encountered a 403 - Forbidden error while auth request';
 						}
 						break;
-					
 					case 401: err = 'Username or password is incorrect'; break;
-					default: err = 'Unknown error';
+					default: 
+						if (xhr.responseText) {
+							res = JSON.parse(xhr.responseText)['errorMessages'].join('\n');
+						} else {
+							err = 'Unknown error';
+						}
 				}
 				callback(false, err);
 			}
@@ -60,7 +64,7 @@ function JIRA(_serverURL, token) {
 			'error': function(xhr) {
 				var res = null;
 				if (xhr.responseText) {
-					res = JSON.stringify(xhr.responseText)['errorMessages'].join('\n');
+					res = JSON.parse(xhr.responseText)['errorMessages'].join('\n');
 				}
 				callback(false, res);
 			}
