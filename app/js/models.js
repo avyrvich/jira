@@ -38,10 +38,11 @@ var Filter = Backbone.Model.extend({
 	'initialize': function(filter) {
 		this.set({
 			'name': filter['name'],
-			'jql': filter['jql']
+			'jql': filter['jql'],
+			'type': filter['type'] || app.FILTER_TYPE_TABLE
 		});
 
-		this['view'] = new CalendarView({
+		this['view'] = new FilterView({
 			'model': this
 		});
 		this.update();

@@ -17,3 +17,13 @@ templates.filterButton = function(opt_data, opt_ignored) {
 templates.issuePopover = function(opt_data, opt_ignored) {
   return '\t<div class="issue-popover small"><div class="issue-popover-summary">' + soy.$$escapeHtml(opt_data.summary) + '</div><div class="issue-popover-estimate">' + soy.$$escapeHtml(opt_data.estimate) + '</div></div>';
 };
+
+
+templates.filterTable = function(opt_data, opt_ignored) {
+  return '\t<table class="table table-condensed table-striped table-responsive"><thead><th>#</th><th>Key</th><th>Summary</th><th>Estimate</th><th>Duedate</th></thead><tbody></tbody></table>';
+};
+
+
+templates.filterTableRow = function(opt_data, opt_ignored) {
+  return '\t<tr><td>' + soy.$$escapeHtml(opt_data.i) + '</td><td>' + soy.$$escapeHtml(opt_data.key) + '</td><td>' + soy.$$escapeHtml(opt_data.summary) + '</td><td>' + soy.$$escapeHtml(opt_data.estimate) + '</td><td>' + soy.$$escapeHtml(opt_data.duedate) + '</td></tr>';
+};

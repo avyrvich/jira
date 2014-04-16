@@ -59,3 +59,47 @@
 
 
 
+
+
+
+/**
+ * Table View filter
+ */
+{template .filterTable}
+	<table class="table table-condensed table-striped table-responsive">
+		<thead>
+	  	<th>#</th>
+	  	<th>Key</th>
+	  	<th>Summary</th>
+	  	<th>Estimate</th>
+	  	<th>Duedate</th>
+  	</thead>
+  	<tbody></tbody>
+	</table>
+{/template}
+
+
+
+/**
+ * Table View issue definition
+ * @param i
+ * @param key
+ * @param summary
+ * @param estimate
+ * @param duedate
+ */
+{template .filterTableRow}
+	<tr>
+		<td>{$i}</td>
+		<td>{$key}</td>
+		<td>{$summary}</td>
+		<td>{$estimate}</td>
+		<td>{$duedate}</td>
+	</tr>
+{/template}
+
+
+
+
+
+

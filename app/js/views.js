@@ -1,11 +1,32 @@
 //-------------------------------------------------------
 //-- Views
 
-var CalendarView = Backbone.View.extend({
-	'render': function() {
+var FilterView = Backbone.View.extend({
+	initialize: function() {
+		this.$el.attr('id', 'tab-filter-' + this.model['cid']).addClass('tab-pane').appendTo('.tab-content');
+	},
+	render: function() {
+		if (this.model.get('type') === app.FILTER_TYPE_CALENDAR) {
+			this.renderCalendar();
+		} else {
+			this.renderTable();
+		}
+	},
+	renderTable: function() {
+		var $tbody = this.$el.append(templates.filterTable()).find('tbody');
+		$.each(this.model.issues.models, function(i, issue) {
+			$tbody.append(templates.filterTableRow({
+				'i': i+1,
+				'key': issue.get('key'),
+				'summary': issue.get('summary'),
+				'estimate': issue.get('estimate') ? moment.duration(issue.get('estimate'), 's').humanize() : '',
+				'duedate': issue.get('duedate') ? moment(issue.get('duedate')).format('l') : ''
+			}));
+		});
+	},
+	renderCalendar: function() {
 		var view = this;
-		$('.tab-content').append(this.el);
-		this.$el.attr('id', 'tab-filter-' + this.model['cid']).addClass('tab-pane').fullCalendar({
+		this.$el.fullCalendar({
 			'defaultView': 'agendaWeek',
 			'header': {
 				left: 'agendaWeek,month',
