@@ -19,11 +19,12 @@
 /**
  * @param cid unique id of filter
  * @param name Name of the filter
- * @param count count of issues in the filter
+ * @param count count of issues
+ * @param class additional className
  */
 {template .filterButton}
 	<li class="dropdown" id="btn-filter-{$cid}">
-	  <a href="#tab-filter-{$cid}" class="navbar-nav" data-toggle="tab">
+	  <a href="#tab-filter-{$cid}" class="navbar-nav {$class}" data-toggle="tab">
 	  	{$name} 
 	  	<span class="badge">{$count}</span>
 	  </a>
@@ -39,3 +40,22 @@
 	  </ul>
 	</li>
 {/template}
+
+
+
+
+
+
+/**
+ * @param summary Name of the filter
+ * @param estimate count of issues in the filter
+ */
+{template .issuePopover}
+	<div class="issue-popover small">
+		<div class="issue-popover-summary">{$summary}</div>
+		<div class="issue-popover-estimate">{$estimate}</div>
+	</div>
+{/template}
+
+
+

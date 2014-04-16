@@ -37,7 +37,10 @@ var CalendarView = Backbone.View.extend({
 			'eventRender': function(event, element) {
 				element.popover({
 					'title': event.issue.get('key'),
-					'content': event.issue.get('summary') + '<br />' + 'Estimate: ' + moment.duration(event.issue.get('estimate'), 's').humanize(),
+					'content': templates.issuePopover({
+						'summary': event.issue.get('summary'),
+						'estimate': 'Estimate: ' + moment.duration(event.issue.get('estimate'), 's').humanize()
+					}),
 					'html': true,
 					'placement': 'top',
 					'trigger': 'hover'
@@ -90,7 +93,8 @@ var NavBarView = Backbone.View.extend({
 			$('.nav').append(templates.filterButton({
 				'cid': filter['cid'],
 				'name': filter.get('name'),
-				'count': ''
+				'count': '',
+				'class': filter['cid']===app.server.get('active')?'active':''
 			})).find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			  $(e.target.getAttribute('href')).fullCalendar('render');
 			});

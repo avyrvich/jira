@@ -247,7 +247,6 @@ a.fc-event {
   cursor: ns-resize;
   display: block;
   position: absolute;
-  z-index: 99999;
   overflow: hidden; }
 
 .fc-event-hori {
