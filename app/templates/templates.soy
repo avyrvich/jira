@@ -77,13 +77,16 @@
 {template .filterTable}
 	<table class="table table-condensed table-striped table-responsive">
 		<thead>
-	  	<th>#</th>
-	  	<th>Key</th>
-	  	<th>Summary</th>
-	  	<th>Estimate</th>
-	  	<th>Duedate</th>
-  	</thead>
-  	<tbody></tbody>
+		  	<th>Key</th>
+		  	<th>Summary</th>
+		  	<th>Assignee</th>
+		  	<th>Reporter</th>
+		  	<th>Estimate</th>
+		  	<th></th>
+		  	<th></th>
+		  	<th>Duedate</th>
+	  	</thead>
+  		<tbody></tbody>
 	</table>
 {/template}
 
@@ -91,18 +94,24 @@
 
 /**
  * Table View issue definition
- * @param i
  * @param key
  * @param summary
+ * @param assignee
+ * @param reporter
+ * @param status
+ * @param priority
  * @param estimate
  * @param duedate
  */
 {template .filterTableRow}
 	<tr>
-		<td>{$i}</td>
 		<td>{$key}</td>
 		<td>{$summary}</td>
+		<td>{$assignee.displayName}</td>
+		<td>{$reporter.displayName}</td>
 		<td>{$estimate}</td>
+		<td><img src="{$status.iconUrl}"></td>
+		<td><img src="{$priority.iconUrl}"></td>
 		<td>{$duedate}</td>
 	</tr>
 {/template}

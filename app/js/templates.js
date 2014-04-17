@@ -32,10 +32,10 @@ templates.issuePopover = function(opt_data, opt_ignored) {
 
 
 templates.filterTable = function(opt_data, opt_ignored) {
-  return '\t<table class="table table-condensed table-striped table-responsive"><thead><th>#</th><th>Key</th><th>Summary</th><th>Estimate</th><th>Duedate</th></thead><tbody></tbody></table>';
+  return '\t<table class="table table-condensed table-striped table-responsive"><thead><th>Key</th><th>Summary</th><th>Assignee</th><th>Reporter</th><th>Estimate</th><th></th><th></th><th>Duedate</th></thead><tbody></tbody></table>';
 };
 
 
 templates.filterTableRow = function(opt_data, opt_ignored) {
-  return '\t<tr><td>' + soy.$$escapeHtml(opt_data.i) + '</td><td>' + soy.$$escapeHtml(opt_data.key) + '</td><td>' + soy.$$escapeHtml(opt_data.summary) + '</td><td>' + soy.$$escapeHtml(opt_data.estimate) + '</td><td>' + soy.$$escapeHtml(opt_data.duedate) + '</td></tr>';
+  return '\t<tr><td>' + soy.$$escapeHtml(opt_data.key) + '</td><td>' + soy.$$escapeHtml(opt_data.summary) + '</td><td>' + soy.$$escapeHtml(opt_data.assignee.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.reporter.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.estimate) + '</td><td><img src="' + soy.$$escapeHtml(opt_data.status.iconUrl) + '"></td><td><img src="' + soy.$$escapeHtml(opt_data.priority.iconUrl) + '"></td><td>' + soy.$$escapeHtml(opt_data.duedate) + '</td></tr>';
 };
