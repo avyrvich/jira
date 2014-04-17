@@ -83,6 +83,7 @@ var ServerModel = Backbone.Model.extend({
 	
 		this.on('connected', function() {
 			this.filters.add([{
+				'type': app.FILTER_TYPE_CALENDAR,
 				'name': 'Assigned to me',
 				'jql': 'assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC'
 			}, {

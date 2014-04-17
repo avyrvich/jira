@@ -3,7 +3,10 @@
 
 var FilterView = Backbone.View.extend({
 	initialize: function() {
-		this.$el.attr('id', 'tab-filter-' + this.model['cid']).addClass('tab-pane').appendTo('.tab-content');
+		this.$el
+			.attr('id', 'tab-filter-' + this.model['cid'])
+			.addClass('tab-pane')
+			.appendTo('.tab-content');
 	},
 	render: function() {
 		if (this.model.get('type') === app.FILTER_TYPE_CALENDAR) {
@@ -98,9 +101,12 @@ var NavBarView = Backbone.View.extend({
 			}));
 		});
 		this.listenTo(app.server, 'connection-error', function(message) {
-			$('body').append(templates.errorMessage({
-				'message': message
-			}));
+			$('body').append(
+				templates.errorMessage({
+					message: message,
+					buttons: ['<button type="button" class="btn btn-default" data-toggle="modal" data-target="#dlgConnect" data-dismiss="alert" aria-hidden="true">Reconnect</button>']
+				})
+			);
 		});
 		this.listenTo(app.server, 'connected', function() {
 			$('#dropdown-filters').removeClass('hide');
@@ -111,13 +117,23 @@ var NavBarView = Backbone.View.extend({
 		//-- Listen to filters events
 
 		this.listenTo(app.server.filters, 'created', function(filter) {
-			$('.nav').append(templates.filterButton({
+			var tabBtn = $(templates.filterButton({
 				'cid': filter['cid'],
 				'name': filter.get('name'),
 				'count': '',
 				'class': filter['cid']===app.server.get('active')?'active':''
-			})).find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			})).appendTo('.nav');
+
+
+			tabBtn.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			  $(e.target.getAttribute('href')).fullCalendar('render');
+			});
+
+			tabBtn.find('a[data-target="#dlgFilterEdit"]').click(function() {
+				var dlg = $("#dlgFilterEdit");
+				dlg.find('#filterName').val(filter.get('name'));
+				dlg.find('#filterJQL').val(filter.get('jql'));
+				dlg.find('[name="filterType"]').val(filter.get('type'));
 			});
 		});
 		this.listenTo(app.server.filters, 'udpated', function(filter) {
