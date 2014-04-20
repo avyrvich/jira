@@ -113,6 +113,7 @@
 		<td><img src="{$status.iconUrl}"></td>
 		<td><img src="{$priority.iconUrl}"></td>
 		<td>{$duedate}</td>
+		<td><button type="button" class="btn btn-success btn-xs log-issue" key="{$key}">Log Work</button></td>
 	</tr>
 {/template}
 
@@ -121,3 +122,76 @@
 
 
 
+
+
+
+/**
+ * Modal Resolve Issue Dialog
+ * @param resolutions
+ * @param? users
+ */
+{template .dlgLogIssue}
+<div class="modal fade" id="dlgLogIssue" tabindex="-1" role="dialog" aria-labelledby="dlgLogIssueLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="dlgLogIssueLabel">Log Work</h4>
+      </div>
+      <div class="modal-body">
+
+        <form role="form">
+          <div class="form-group col-md-6">
+            <label for="issueDate">Resolve Date</label>
+            <input type="date" class="form-control" id="issueDate" placeholder="Date">
+          </div>
+
+
+          <div class="form-group col-md-6"">
+            <label for="issueSpent">Resolve Date</label>
+            <input type="text" class="form-control" id="issueTimeSpent" placeholder="Time Spent" value="">
+          </div>
+
+
+          <div class="form-group">
+            <label for="issueResolution">Resolution</label>
+            <select id="issueResolution" class="form-control">
+							{foreach $resolution in $resolutions}
+								<option value="{$resolution.id}" title="{$resolution.description}">{$resolution.name}</option>
+							{/foreach}
+            </select>
+          </div>
+
+          {if $users}
+          <div class="form-group">
+            <label for="issueAssignee">Assignee</label>
+            <select id="issueAssignee" class="form-control">
+							{foreach $user in $users}
+								<option value="{$user.id}" title="{$user.displayName}">{$user.displayName}</option>
+							{/foreach}
+            </select>
+          </div>
+          {/if}
+
+
+          <div class="form-group">
+            <label for="issueLog">Worklog Message</label>
+            <textarea id="issueLog" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="issueComment">Comment</label>
+            <textarea id="issueComment" class="form-control" rows="2"></textarea>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-warning">Cancel Progress</button>
+        <button type="button" class="btn btn-primary">Log Work</button>
+      </div>
+    </div>
+  </div>
+</div>
+{/template}

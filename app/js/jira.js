@@ -6,9 +6,27 @@
 
 
 function JIRA(_serverURL, token) {
-
+	var self = this;
 	var serverURL = _serverURL;
 	this.token = token;
+	this.resolutions = [];
+
+
+	function init(callback) {
+		$.ajaxSetup({
+			'beforeSend': function(xhr) { 
+				xhr.setRequestHeader('Authorization', this.token); 
+			}
+		});
+
+		return $.ajax({
+			'url': serverURL + '/rest/api/2/resolution'
+		}).then(function(data) {
+				self.resolutions = data;
+				callback(true, self.token);
+		});
+
+	}
 
 	this.login = function(username, password, callback) {
 		function make_base_auth(user, password) {
@@ -24,7 +42,7 @@ function JIRA(_serverURL, token) {
 			},
 			'success': function(response) {
 				this.token = make_base_auth(username, password);
-				callback(true, this.token);
+				init(callback);
 			},
 			'error': function(xhr) {
 				var err = '';
@@ -40,9 +58,9 @@ function JIRA(_serverURL, token) {
 						break;
 					case 401: err = 'Username or password is incorrect'; break;
 					default: 
-						if (xhr.responseText) {
+						try {
 							res = JSON.parse(xhr.responseText)['errorMessages'].join('\n');
-						} else {
+						} catch(e) {
 							err = 'Unknown error';
 						}
 				}
@@ -59,12 +77,14 @@ function JIRA(_serverURL, token) {
 				xhr.setRequestHeader('Authorization', this.token); 
 			},
 			'success': function(response) {
-				callback(true, this.token);
+				init(callback);
 			},
 			'error': function(xhr) {
 				var res = null;
 				if (xhr.responseText) {
 					res = JSON.parse(xhr.responseText)['errorMessages'].join('\n');
+				} else {
+					res = xhr.statusText;
 				}
 				callback(false, res);
 			}
@@ -75,9 +95,6 @@ function JIRA(_serverURL, token) {
 		var fields = opt_fields || 'id,key,summary,timetracking,duedate,issuetype,reporter,priority,status,assignee';
 		return $.ajax({
 			'url': serverURL + '/rest/api/2/search',
-			'beforeSend': function (xhr){ 
-				xhr.setRequestHeader('Authorization', this.token); 
-			},
 			'data': {
 				'jql': jql,
 				'fields': fields
@@ -92,13 +109,22 @@ function JIRA(_serverURL, token) {
 		$.ajax({
 			'url': url, 
 			'type': 'PUT',
-			'beforeSend': function (xhr){ 
-				xhr.setRequestHeader('Authorization', this.token); 
-			},
 			'contentType': 'application/json', 
 			'data': JSON.stringify({
 				'fields': filds
 			}), 
+			'success': function(data){ callback && callback(data); } 
+		});
+	};
+
+	this.getAssignableUsers = function(key, callback) {
+		$.ajax({
+			'url': serverURL + '/rest/api/2/user/assignable/search',
+			'data': {
+				'issueKey': key
+			},
+			'type': 'GET',
+			'contentType': 'application/json', 
 			'success': function(data){ callback && callback(data); } 
 		});
 	};

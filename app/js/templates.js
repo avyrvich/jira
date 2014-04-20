@@ -37,5 +37,29 @@ templates.filterTable = function(opt_data, opt_ignored) {
 
 
 templates.filterTableRow = function(opt_data, opt_ignored) {
-  return '\t<tr><td>' + soy.$$escapeHtml(opt_data.key) + '</td><td>' + soy.$$escapeHtml(opt_data.summary) + '</td><td>' + soy.$$escapeHtml(opt_data.assignee.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.reporter.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.estimate) + '</td><td><img src="' + soy.$$escapeHtml(opt_data.status.iconUrl) + '"></td><td><img src="' + soy.$$escapeHtml(opt_data.priority.iconUrl) + '"></td><td>' + soy.$$escapeHtml(opt_data.duedate) + '</td></tr>';
+  return '\t<tr><td>' + soy.$$escapeHtml(opt_data.key) + '</td><td>' + soy.$$escapeHtml(opt_data.summary) + '</td><td>' + soy.$$escapeHtml(opt_data.assignee.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.reporter.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.estimate) + '</td><td><img src="' + soy.$$escapeHtml(opt_data.status.iconUrl) + '"></td><td><img src="' + soy.$$escapeHtml(opt_data.priority.iconUrl) + '"></td><td>' + soy.$$escapeHtml(opt_data.duedate) + '</td><td><button type="button" class="btn btn-success btn-xs log-issue" key="' + soy.$$escapeHtml(opt_data.key) + '">Log Work</button></td></tr>';
+};
+
+
+templates.dlgLogIssue = function(opt_data, opt_ignored) {
+  var output = '<div class="modal fade" id="dlgLogIssue" tabindex="-1" role="dialog" aria-labelledby="dlgLogIssueLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlgLogIssueLabel">Log Work</h4></div><div class="modal-body"><form role="form"><div class="form-group col-md-6"><label for="issueDate">Resolve Date</label><input type="date" class="form-control" id="issueDate" placeholder="Date"></div><div class="form-group col-md-6""><label for="issueSpent">Resolve Date</label><input type="text" class="form-control" id="issueTimeSpent" placeholder="Time Spent" value=""></div><div class="form-group"><label for="issueResolution">Resolution</label><select id="issueResolution" class="form-control">';
+  var resolutionList58 = opt_data.resolutions;
+  var resolutionListLen58 = resolutionList58.length;
+  for (var resolutionIndex58 = 0; resolutionIndex58 < resolutionListLen58; resolutionIndex58++) {
+    var resolutionData58 = resolutionList58[resolutionIndex58];
+    output += '<option value="' + soy.$$escapeHtml(resolutionData58.id) + '" title="' + soy.$$escapeHtml(resolutionData58.description) + '">' + soy.$$escapeHtml(resolutionData58.name) + '</option>';
+  }
+  output += '</select></div>';
+  if (opt_data.users) {
+    output += '<div class="form-group"><label for="issueAssignee">Assignee</label><select id="issueAssignee" class="form-control">';
+    var userList71 = opt_data.users;
+    var userListLen71 = userList71.length;
+    for (var userIndex71 = 0; userIndex71 < userListLen71; userIndex71++) {
+      var userData71 = userList71[userIndex71];
+      output += '<option value="' + soy.$$escapeHtml(userData71.id) + '" title="' + soy.$$escapeHtml(userData71.displayName) + '">' + soy.$$escapeHtml(userData71.displayName) + '</option>';
+    }
+    output += '</select></div>';
+  }
+  output += '<div class="form-group"><label for="issueLog">Worklog Message</label><textarea id="issueLog" class="form-control" rows="2"></textarea></div><div class="form-group"><label for="issueComment">Comment</label><textarea id="issueComment" class="form-control" rows="2"></textarea></div></form></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="button" class="btn btn-warning">Cancel Progress</button><button type="button" class="btn btn-primary">Log Work</button></div></div></div></div>';
+  return output;
 };

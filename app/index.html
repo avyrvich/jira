@@ -5,16 +5,20 @@
 	<link rel="stylesheet" type="text/css" href="css/fullcalendar.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script type="text/javascript" src="js/soyutils.js"></script>
-  <script type="text/javascript" src="js/templates.js"></script>
-	<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/moment.min.js"></script>
-	<script type="text/javascript" src="js/fullcalendar.js"></script>
-	<script type="text/javascript" src="js/underscore-min.js"></script>
-	<script type="text/javascript" src="js/backbone-min.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/selectize.bootstrap3.css">
+
+  <script type="text/javascript" src="js/libs/soyutils.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-ui-1.10.4.custom.min.js"></script>
+	<script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/libs/moment.min.js"></script>
+	<script type="text/javascript" src="js/libs/fullcalendar.js"></script>
+	<script type="text/javascript" src="js/libs/underscore-min.js"></script>
+	<script type="text/javascript" src="js/libs/backbone-min.js"></script>
+  <script type="text/javascript" src="js/libs/selectize.js"></script>
+
 	<script type="text/javascript" src="js/jira.js"></script>
+  <script type="text/javascript" src="js/templates.js"></script>
   <script type="text/javascript" src="js/models.js"></script>
   <script type="text/javascript" src="js/views.js"></script>
 	<script type="text/javascript" src="js/controller.js"></script>
@@ -25,7 +29,7 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#">
-        <img src="img/logo-32.png" width="28" height="28" style="float:left;margin-top: -4px;"/>
+        <img src="img/logo-32.png" width="28" height="28" style="float:left;margin-top: -4px;">
         JIRA Assist
       </a>
     </div>
@@ -101,7 +105,7 @@
 </div>
 
 
-<!-- Modal -->
+<!-- Modal Form Edit Dialog -->
 <div class="modal fade" id="dlgFilterEdit" tabindex="-1" role="dialog" aria-labelledby="dlgFilterEditLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -122,18 +126,16 @@
             <textarea id="filterJQL" class="form-control" rows="3"></textarea>
           </div>
 
-          <div class="radio">
-            <label>
-              <input type="radio" name="filterType" id="filterTypeTable" value="1">
-              Table
-            </label>
+
+
+          <div class="form-group">
+            <label for="filterType">View Type</label>
+            <select id="filterType" class="form-control">
+              <option value="1">Table</option>
+              <option value="2">Calendar</option>
+            </select>
           </div>
-          <div class="radio">
-            <label>
-              <input type="radio" name="filterType" id="filterTypeTableCalendar" value="2">
-              Calendar
-            </label>
-          </div>
+
         </form>
       </div>
       <div class="modal-footer">
@@ -145,6 +147,8 @@
 </div>
 
 
+
+
+
 </body>
 </html>
-

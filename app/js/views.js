@@ -8,6 +8,22 @@ var FilterView = Backbone.View.extend({
 			.addClass('tab-pane')
 			.appendTo('.tab-content');
 	},
+	events: {
+		'click .log-issue': function(evt) {
+			console.log(this, arguments);
+
+			app.server.api.getAssignableUsers(evt.target.getAttribute('key'), function(users) {
+				var dlg = $(templates.dlgLogIssue({
+					'resolutions': app.server.api.resolutions,
+					'users': users
+				})).appendTo('body');
+				// dlg.find('#issueAssignee').selectize({
+				// 	create: true
+				// });
+				dlg.modal('show');
+			});
+		}
+	},
 	render: function() {
 		if (this.model.get('type') === app.FILTER_TYPE_CALENDAR) {
 			this.renderCalendar();
@@ -132,7 +148,7 @@ var NavBarView = Backbone.View.extend({
 				var dlg = $("#dlgFilterEdit");
 				dlg.find('#filterName').val(filter.get('name'));
 				dlg.find('#filterJQL').val(filter.get('jql'));
-				dlg.find('[name="filterType"][value="'+filter.get('type')+'"]').attr('checked', true);
+				dlg.find('#filterType').val(filter.get('type'));
 			});
 		});
 		this.listenTo(app.server.filters, 'udpated', function(filter) {
