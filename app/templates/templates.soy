@@ -1,13 +1,22 @@
 {namespace templates}
 
 /**
+ * errorMessage
  * @param message
+ * @param? buttons
  */
 {template .errorMessage}
 <div class="alert alert-danger fade in">
   <button type="button" class="close glyphicon glyphicon-remove" data-dismiss="alert" aria-hidden="true"></button>
   <h4>Oh snap! You got an error!</h4>
   <p>{$message |noAutoescape}</p>
+  {if $buttons}
+	<p>
+	{foreach $button in $buttons}
+		{$button |noAutoescape}
+	{/foreach}
+  	</p>
+  {/if}
 </div>
 {/template}
 
@@ -34,7 +43,7 @@
 	  </a>
 	  <ul class="dropdown-menu">
 	    <li><a href="#"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></li>
-	    <li><a href="#"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+	    <li><a href="#" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
 	    <li class="divider"></li>
 	    <li><a href="#"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
 	  </ul>
@@ -68,13 +77,16 @@
 {template .filterTable}
 	<table class="table table-condensed table-striped table-responsive">
 		<thead>
-	  	<th>#</th>
-	  	<th>Key</th>
-	  	<th>Summary</th>
-	  	<th>Estimate</th>
-	  	<th>Duedate</th>
-  	</thead>
-  	<tbody></tbody>
+		  	<th>Key</th>
+		  	<th>Summary</th>
+		  	<th>Assignee</th>
+		  	<th>Reporter</th>
+		  	<th>Estimate</th>
+		  	<th></th>
+		  	<th></th>
+		  	<th>Duedate</th>
+	  	</thead>
+  		<tbody></tbody>
 	</table>
 {/template}
 
@@ -82,18 +94,24 @@
 
 /**
  * Table View issue definition
- * @param i
  * @param key
  * @param summary
+ * @param assignee
+ * @param reporter
+ * @param status
+ * @param priority
  * @param estimate
  * @param duedate
  */
 {template .filterTableRow}
 	<tr>
-		<td>{$i}</td>
 		<td>{$key}</td>
 		<td>{$summary}</td>
+		<td>{$assignee.displayName}</td>
+		<td>{$reporter.displayName}</td>
 		<td>{$estimate}</td>
+		<td><img src="{$status.iconUrl}"></td>
+		<td><img src="{$priority.iconUrl}"></td>
 		<td>{$duedate}</td>
 	</tr>
 {/template}

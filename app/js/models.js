@@ -3,14 +3,20 @@
 //-- Models
 
 var Issue = Backbone.Model.extend({
+	ref: null,
 	initialize: function(issue) {
+		this.ref = issue;
 		this.set({
 			'key': issue['key'],
-			'assignee': issue['fields']['assignee'],
 			'duedate': new Date(issue['fields']['duedate']),
 			'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds']),
 			'summary': issue['fields']['summary'],
-			'url': issue['self']
+			'url': issue['self'],
+			'assignee': issue['fields']['assignee'],
+			'reporter': issue['fields']['reporter'],
+			'issuetype': issue['fields']['issuetype'],
+			'priority': issue['fields']['priority'],
+			'status': issue['fields']['status']
 		});
 
 		this.on('changeDueDate', function(e) {
@@ -83,6 +89,7 @@ var ServerModel = Backbone.Model.extend({
 	
 		this.on('connected', function() {
 			this.filters.add([{
+				'type': app.FILTER_TYPE_CALENDAR,
 				'name': 'Assigned to me',
 				'jql': 'assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC'
 			}, {
