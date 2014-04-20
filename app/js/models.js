@@ -11,22 +11,23 @@ var Issue = Backbone.Model.extend({
 			'duedate': new Date(issue['fields']['duedate']),
 			'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds']),
 			'summary': issue['fields']['summary'],
-			'url': issue['self'],
 			'assignee': issue['fields']['assignee'],
 			'reporter': issue['fields']['reporter'],
 			'issuetype': issue['fields']['issuetype'],
 			'priority': issue['fields']['priority'],
-			'status': issue['fields']['status']
+			'status': issue['fields']['status'],
+			'progress': issue['fields']['progress'],
+			'url': issue['self'].replace(/\/rest\/api\/2\/issue\/.*/, '/browse/' + issue['key'])
 		});
 
 		this.on('changeDueDate', function(e) {
-			app.server.api.updateIssue(this.get('url'), {
+			app.server.api.updateIssue(this.get('self'), {
 				'duedate': moment(e.start).format('YYYY-MM-DD')
 			});
 		});
 
 		this.on('changeEstiamte', function(e) {
-			app.server.api.updateIssue(this.get('url'), {
+			app.server.api.updateIssue(this.get('self'), {
 				'timetracking': {
 					'originalEstimateSeconds': (e.end - e.start)/1000
 				}

@@ -17,9 +17,8 @@ var FilterView = Backbone.View.extend({
 					'resolutions': app.server.api.resolutions,
 					'users': users
 				})).appendTo('body');
-				// dlg.find('#issueAssignee').selectize({
-				// 	create: true
-				// });
+				dlg.find('#issueAssignee').select2();
+				dlg.find('#issueDate').get(0).valueAsDate = new Date();
 				dlg.modal('show');
 			});
 		}

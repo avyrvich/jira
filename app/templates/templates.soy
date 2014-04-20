@@ -94,8 +94,10 @@
 
 /**
  * Table View issue definition
+ * @param url
  * @param key
  * @param summary
+ * @param progress
  * @param assignee
  * @param reporter
  * @param status
@@ -105,8 +107,23 @@
  */
 {template .filterTableRow}
 	<tr>
-		<td>{$key}</td>
-		<td>{$summary}</td>
+		<td><a href="{$url}">{$key}</a></td>
+    <td>{$summary}</td>
+		<td>
+    {if $progress}
+      {if $progress.percent >= 0}
+        <div class="progress">
+          {if $progress.percent > 100}
+            <div class="progress-bar" role="progressbar" aria-valuenow="{$progress.percent}%" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+          {else}
+            <div class="progress-bar" role="progressbar" aria-valuenow="{$progress.percent}%" aria-valuemin="0" aria-valuemax="100" style="width: {$progress.percent}%;">
+          {/if}
+              {$progress.percent}%
+          </div>
+        </div>
+      {/if}
+    {/if}
+    </td>
 		<td>{$assignee.displayName}</td>
 		<td>{$reporter.displayName}</td>
 		<td>{$estimate}</td>
