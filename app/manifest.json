@@ -8,7 +8,7 @@
     "128": "img/logo-128.png"
   },
   "permissions": [
-    "*://www.softomate.net/jira/*"
+    "<all_urls>", "storage"
   ],
   "content_security_policy": "default-src 'self'; connect-src *; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://themes.googleusercontent.com; img-src *",
   "app": {

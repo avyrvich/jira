@@ -19,10 +19,19 @@ var Issue = Backbone.Model.extend({
 			'url': issue['self'].replace(/\/rest\/api\/2\/issue\/.*/, '/browse/' + issue['key'])
 		});
 
+		chrome.storage.local.get(issue['key'], function(storedAttributes) {
+			if (storedAttributes) {
+				this_.set(storedAttributes);
+			}
+		});
+
 		this.on('changeDueDate', function(e) {
 			app.server.api.updateIssue(this.get('self'), {
 				'duedate': moment(e.start).format('YYYY-MM-DD')
-			}, function() {
+			}, function(issue) {
+				this_.set({
+					'duedate': new Date(issue['fields']['duedate'])
+				});
 				this_.trigger('updated');
 			});
 		});
@@ -32,15 +41,27 @@ var Issue = Backbone.Model.extend({
 				'timetracking': {
 					'originalEstimateSeconds': (e.end - e.start)/1000
 				}
-			}, function() {
+			}, function(issue) {
+				this_.set({
+					'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds'])
+				});
 				this_.trigger('updated');
 			});
 		});
 
 		this.on('startProgress', function(e) {
 			this.set({'started': new Date()});
+			var obj = {};
+			obj[this.get('key')] = {
+				'started': new Date()
+			};
+			chrome.storage.local.set(obj);
 			this_.trigger('updated');
-		})
+		});
+
+		this.on('change', function() {
+			
+		});
 	}
 });
 

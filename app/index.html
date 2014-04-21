@@ -26,19 +26,26 @@
 </head>
 <body>
 
-<nav id="navbar" class="navbar navbar-default navbar-static  navbar-fixed-top navbar-collapse" role="navigation">
+<nav id="navbar" class="navbar navbar-default navbar-static  navbar-fixed-top navbar-collapse disconnected" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#">
         <img src="img/logo-32.png" width="28" height="28" style="float:left;margin-top: -4px;">
         JIRA Assist
       </a>
+      <ul class="nav navbar-nav disconnected">
+          <li><a href="#" data-toggle="modal" data-target="#dlgConnect">Connect Server</a></li>
+      </ul>
     </div>
-    <ul class="nav navbar-nav">
-        <li><a href="#" data-toggle="modal" data-target="#dlgConnect">Connect Server</a></li>
+    <ul class="nav navbar-nav navbar-filters connected">
 
     </ul>
-
+    <ul class="nav navbar-nav connected">
+      <li><a href="#" class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#dlgFilterEdit"></a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right connected">
+      <li><a href="#" class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#dlgConnect"></a></li>
+    </ul>
 
 
   </div>

@@ -142,6 +142,7 @@ var NavBarView = Backbone.View.extend({
 		this.listenTo(app.server, 'connected', function() {
 			$('#dropdown-filters').removeClass('hide');
 			$('#dlgConnect').modal('hide');
+			$('#navbar').removeClass('disconnected').addClass('connected');
 		});
 
 		//-------------------------------
@@ -153,7 +154,7 @@ var NavBarView = Backbone.View.extend({
 				'cid': filter['cid'],
 				'name': filter.get('name'),
 				'count': ''
-			})).appendTo('.nav');
+			})).appendTo('.navbar-filters');
 
 			tabBtn.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			  $(e.target.getAttribute('href')).fullCalendar('render');
