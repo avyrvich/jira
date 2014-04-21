@@ -3,16 +3,21 @@
 
 var FilterView = Backbone.View.extend({
 	initialize: function() {
+		var this_ = this;
 		this.$el
 			.attr('id', 'tab-filter-' + this.model['cid'])
 			.addClass('tab-pane')
 			.appendTo('.tab-content');
+		this.model.on('updated', function() {
+			this_.render();
+		});
+	},
+	getKeyByNode: function(node) {
+		return $(node).parents('[jira-key]').attr('jira-key');
 	},
 	events: {
 		'click .log-issue': function(evt) {
-			console.log(this, arguments);
-
-			app.server.api.getAssignableUsers(evt.target.getAttribute('key'), function(users) {
+			app.server.api.getAssignableUsers(this.getKeyByNode(evt.target), function(users) {
 				var dlg = $(templates.dlgLogIssue({
 					'resolutions': app.server.api.resolutions,
 					'users': users
@@ -21,14 +26,20 @@ var FilterView = Backbone.View.extend({
 				dlg.find('#issueDate').get(0).valueAsDate = new Date();
 				dlg.modal('show');
 			});
-		}
+		},'click .start-progress': function(evt) {
+			this.model.issues.findWhere({
+				'key': this.getKeyByNode(evt.target)
+			}).trigger('startProgress');
+		},
 	},
 	render: function() {
+		this.$el.empty();
 		if (this.model.get('type') === app.FILTER_TYPE_CALENDAR) {
 			this.renderCalendar();
 		} else {
 			this.renderTable();
 		}
+		$('img[data-toggle="tooltip"]').tooltip();
 	},
 	renderTable: function() {
 		var $tbody = this.$el.append(templates.filterTable()).find('tbody');
@@ -150,8 +161,7 @@ var NavBarView = Backbone.View.extend({
 				dlg.find('#filterType').val(filter.get('type'));
 			});
 		});
-		this.listenTo(app.server.filters, 'udpated', function(filter) {
-			filter.view.render();
+		this.listenTo(app.server.filters, 'updated', function(filter) {
 			$('#btn-filter-' + filter['cid']).find('.badge').text(filter.issues.length);
 		});
 

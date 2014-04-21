@@ -3,9 +3,8 @@
 //-- Models
 
 var Issue = Backbone.Model.extend({
-	ref: null,
 	initialize: function(issue) {
-		this.ref = issue;
+		var this_ = this;
 		this.set({
 			'key': issue['key'],
 			'duedate': new Date(issue['fields']['duedate']),
@@ -23,6 +22,8 @@ var Issue = Backbone.Model.extend({
 		this.on('changeDueDate', function(e) {
 			app.server.api.updateIssue(this.get('self'), {
 				'duedate': moment(e.start).format('YYYY-MM-DD')
+			}, function() {
+				this_.collection.trigger('updated');
 			});
 		});
 
@@ -31,8 +32,15 @@ var Issue = Backbone.Model.extend({
 				'timetracking': {
 					'originalEstimateSeconds': (e.end - e.start)/1000
 				}
+			}, function() {
+				this_.collection.trigger('updated');
 			});
 		});
+
+		this.on('startProgress', function(e) {
+			this.set({'started': new Date()});
+			this_.collection.trigger('updated');
+		})
 	}
 });
 
@@ -52,6 +60,7 @@ var Filter = Backbone.Model.extend({
 		this['view'] = new FilterView({
 			'model': this
 		});
+
 		this.update();
 		this.collection.trigger('created', this);
 	},
@@ -59,7 +68,11 @@ var Filter = Backbone.Model.extend({
 		var this_ = this;
 		this.collection.server.api.executeJQL(this.get('jql'), function(issues) {
 			this_['issues'] = new Issues(issues);
-			this_.collection.trigger('udpated', this_);
+			this_['issues'].on('updated', function() {
+				this_.trigger('updated');
+			})
+			this_.trigger('updated', this_);
+			this_.collection.trigger('updated', this_);
 		});
 	}
 });

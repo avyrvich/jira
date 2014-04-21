@@ -37,26 +37,26 @@ templates.filterTable = function(opt_data, opt_ignored) {
 
 
 templates.filterTableRow = function(opt_data, opt_ignored) {
-  return '\t<tr><td><a href="' + soy.$$escapeHtml(opt_data.url) + '">' + soy.$$escapeHtml(opt_data.key) + '</a></td><td>' + soy.$$escapeHtml(opt_data.summary) + '</td><td>' + ((opt_data.progress) ? (opt_data.progress.percent >= 0) ? '<div class="progress">' + ((opt_data.progress.percent > 100) ? '<div class="progress-bar" role="progressbar" aria-valuenow="' + soy.$$escapeHtml(opt_data.progress.percent) + '%" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">' : '<div class="progress-bar" role="progressbar" aria-valuenow="' + soy.$$escapeHtml(opt_data.progress.percent) + '%" aria-valuemin="0" aria-valuemax="100" style="width: ' + soy.$$escapeHtml(opt_data.progress.percent) + '%;">') + soy.$$escapeHtml(opt_data.progress.percent) + '%</div></div>' : '' : '') + '</td><td>' + soy.$$escapeHtml(opt_data.assignee.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.reporter.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.estimate) + '</td><td><img src="' + soy.$$escapeHtml(opt_data.status.iconUrl) + '"></td><td><img src="' + soy.$$escapeHtml(opt_data.priority.iconUrl) + '"></td><td>' + soy.$$escapeHtml(opt_data.duedate) + '</td><td><button type="button" class="btn btn-success btn-xs log-issue" key="' + soy.$$escapeHtml(opt_data.key) + '">Log Work</button></td></tr>';
+  return '\t<tr><td><a href="' + soy.$$escapeHtml(opt_data.url) + '">' + soy.$$escapeHtml(opt_data.key) + '</a></td><td>' + soy.$$escapeHtml(opt_data.summary) + '</td><td>' + ((opt_data.progress) ? (opt_data.progress.percent >= 0) ? '<div class="progress">' + ((opt_data.progress.percent > 100) ? '<div class="progress-bar" role="progressbar" aria-valuenow="' + soy.$$escapeHtml(opt_data.progress.percent) + '%" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">' : '<div class="progress-bar" role="progressbar" aria-valuenow="' + soy.$$escapeHtml(opt_data.progress.percent) + '%" aria-valuemin="0" aria-valuemax="100" style="width: ' + soy.$$escapeHtml(opt_data.progress.percent) + '%;">') + soy.$$escapeHtml(opt_data.progress.percent) + '%</div></div>' : '' : '') + '</td><td>' + soy.$$escapeHtml(opt_data.assignee.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.reporter.displayName) + '</td><td>' + soy.$$escapeHtml(opt_data.estimate) + '</td><td><img src="' + soy.$$escapeHtml(opt_data.status.iconUrl) + '" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.status.description) + '"></td><td><img src="' + soy.$$escapeHtml(opt_data.priority.iconUrl) + '" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.status.description) + '"></td><td>' + soy.$$escapeHtml(opt_data.duedate) + '</td><td><div class="btn-group" jira-key="' + soy.$$escapeHtml(opt_data.key) + '">' + ((opt_data.started) ? '<button type="button" class="btn btn-success btn-xs log-issue">Log Work</button>' : '') + '<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" role="menu"><li><a href="#" class="start-progress">Start Progress</a></li><li><a href="#" class="log-issue">Log Work</a></li><li class="divider"></li><li><a href="#">Resolve</a></li><li class="divider"></li><li><a href="#">Re-assigne</a></li></ul></div></tr>';
 };
 
 
 templates.dlgLogIssue = function(opt_data, opt_ignored) {
   var output = '<div class="modal fade" id="dlgLogIssue" tabindex="-1" role="dialog" aria-labelledby="dlgLogIssueLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlgLogIssueLabel">Log Work</h4></div><div class="modal-body"><form role="form"><div class="form-group col-md-6"><label for="issueDate">Resolve Date</label><input type="date" class="form-control" id="issueDate" placeholder="Date"></div><div class="form-group col-md-6""><label for="issueSpent">Resolve Date</label><input type="text" class="form-control" id="issueTimeSpent" placeholder="Time Spent" value=""></div><div class="form-group"><label for="issueResolution">Resolution</label><select id="issueResolution" class="form-control">';
-  var resolutionList79 = opt_data.resolutions;
-  var resolutionListLen79 = resolutionList79.length;
-  for (var resolutionIndex79 = 0; resolutionIndex79 < resolutionListLen79; resolutionIndex79++) {
-    var resolutionData79 = resolutionList79[resolutionIndex79];
-    output += '<option value="' + soy.$$escapeHtml(resolutionData79.id) + '" title="' + soy.$$escapeHtml(resolutionData79.description) + '">' + soy.$$escapeHtml(resolutionData79.name) + '</option>';
+  var resolutionList87 = opt_data.resolutions;
+  var resolutionListLen87 = resolutionList87.length;
+  for (var resolutionIndex87 = 0; resolutionIndex87 < resolutionListLen87; resolutionIndex87++) {
+    var resolutionData87 = resolutionList87[resolutionIndex87];
+    output += '<option value="' + soy.$$escapeHtml(resolutionData87.id) + '" title="' + soy.$$escapeHtml(resolutionData87.description) + '">' + soy.$$escapeHtml(resolutionData87.name) + '</option>';
   }
   output += '</select></div>';
   if (opt_data.users) {
     output += '<div class="form-group"><label for="issueAssignee">Assignee</label><select id="issueAssignee" class="form-control">';
-    var userList92 = opt_data.users;
-    var userListLen92 = userList92.length;
-    for (var userIndex92 = 0; userIndex92 < userListLen92; userIndex92++) {
-      var userData92 = userList92[userIndex92];
-      output += '<option value="' + soy.$$escapeHtml(userData92.id) + '" title="' + soy.$$escapeHtml(userData92.displayName) + '">' + soy.$$escapeHtml(userData92.displayName) + '</option>';
+    var userList100 = opt_data.users;
+    var userListLen100 = userList100.length;
+    for (var userIndex100 = 0; userIndex100 < userListLen100; userIndex100++) {
+      var userData100 = userList100[userIndex100];
+      output += '<option value="' + soy.$$escapeHtml(userData100.id) + '" title="' + soy.$$escapeHtml(userData100.displayName) + '">' + soy.$$escapeHtml(userData100.displayName) + '</option>';
     }
     output += '</select></div>';
   }

@@ -104,6 +104,7 @@
  * @param priority
  * @param estimate
  * @param duedate
+ * @param started
  */
 {template .filterTableRow}
 	<tr>
@@ -127,10 +128,26 @@
 		<td>{$assignee.displayName}</td>
 		<td>{$reporter.displayName}</td>
 		<td>{$estimate}</td>
-		<td><img src="{$status.iconUrl}"></td>
-		<td><img src="{$priority.iconUrl}"></td>
+		<td><img src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
+		<td><img src="{$priority.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
 		<td>{$duedate}</td>
-		<td><button type="button" class="btn btn-success btn-xs log-issue" key="{$key}">Log Work</button></td>
+		<td>
+      <div class="btn-group" jira-key="{$key}">
+      {if $started}
+        <button type="button" class="btn btn-success btn-xs log-issue">Log Work</button>
+      {/if}
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+          Action <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+          <li><a href="#" class="start-progress">Start Progress</a></li>
+          <li><a href="#" class="log-issue">Log Work</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Resolve</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Re-assigne</a></li>
+        </ul>
+      </div>
 	</tr>
 {/template}
 
