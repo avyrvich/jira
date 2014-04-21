@@ -23,7 +23,7 @@ var Issue = Backbone.Model.extend({
 			app.server.api.updateIssue(this.get('self'), {
 				'duedate': moment(e.start).format('YYYY-MM-DD')
 			}, function() {
-				this_.collection.trigger('updated');
+				this_.trigger('updated');
 			});
 		});
 
@@ -33,13 +33,13 @@ var Issue = Backbone.Model.extend({
 					'originalEstimateSeconds': (e.end - e.start)/1000
 				}
 			}, function() {
-				this_.collection.trigger('updated');
+				this_.trigger('updated');
 			});
 		});
 
 		this.on('startProgress', function(e) {
 			this.set({'started': new Date()});
-			this_.collection.trigger('updated');
+			this_.trigger('updated');
 		})
 	}
 });
@@ -69,10 +69,9 @@ var Filter = Backbone.Model.extend({
 		this.collection.server.api.executeJQL(this.get('jql'), function(issues) {
 			this_['issues'] = new Issues(issues);
 			this_['issues'].on('updated', function() {
-				this_.trigger('updated');
+				this_.trigger('updated', this_);
 			})
 			this_.trigger('updated', this_);
-			this_.collection.trigger('updated', this_);
 		});
 	}
 });
@@ -103,10 +102,10 @@ var ServerModel = Backbone.Model.extend({
 	
 		this.on('connected', function() {
 			this.filters.add([{
-				'type': app.FILTER_TYPE_CALENDAR,
 				'name': 'Assigned to me',
 				'jql': 'assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC'
 			}, {
+				'type': app.FILTER_TYPE_CALENDAR,
 				'name': 'Issues created by me during this month',
 				'jql': 'assignee = currentUser() AND created > startOfMonth()'
 			}]);

@@ -9,7 +9,11 @@ var FilterView = Backbone.View.extend({
 			.addClass('tab-pane')
 			.appendTo('.tab-content');
 		this.model.on('updated', function() {
-			this_.render();
+			if (this_.$el.is('.fc') && this_.model.get('type') === app.FILTER_TYPE_CALENDAR) {
+				this_.$el.fullCalendar('render')
+			} else {
+				this_.render();
+			}			
 		});
 	},
 	getKeyByNode: function(node) {
@@ -110,6 +114,7 @@ var FilterView = Backbone.View.extend({
 //-- NavBar View
 
 var NavBarView = Backbone.View.extend({
+	selectedFilter: null,
 	events: {
 		'click .btn.connect': 'connect'
 	},
@@ -117,6 +122,7 @@ var NavBarView = Backbone.View.extend({
 		//console.log($('#dlgConnect').modal('show'));
 	},
 	'initialize': function() {
+		var this_ = this;
 		//-------------------------------
 		//-- Listen to server events
 
@@ -142,13 +148,12 @@ var NavBarView = Backbone.View.extend({
 		//-- Listen to filters events
 
 		this.listenTo(app.server.filters, 'created', function(filter) {
+
 			var tabBtn = $(templates.filterButton({
 				'cid': filter['cid'],
 				'name': filter.get('name'),
-				'count': '',
-				'class': filter['cid']===app.server.get('active')?'active':''
+				'count': ''
 			})).appendTo('.nav');
-
 
 			tabBtn.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			  $(e.target.getAttribute('href')).fullCalendar('render');
@@ -160,7 +165,13 @@ var NavBarView = Backbone.View.extend({
 				dlg.find('#filterJQL').val(filter.get('jql'));
 				dlg.find('#filterType').val(filter.get('type'));
 			});
+
+			if (!this_.selectedFilter) {
+				this_.selectedFilter = filter.cid;
+				tabBtn.find('[data-toggle="tab"]').tab('show');
+			}
 		});
+
 		this.listenTo(app.server.filters, 'updated', function(filter) {
 			$('#btn-filter-' + filter['cid']).find('.badge').text(filter.issues.length);
 		});

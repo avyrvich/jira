@@ -29,11 +29,10 @@
  * @param cid unique id of filter
  * @param name Name of the filter
  * @param count count of issues
- * @param class additional className
  */
 {template .filterButton}
 	<li class="dropdown" id="btn-filter-{$cid}">
-	  <a href="#tab-filter-{$cid}" class="navbar-nav {$class}" data-toggle="tab">
+	  <a href="#tab-filter-{$cid}" class="navbar-nav" data-toggle="tab">
 	  	{$name} 
 	  	<span class="badge">{$count}</span>
 	  </a>
@@ -78,7 +77,8 @@
 	<table class="table table-condensed table-striped table-responsive">
 		<thead>
 		  	<th>Key</th>
-		  	<th>Summary</th>
+        <th>Summary</th>
+		  	<th>Progress</th>
 		  	<th>Assignee</th>
 		  	<th>Reporter</th>
 		  	<th>Estimate</th>
@@ -107,17 +107,17 @@
  * @param started
  */
 {template .filterTableRow}
-	<tr>
+	<tr {if $started}class="success"{/if}>
 		<td><a href="{$url}">{$key}</a></td>
     <td>{$summary}</td>
 		<td>
     {if $progress}
       {if $progress.percent >= 0}
-        <div class="progress">
+        <div class="progress progress-bar-warning progress-striped">
           {if $progress.percent > 100}
-            <div class="progress-bar" role="progressbar" aria-valuenow="{$progress.percent}%" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+            <div class="progress-bar progress-bar" role="progressbar" aria-valuenow="{$progress.percent}%" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
           {else}
-            <div class="progress-bar" role="progressbar" aria-valuenow="{$progress.percent}%" aria-valuemin="0" aria-valuemax="100" style="width: {$progress.percent}%;">
+            <div class="progress-bar  progress-bar-success" role="progressbar" aria-valuenow="{$progress.percent}%" aria-valuemin="0" aria-valuemax="100" style="width: {$progress.percent}%;">
           {/if}
               {$progress.percent}%
           </div>
@@ -133,14 +133,15 @@
 		<td>{$duedate}</td>
 		<td>
       <div class="btn-group" jira-key="{$key}">
-      {if $started}
-        <button type="button" class="btn btn-success btn-xs log-issue">Log Work</button>
-      {/if}
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
           Action <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-          <li><a href="#" class="start-progress">Start Progress</a></li>
+          {if $started}
+            <li><a href="#" class="bg-success log-issue">Stop Progress</a></li>
+          {else}
+            <li><a href="#" class="start-progress">Start Progress</a></li>
+          {/if}
           <li><a href="#" class="log-issue">Log Work</a></li>
           <li class="divider"></li>
           <li><a href="#">Resolve</a></li>
