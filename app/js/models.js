@@ -107,15 +107,14 @@ var ServerModel = Backbone.Model.extend({
 	api: null,
 	sync: function(cmd, server){
 		if (cmd === 'create') {
-			localStorage.setItem('url', server.get('url'));
-			localStorage.setItem('token', server.get('token'));
-			localStorage.setItem('username', server.get('username'));
-		} else if (cmd === 'read') {
-			server.set({
-				'url': localStorage.getItem('url'),
-				'token': localStorage.getItem('token'),
-				'username': localStorage.getItem('username')
+			chrome.storage.local.set({
+				'server': server.attributes
 			});
+		} else if (cmd === 'read') {
+			chrome.storage.local.get('server', function(attributes) {
+				server.set(attributes);
+			})
+			
 		}
 	},
 	initialize: function() {
