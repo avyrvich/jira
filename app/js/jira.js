@@ -13,6 +13,7 @@ function JIRA(_serverURL, token) {
 
 
 	function init(callback) {
+
 		$.ajaxSetup({
 			'beforeSend': function(xhr) { 
 				xhr.setRequestHeader('Authorization', this.token); 
@@ -41,7 +42,7 @@ function JIRA(_serverURL, token) {
 				xhr.setRequestHeader('Authorization', make_base_auth(username, password)); 
 			},
 			'success': function(response) {
-				this.token = make_base_auth(username, password);
+				self.token = make_base_auth(username, password);
 				init(callback);
 			},
 			'error': function(xhr) {

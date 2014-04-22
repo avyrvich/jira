@@ -106,15 +106,16 @@ var ServerModel = Backbone.Model.extend({
 	filters: new Filters,
 	api: null,
 	sync: function(cmd, server){
+		var this_ = this;
 		if (cmd === 'create') {
 			chrome.storage.local.set({
-				'server': server.attributes
+				'server': this_.attributes
 			});
 		} else if (cmd === 'read') {
-			chrome.storage.local.get('server', function(attributes) {
-				server.set(attributes);
-			})
-			
+			chrome.storage.local.get('server', function(data) {
+				this_.set(data['server']);
+				this_.trigger('load');
+			});
 		}
 	},
 	initialize: function() {
@@ -131,43 +132,45 @@ var ServerModel = Backbone.Model.extend({
 			}]);
 		});
 
+		this.on('load', function() {
+			var this_ = this;
+			if (this.get('url') && this.get('token')) {
+				var api = new JIRA(this.get('url'), this.get('url'));
+				api.checkAuthorization(function(res, msg) {
+					if (res) {
+						this_.api = api;
+						this_.trigger('connected');
+					} else {
+						this_.trigger('disconnected');
+						if (msg) {
+							this_.trigger('connection-error', msg);
+						}
+					}
+				});
+			} else {
+				this.trigger('disconnected');
+			}
+		});
+
 		this.on('login', function(e) {
-			var self = this;
+			var this_ = this;
 			var api = new JIRA(e.url);
 			api.login(e.username, e.password, function(res, data){
 				if (res) {
-					self.set({
+					this_.set({
 						'url': e.url,
 						'token': data,
 						'username': e.username
 					});
-					self.save();
-					self.api = api;
-					self.trigger('connected');
+					this_.save();
+					this_.api = api;
+					this_.trigger('connected');
 				} else {
 					app.server.trigger('login-error', data)
 				}
 			})
 		});
-	},
-	load: function() {
-		var this_ = this;
+
 		this.fetch();
-		if (this.get('url') && this.get('token')) {
-			var api = new JIRA(this.get('url'), this.get('url'));
-			api.checkAuthorization(function(res, msg) {
-				if (res) {
-					this_.api = api;
-					this_.trigger('connected');
-				} else {
-					this_.trigger('disconnected');
-					if (msg) {
-						this_.trigger('connection-error', msg);
-					}
-				}
-			});
-		} else {
-			this.trigger('disconnected');
-		}
 	}
 });
