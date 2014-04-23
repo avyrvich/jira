@@ -20,7 +20,7 @@
         "js/libs/backbone-min.js",
         "js/models.js",
         "js/jira.js",
-        "app.js"
+        "js/app.js"
       ]
     }
   }
