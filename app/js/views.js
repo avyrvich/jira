@@ -163,14 +163,6 @@ var NavBarView = Backbone.View.extend({
 		//-------------------------------
 		//-- Listen to filters events
 
-		function editFilter(e) {
-			var dlg = $("#dlgFilterEdit");
-			this_.model.trigger('filter:save', {
-				'name': dlg.find('#filterName').val(),
-				'jql': dlg.find('#filterJQL').val(),
-				'type': dlg.find('#filterType').val()
-			});
-		}
 		function addFilter(filter) {
 			this_.filters.push(new FilterView({
 				'model': filter
@@ -191,7 +183,7 @@ var NavBarView = Backbone.View.extend({
 				dlg.find('#filterName').val(filter.get('name'));
 				dlg.find('#filterJQL').val(filter.get('jql'));
 				dlg.find('#filterType').val(filter.get('type'));
-				dlg.find('.filter-save').click(editFilter);
+				dlg.find('.filter-save').attr('cid', filter.cid);
 
 			});
 
@@ -231,7 +223,26 @@ var NavBarView = Backbone.View.extend({
 			$('#dlg-connect .alert').addClass('hidden').text('');
 		});
 
-		$('#filter-add').click(editFilter);
+		$('.filter-save').click(function (e) {
+			var dlg = $("#dlgFilterEdit");
+			var filter = {
+				'name': dlg.find('#filterName').val(),
+				'jql': dlg.find('#filterJQL').val(),
+				'type': dlg.find('#filterType').val()
+			};
+			var cid = e.target.getAttribute('cid');
+			if (cid) {
+				this_.model.trigger('filter:save', {
+					'cid': cid,
+					'filter': filter
+				});
+			} else {
+				this_.model.trigger('filter:add', {
+					'cid': cid,
+					'filter': filter
+				});
+			}
+		});
 
 
 		//-- Initialization
