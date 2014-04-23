@@ -1,3 +1,5 @@
+{namespace templates}
+
 
 /**
  * errorMessage
@@ -93,7 +95,6 @@
 
 /**
  * Table View issue definition
- * @param url
  * @param key
  * @param summary
  * @param progress
@@ -106,8 +107,8 @@
  * @param started
  */
 {template .filterTableRow}
-	<tr {if $started}class="success"{/if}>
-		<td><a href="{$url}">{$key}</a></td>
+	<tr {if $started}class="success"{/if} jira-key="{$key}">
+		<td><a href="#" class="view-issue">{$key}</a></td>
     <td>{$summary}</td>
 		<td>
     {if $progress}
@@ -131,7 +132,7 @@
 		<td><img src="{$priority.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
 		<td>{$duedate}</td>
 		<td>
-      <div class="btn-group" jira-key="{$key}">
+      <div class="btn-group">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
           Action <span class="caret"></span>
         </button>
@@ -154,18 +155,14 @@
 
 
 
-
-
-
-
-
 /**
  * Modal Resolve Issue Dialog
+ * @param? key
  * @param resolutions
  * @param? users
  */
 {template .dlgLogIssue}
-<div class="modal fade" id="dlgLogIssue" tabindex="-1" role="dialog" aria-labelledby="dlgLogIssueLabel" aria-hidden="true">
+<div class="modal fade" id="dlgLogIssue" tabindex="-1" role="dialog" aria-labelledby="dlgLogIssueLabel" aria-hidden="true" jira-key="{$key}">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -222,8 +219,31 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-warning">Cancel Progress</button>
+        <button type="button" class="btn btn-warning stop-progress">Cancel Progress</button>
         <button type="button" class="btn btn-primary">Log Work</button>
+      </div>
+    </div>
+  </div>
+</div>
+{/template}
+
+
+/**
+ * Modal Issue View Dialog with webview control on it
+ * @param url
+ * @param key
+ */
+{template .dlgIssueView}
+
+<div class="modal fade" id="dlgIssueView" tabindex="-1" role="dialog" aria-labelledby="dlgIssueViewLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title" id="dlgIssueViewLabel">{$key}</h4>
+      </div>
+      <div class="modal-body">
+        <webview src="{$url}"></webview>
       </div>
     </div>
   </div>

@@ -8,13 +8,18 @@ var FilterView = Backbone.View.extend({
 			.attr('id', 'tab-filter-' + this.model['cid'])
 			.addClass('tab-pane')
 			.appendTo('.tab-content');
-		this.model.on('updated', function() {
+
+		function onUpdated() {
 			if (this_.$el.is('.fc') && this_.model.get('type') === app.FILTER_TYPE_CALENDAR) {
 				this_.$el.fullCalendar('render')
 			} else {
 				this_.render();
 			}			
-		});
+		}
+		this.model.on('updated', onUpdated);
+		if (this.model.issues) {
+			onUpdated();
+		}
 	},
 	getKeyByNode: function(node) {
 		return $(node).parents('[jira-key]').attr('jira-key');
@@ -30,11 +35,23 @@ var FilterView = Backbone.View.extend({
 				dlg.find('#issueDate').get(0).valueAsDate = new Date();
 				dlg.modal('show');
 			});
-		},'click .start-progress': function(evt) {
+		},
+		'click .start-progress': function(evt) {
 			this.model.issues.findWhere({
 				'key': this.getKeyByNode(evt.target)
-			}).trigger('startProgress');
+			}).trigger('change:progress', true);
 		},
+		'click .stop-progress': function(evt) {
+			this.model.issues.findWhere({
+				'key': this.getKeyByNode(evt.target)
+			}).trigger('change:progress', false);
+		},
+		'click .view-issue': function(evt) {
+			var issue = this.model.issues.findWhere({
+				'key': this.getKeyByNode(evt.target)
+			});
+			$(templates.dlgIssueView(issue.attributes)).appendTo('body').modal('show');
+		}
 	},
 	render: function() {
 		this.$el.empty();
@@ -100,10 +117,10 @@ var FilterView = Backbone.View.extend({
 				});
 			},
 			eventDrop: function(event, delta) {
-				event.issue.trigger('changeDueDate', event);
+				event.issue.trigger('change:duedate', event);
 			},
 			eventResize: function(event, delta) {
-				event.issue.trigger('changeEstiamte', event);
+				event.issue.trigger('change:estiamte', event);
 			}
 		});
 	}
@@ -115,6 +132,7 @@ var FilterView = Backbone.View.extend({
 
 var NavBarView = Backbone.View.extend({
 	selectedFilter: null,
+	filters: [],
 	events: {
 		'click .btn.connect': 'connect'
 	},
@@ -125,30 +143,35 @@ var NavBarView = Backbone.View.extend({
 		var this_ = this;
 		//-------------------------------
 		//-- Listen to server events
-
-		this.listenTo(app.server, 'login-error', function(message) {
+		function loginError(message) {
 			$('#dlgConnect .alertsArea').empty().append(templates.errorMessage({
 				'message': message
 			}));
-		});
-		this.listenTo(app.server, 'connection-error', function(message) {
+		}
+		function connectionError(message) {
 			$('body').append(
 				templates.errorMessage({
 					message: message,
 					buttons: ['<button type="button" class="btn btn-default" data-toggle="modal" data-target="#dlgConnect">Reconnect</button>']
 				})
 			);
-		});
-		this.listenTo(app.server, 'connected', function() {
+		}
+		function onConnected() {
 			$('#dropdown-filters').removeClass('hide');
 			$('#dlgConnect').modal('hide');
 			$('#navbar').removeClass('disconnected').addClass('connected');
-		});
+		}
+		this.listenTo(app.server, 'login-error', loginError);
+		this.listenTo(app.server, 'connection-error', connectionError);
+		this.listenTo(app.server, 'connected', onConnected);
 
 		//-------------------------------
 		//-- Listen to filters events
 
-		this.listenTo(app.server.filters, 'created', function(filter) {
+		function addFilter(filter) {
+			this_.filters.push(new FilterView({
+				'model': filter
+			}));
 
 			var tabBtn = $(templates.filterButton({
 				'cid': filter['cid'],
@@ -171,11 +194,13 @@ var NavBarView = Backbone.View.extend({
 				this_.selectedFilter = filter.cid;
 				tabBtn.find('[data-toggle="tab"]').tab('show');
 			}
-		});
-
-		this.listenTo(app.server.filters, 'updated', function(filter) {
+		}
+		function updateFilter(filter) {
 			$('#btn-filter-' + filter['cid']).find('.badge').text(filter.issues.length);
-		});
+		}
+
+		this.listenTo(app.server.filters, 'created', addFilter);
+		this.listenTo(app.server.filters, 'updated', updateFilter);
 
 
 
@@ -195,5 +220,15 @@ var NavBarView = Backbone.View.extend({
 		$('#dlgConnect').on('hide.bs.modal', function() {
 			$('#dlgConnect .alert').addClass('hidden').text('');
 		});
+
+
+		//-- Initialization
+
+		if (app.server.api) {
+			onConnected();
+			$.each(app.server.filters.models, function(i, filter) {
+				addFilter(filter);
+			});
+		}
 	}
 });

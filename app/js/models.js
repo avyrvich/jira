@@ -25,18 +25,17 @@ var Issue = Backbone.Model.extend({
 			}
 		});
 
-		this.on('changeDueDate', function(e) {
+		this.on('change:duedate', function(e) {
 			app.server.api.updateIssue(this.get('self'), {
 				'duedate': moment(e.start).format('YYYY-MM-DD')
 			}, function(issue) {
 				this_.set({
 					'duedate': new Date(issue['fields']['duedate'])
 				});
-				this_.trigger('updated');
 			});
 		});
 
-		this.on('changeEstiamte', function(e) {
+		this.on('change:estiamte', function(e) {
 			app.server.api.updateIssue(this.get('self'), {
 				'timetracking': {
 					'originalEstimateSeconds': (e.end - e.start)/1000
@@ -45,22 +44,21 @@ var Issue = Backbone.Model.extend({
 				this_.set({
 					'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds'])
 				});
-				this_.trigger('updated');
 			});
 		});
 
-		this.on('startProgress', function(e) {
-			this.set({'started': new Date()});
-			var obj = {};
-			obj[this.get('key')] = {
-				'started': new Date()
-			};
-			chrome.storage.local.set(obj);
-			this_.trigger('updated');
-		});
-
-		this.on('change', function() {
-			
+		this.on('change:progress', function(started) {
+			if (started) {
+				this.set({'started': new Date()});
+				var obj = {};
+				obj[this.get('key')] = {
+					'started': new Date()
+				};
+				chrome.storage.local.set(obj);
+			} else {
+				this.unset('started');
+				chrome.storage.local.remove(this.get('key'));
+			}
 		});
 	}
 });
@@ -78,10 +76,6 @@ var Filter = Backbone.Model.extend({
 			'type': filter['type'] || app.FILTER_TYPE_TABLE
 		});
 
-		this['view'] = new FilterView({
-			'model': this
-		});
-
 		this.update();
 		this.collection.trigger('created', this);
 	},
@@ -89,7 +83,7 @@ var Filter = Backbone.Model.extend({
 		var this_ = this;
 		this.collection.server.api.executeJQL(this.get('jql'), function(issues) {
 			this_['issues'] = new Issues(issues);
-			this_['issues'].on('updated', function() {
+			this_['issues'].on('change', function() {
 				this_.trigger('updated', this_);
 			})
 			this_.trigger('updated', this_);

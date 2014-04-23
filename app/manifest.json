@@ -8,12 +8,20 @@
     "128": "img/logo-128.png"
   },
   "permissions": [
-    "<all_urls>", "storage"
+    "<all_urls>", "storage", "webview"
   ],
-  "content_security_policy": "default-src 'self'; connect-src *; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://themes.googleusercontent.com; img-src *",
+  "content_security_policy": "default-src 'self'; connect-src *; style-src 'self' 'unsafe-inline'; img-src *",
   "app": {
-	"launch": {
-		"local_path": "index.html"
-	}
+    "background": {
+      "scripts": [
+        "js/libs/jquery-1.11.0.min.js",
+        "js/libs/moment.min.js",
+        "js/libs/underscore-min.js",
+        "js/libs/backbone-min.js",
+        "js/models.js",
+        "js/jira.js",
+        "app.js"
+      ]
+    }
   }
 }
