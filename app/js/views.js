@@ -45,12 +45,6 @@ var FilterView = Backbone.View.extend({
 			this.model.issues.findWhere({
 				'key': this.getKeyByNode(evt.target)
 			}).trigger('change:progress', false);
-		},
-		'click .view-issue': function(evt) {
-			var issue = this.model.issues.findWhere({
-				'key': this.getKeyByNode(evt.target)
-			});
-			$(templates.dlgIssueView(issue.attributes)).appendTo('body').modal('show');
 		}
 	},
 	render: function() {
@@ -60,18 +54,19 @@ var FilterView = Backbone.View.extend({
 		} else {
 			this.renderTable();
 		}
-		$('img[data-toggle="tooltip"]').tooltip();
+		$('[data-toggle="tooltip"]').tooltip();
 	},
 	renderTable: function() {
 		var $tbody = this.$el.append(templates.filterTable()).find('tbody');
 		$.each(this.model.issues.models, function(i, issue) {
 			$tbody.append(templates.filterTableRow(
-				$.extend(issue.attributes,  {
+				$.extend({}, issue.attributes,  {
 					'estimate': issue.get('estimate') ? moment.duration(issue.get('estimate'), 's').humanize() : '',
 					'duedate': issue.get('duedate') ? moment(issue.get('duedate')).format('l') : ''
 				})
 			));
 		});
+		$('img[csp-src]').downloadImageContent();
 	},
 	renderCalendar: function() {
 		var view = this;
@@ -223,6 +218,8 @@ var NavBarView = Backbone.View.extend({
 
 
 		//-- Initialization
+
+		console.log(app.server.hasChanged());
 
 		if (app.server.api) {
 			onConnected();

@@ -77,14 +77,15 @@
 {template .filterTable}
 	<table class="table table-condensed table-striped table-responsive">
 		<thead>
+        <th class="hidden-xs"></th>
 		  	<th>Key</th>
         <th>Summary</th>
-		  	<th>Progress</th>
+		  	<th class="hidden-xs hidden-sm">Progress</th>
 		  	<th>Assignee</th>
-		  	<th>Reporter</th>
+		  	<th class="hidden-xs">Reporter</th>
 		  	<th>Estimate</th>
-		  	<th></th>
-		  	<th></th>
+		  	<th class="hidden-xs"></th>
+		  	<th class="hidden-xs"></th>
 		  	<th>Duedate</th>
 	  	</thead>
   		<tbody></tbody>
@@ -95,6 +96,8 @@
 
 /**
  * Table View issue definition
+ * @param url
+ * @param project
  * @param key
  * @param summary
  * @param progress
@@ -107,10 +110,11 @@
  * @param started
  */
 {template .filterTableRow}
-	<tr {if $started}class="success"{/if} jira-key="{$key}">
-		<td><a href="#" class="view-issue">{$key}</a></td>
+	<tr {if $started}class="success"{/if}>
+    <td class="hidden-xs"><img csp-src="{$project.iconUrl}" data-toggle="tooltip" title="{$project.name}"></td>
+		<td><a href="{$url}" target="_new">{$key}</a></td>
     <td>{$summary}</td>
-		<td>
+		<td class="hidden-xs hidden-sm">
     {if $progress}
       {if $progress.percent >= 0}
         <div class="progress progress-striped">
@@ -125,20 +129,20 @@
       {/if}
     {/if}
     </td>
-		<td>{$assignee.displayName}</td>
-		<td>{$reporter.displayName}</td>
+		<td><span data-toggle="tooltip" title="{$assignee.emailAddress}" data-delay="1000">{$assignee.displayName}</span></td>
+		<td class="hidden-xs"><span data-toggle="tooltip" title="{$reporter.emailAddress}" data-delay="1000">{$reporter.displayName}</span></td>
 		<td>{$estimate}</td>
-		<td><img src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
-		<td><img src="{$priority.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
+		<td class="hidden-xs"><img csp-src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
+		<td class="hidden-xs"><img csp-src="{$priority.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
 		<td>{$duedate}</td>
 		<td>
-      <div class="btn-group">
+      <div class="btn-group" jira-key="{$key}">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
           Action <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
           {if $started}
-            <li><a href="#" class="bg-success log-issue">Stop Progress</a></li>
+            <li><a href="#" class="bg-success log-issue start-progress">Stop Progress</a></li>
           {else}
             <li><a href="#" class="start-progress">Start Progress</a></li>
           {/if}
@@ -151,6 +155,11 @@
       </div>
 	</tr>
 {/template}
+
+
+
+
+
 
 
 
@@ -227,25 +236,3 @@
 </div>
 {/template}
 
-
-/**
- * Modal Issue View Dialog with webview control on it
- * @param url
- * @param key
- */
-{template .dlgIssueView}
-
-<div class="modal fade" id="dlgIssueView" tabindex="-1" role="dialog" aria-labelledby="dlgIssueViewLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title" id="dlgIssueViewLabel">{$key}</h4>
-      </div>
-      <div class="modal-body">
-        <webview src="{$url}"></webview>
-      </div>
-    </div>
-  </div>
-</div>
-{/template}

@@ -14,8 +14,8 @@ chrome.app.runtime.onLaunched.addListener(function() {
       left: 100,
       top: 100
     },
-    minWidth: 1200,
-    minHeight: 800
+    minWidth: 400,
+    minHeight: 400
   }, function(wnd) {
     wnd.contentWindow.app = app;
   });

@@ -9,6 +9,10 @@ var Issue = Backbone.Model.extend({
 			'key': issue['key'],
 			'duedate': new Date(issue['fields']['duedate']),
 			'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds']),
+			'project': {
+				'name': issue['fields']['project']['name'],
+				'iconUrl': issue['fields']['project']['avatarUrls']['16x16']
+			},
 			'summary': issue['fields']['summary'],
 			'assignee': issue['fields']['assignee'],
 			'reporter': issue['fields']['reporter'],
@@ -68,8 +72,12 @@ var Issues = Backbone.Collection.extend({
 });
 
 var Filter = Backbone.Model.extend({
+	UPDATE_INTERVAL: 1*60000, // 1min
+	timeout: null,
 	'issues': new Issues(),
 	'initialize': function(filter) {
+		var this_ = this;
+
 		this.set({
 			'name': filter['name'],
 			'jql': filter['jql'],
@@ -78,6 +86,9 @@ var Filter = Backbone.Model.extend({
 
 		this.update();
 		this.collection.trigger('created', this);
+		this.timeout = window.setInterval(function() {
+			this_.update();
+		}, this.UPDATE_INTERVAL);
 	},
 	'update': function() {
 		var this_ = this;
