@@ -37,7 +37,7 @@
         JIRA Assist
       </a>
       <ul class="nav navbar-nav disconnected">
-          <li><a href="#" data-toggle="modal" data-target="#dlgConnect">Connect Server</a></li>
+          <li><a href="#" data-toggle="modal" data-target="#dlg-connect">Connect Server</a></li>
       </ul>
     </div>
     <ul class="nav navbar-nav navbar-filters connected">
@@ -47,7 +47,7 @@
       <li><a href="#" class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#dlgFilterEdit"></a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right connected">
-      <li><a href="#" class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#dlgConnect"></a></li>
+      <li><a id="filter-add" href="#" class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#dlg-connect"></a></li>
     </ul>
 
 
@@ -62,7 +62,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="dlgConnect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="dlg-connect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -151,7 +151,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary filter-save">Save</button>
       </div>
     </div>
   </div>

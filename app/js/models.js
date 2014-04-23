@@ -127,14 +127,7 @@ var ServerModel = Backbone.Model.extend({
 		this.filters.server = this;
 	
 		this.on('connected', function() {
-			this.filters.add([{
-				'name': 'Assigned to me',
-				'jql': 'assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC'
-			}, {
-				'type': app.FILTER_TYPE_CALENDAR,
-				'name': 'Issues created by me during this month',
-				'jql': 'assignee = currentUser() AND created > startOfMonth()'
-			}]);
+			this.filters.add(this.get('filters'));
 		});
 
 		this.on('load', function() {
@@ -165,7 +158,8 @@ var ServerModel = Backbone.Model.extend({
 					this_.set({
 						'url': e.url,
 						'token': data,
-						'username': e.username
+						'username': e.username,
+						'filters': this_.get('filters') || app.FILTERS_DEFAULT
 					});
 					this_.save();
 					this_.api = api;
@@ -174,6 +168,21 @@ var ServerModel = Backbone.Model.extend({
 					app.server.trigger('login-error', data)
 				}
 			})
+		});
+
+		this.on('filter:add', function(e) {
+			var filter = app.server.filters.get(e.cid)
+			if (filter) {
+				filter.set(e);
+			}
+			
+			console.log('filter:add');
+		});
+		this.on('filter:delete', function() {
+			console.log('filter:delete');
+		});
+		this.on('filter:edit', function() {
+			console.log('filter:edit');
 		});
 
 		this.fetch();

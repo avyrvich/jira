@@ -132,14 +132,14 @@ var NavBarView = Backbone.View.extend({
 		'click .btn.connect': 'connect'
 	},
 	'connect': function(e) {
-		//console.log($('#dlgConnect').modal('show'));
+		//console.log($('#dlg-connect').modal('show'));
 	},
 	'initialize': function() {
 		var this_ = this;
 		//-------------------------------
 		//-- Listen to server events
 		function loginError(message) {
-			$('#dlgConnect .alertsArea').empty().append(templates.errorMessage({
+			$('#dlg-connect .alertsArea').empty().append(templates.errorMessage({
 				'message': message
 			}));
 		}
@@ -147,13 +147,13 @@ var NavBarView = Backbone.View.extend({
 			$('body').append(
 				templates.errorMessage({
 					message: message,
-					buttons: ['<button type="button" class="btn btn-default" data-toggle="modal" data-target="#dlgConnect">Reconnect</button>']
+					buttons: ['<button type="button" class="btn btn-default" data-toggle="modal" data-target="#dlg-connect">Reconnect</button>']
 				})
 			);
 		}
 		function onConnected() {
 			$('#dropdown-filters').removeClass('hide');
-			$('#dlgConnect').modal('hide');
+			$('#dlg-connect').modal('hide');
 			$('#navbar').removeClass('disconnected').addClass('connected');
 		}
 		this.listenTo(app.server, 'login-error', loginError);
@@ -163,6 +163,14 @@ var NavBarView = Backbone.View.extend({
 		//-------------------------------
 		//-- Listen to filters events
 
+		function editFilter(e) {
+			var dlg = $("#dlgFilterEdit");
+			this_.model.trigger('filter:save', {
+				'name': dlg.find('#filterName').val(),
+				'jql': dlg.find('#filterJQL').val(),
+				'type': dlg.find('#filterType').val()
+			});
+		}
 		function addFilter(filter) {
 			this_.filters.push(new FilterView({
 				'model': filter
@@ -183,6 +191,12 @@ var NavBarView = Backbone.View.extend({
 				dlg.find('#filterName').val(filter.get('name'));
 				dlg.find('#filterJQL').val(filter.get('jql'));
 				dlg.find('#filterType').val(filter.get('type'));
+				dlg.find('.filter-save').click(editFilter);
+
+			});
+
+			tabBtn.find('.filter-update').click(function() {
+				filter.update();
 			});
 
 			if (!this_.selectedFilter) {
@@ -199,22 +213,25 @@ var NavBarView = Backbone.View.extend({
 
 
 
-		$('#dlgConnect .btn-primary').click(function() {
+		$('#dlg-connect .btn-primary').click(function() {
 			app.server.trigger('login', {
-				'url': $('#dlgConnect #url').val(),
-				'username': $('#dlgConnect #username').val(),
-				'password': $('#dlgConnect #password').val()
+				'url': $('#dlg-connect #url').val(),
+				'username': $('#dlg-connect #username').val(),
+				'password': $('#dlg-connect #password').val()
 			});
 		});
 
-		$('#dlgConnect').on('show.bs.modal', function() {
+		$('#dlg-connect').on('show.bs.modal', function() {
 			$('.alert').remove();
-			$('#dlgConnect #url').val(app.server.get('url'));
-			$('#dlgConnect #username').val(app.server.get('username'))
+			$('#dlg-connect #url').val(app.server.get('url'));
+			$('#dlg-connect #username').val(app.server.get('username'))
 		});
-		$('#dlgConnect').on('hide.bs.modal', function() {
-			$('#dlgConnect .alert').addClass('hidden').text('');
+
+		$('#dlg-connect').on('hide.bs.modal', function() {
+			$('#dlg-connect .alert').addClass('hidden').text('');
 		});
+
+		$('#filter-add').click(editFilter);
 
 
 		//-- Initialization
