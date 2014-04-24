@@ -44,7 +44,7 @@
 
     </ul>
     <ul class="nav navbar-nav connected">
-      <li><a href="#" class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#dlgFilterEdit"></a></li>
+      <li><a href="#" class="glyphicon glyphicon-plus filter-create"></a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right connected">
       <li><a id="filter-add" href="#" class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#dlg-connect"></a></li>
@@ -60,12 +60,12 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="dlg-connect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="dlg-connect" tabindex="-1" role="dialog" aria-labelledby="dlg-connect-label" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Connect to JIRA Server</h4>
+        <h4 class="modal-title" id="dlg-connect-label">Connect to JIRA Server</h4>
       </div>
       <div class="modal-body">
         <span class="alertsArea"></span>
@@ -112,53 +112,6 @@
     </div>
   </div>
 </div>
-
-
-<!-- Modal Form Edit Dialog -->
-<div class="modal fade" id="dlgFilterEdit" tabindex="-1" role="dialog" aria-labelledby="dlgFilterEditLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="dlgFilterEditLabel">Edit JIRA Filter</h4>
-      </div>
-      <div class="modal-body">
-
-        <form role="form">
-          <div class="form-group">
-            <label for="filterName">Filter Name</label>
-            <input type="text" class="form-control" id="filterName" placeholder="Filter Name">
-          </div>
-
-          <div class="form-group">
-            <label for="filterJQL">JQL</label>
-            <textarea id="filterJQL" class="form-control" rows="3"></textarea>
-          </div>
-
-
-
-          <div class="form-group">
-            <label for="filterType">View Type</label>
-            <select id="filterType" class="form-control">
-              <option value="1">Table</option>
-              <option value="2">Calendar</option>
-            </select>
-          </div>
-
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary filter-save" cid="">Save</button>
-        <button type="button" class="btn btn-primary filter-save">Add</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
 
 </body>
 </html>

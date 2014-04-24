@@ -78,12 +78,15 @@ var Filter = Backbone.Model.extend({
 	'initialize': function(filter) {
 		var this_ = this;
 
+		this.on('change', function() {
+			this.update();
+		});
+
 		this.set({
 			'name': filter['name'],
 			'jql': filter['jql'],
 			'type': filter['type'] || app.FILTER_TYPE_TABLE
 		});
-
 		this.update();
 		this.collection.trigger('created', this);
 		this.timeout = window.setInterval(function() {
@@ -112,7 +115,9 @@ var ServerModel = Backbone.Model.extend({
 	api: null,
 	sync: function(cmd, server){
 		var this_ = this;
+		console.log(cmd);
 		if (cmd === 'create') {
+			this.set('filters', this.filters.toJSON());
 			chrome.storage.local.set({
 				'server': this_.attributes
 			});
@@ -125,8 +130,8 @@ var ServerModel = Backbone.Model.extend({
 	},
 	initialize: function() {
 		this.filters.server = this;
-	
 		this.on('connected', function() {
+			console.log(this.get('filters'));
 			this.filters.add(this.get('filters'));
 		});
 
@@ -159,7 +164,7 @@ var ServerModel = Backbone.Model.extend({
 						'url': e.url,
 						'token': data,
 						'username': e.username,
-						'filters': this_.get('filters') || app.FILTERS_DEFAULT
+						'filters': this.get('filters') || app.FILTERS_DEFAULT
 					});
 					this_.save();
 					this_.api = api;
@@ -170,13 +175,9 @@ var ServerModel = Backbone.Model.extend({
 			})
 		});
 
-		this.on('filter:add', function(e) {
-			var filter = app.server.filters.get(e.cid)
-			if (filter) {
-				filter.set(e);
-			}
-			
-			console.log('filter:add');
+		this.on('filter:add', function(attributes) {
+			this.filters.add(attributes);
+			this.save();
 		});
 		this.on('filter:delete', function() {
 			console.log('filter:delete');

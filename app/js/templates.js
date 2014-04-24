@@ -41,22 +41,28 @@ templates.filterTableRow = function(opt_data, opt_ignored) {
 };
 
 
+templates.dlgEditIssue = function(opt_data, opt_ignored) {
+  opt_data = opt_data || {};
+  return '<div class="modal fade" id="dlg-filter" tabindex="-1" role="dialog" aria-labelledby="dlg-filter-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlg-filter-label">' + ((opt_data.filter) ? 'Edit' : 'Create') + ' JIRA Filter</h4></div><div class="modal-body"><form role="form"><div class="form-group"><label for="filterName">Filter Name</label><input type="text" class="form-control" id="filterName" placeholder="Filter Name" value="' + ((opt_data.filter) ? soy.$$escapeHtml(opt_data.filter.name) : '') + '"></div><div class="form-group"><label for="filterJQL">JQL</label><textarea id="filterJQL" class="form-control" rows="3" placeholder="e.g. assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC">' + ((opt_data.filter) ? soy.$$escapeHtml(opt_data.filter.jql) : '') + '</textarea></div><div class="form-group"><label for="filterType">View Type</label><select id="filterType" class="form-control"><option value="1" ' + ((opt_data.filter && opt_data.filter.type == 1) ? 'checked' : '') + '>Table</option><option value="2" ' + ((opt_data.filter && opt_data.filter.type == 2) ? 'checked' : '') + '>Calendar</option></select></div></form></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + ((opt_data.filter) ? '<button type="button" class="btn btn-primary filter-save" cid="">Save</button>' : '<button type="button" class="btn btn-success filter-create" cid="">Create</button>') + '</div></div></div></div>';
+};
+
+
 templates.dlgLogIssue = function(opt_data, opt_ignored) {
   var output = '<div class="modal fade" id="dlgLogIssue" tabindex="-1" role="dialog" aria-labelledby="dlgLogIssueLabel" aria-hidden="true" jira-key="' + soy.$$escapeHtml(opt_data.key) + '"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlgLogIssueLabel">Log Work</h4></div><div class="modal-body"><form role="form"><div class="form-group col-md-6"><label for="issueDate">Resolve Date</label><input type="date" class="form-control" id="issueDate" placeholder="Date"></div><div class="form-group col-md-6""><label for="issueSpent">Time Spent</label><input type="text" class="form-control" id="issueTimeSpent" placeholder="" value=""></div><div class="form-group"><label for="issueResolution">Resolution</label><select id="issueResolution" class="form-control">';
-  var resolutionList101 = opt_data.resolutions;
-  var resolutionListLen101 = resolutionList101.length;
-  for (var resolutionIndex101 = 0; resolutionIndex101 < resolutionListLen101; resolutionIndex101++) {
-    var resolutionData101 = resolutionList101[resolutionIndex101];
-    output += '<option value="' + soy.$$escapeHtml(resolutionData101.id) + '" title="' + soy.$$escapeHtml(resolutionData101.description) + '">' + soy.$$escapeHtml(resolutionData101.name) + '</option>';
+  var resolutionList131 = opt_data.resolutions;
+  var resolutionListLen131 = resolutionList131.length;
+  for (var resolutionIndex131 = 0; resolutionIndex131 < resolutionListLen131; resolutionIndex131++) {
+    var resolutionData131 = resolutionList131[resolutionIndex131];
+    output += '<option value="' + soy.$$escapeHtml(resolutionData131.id) + '" title="' + soy.$$escapeHtml(resolutionData131.description) + '">' + soy.$$escapeHtml(resolutionData131.name) + '</option>';
   }
   output += '</select></div>';
   if (opt_data.users) {
     output += '<div class="form-group"><label for="issueAssignee">Assignee</label><select id="issueAssignee" class="form-control">';
-    var userList114 = opt_data.users;
-    var userListLen114 = userList114.length;
-    for (var userIndex114 = 0; userIndex114 < userListLen114; userIndex114++) {
-      var userData114 = userList114[userIndex114];
-      output += '<option value="' + soy.$$escapeHtml(userData114.id) + '" title="' + soy.$$escapeHtml(userData114.displayName) + '">' + soy.$$escapeHtml(userData114.displayName) + '</option>';
+    var userList144 = opt_data.users;
+    var userListLen144 = userList144.length;
+    for (var userIndex144 = 0; userIndex144 < userListLen144; userIndex144++) {
+      var userData144 = userList144[userIndex144];
+      output += '<option value="' + soy.$$escapeHtml(userData144.id) + '" title="' + soy.$$escapeHtml(userData144.displayName) + '">' + soy.$$escapeHtml(userData144.displayName) + '</option>';
     }
     output += '</select></div>';
   }

@@ -122,6 +122,39 @@ var FilterView = Backbone.View.extend({
 });
 
 
+var FilterEditView = Backbone.View.extend({
+	'events': {
+		'click .filter-save': 'save',
+		'click .filter-create': 'create'
+	},
+	initialize: function() {
+		this.setElement(
+			$(templates.dlgEditIssue( this.model ? {
+				'filter': this.model.toJSON()
+			} : null )).appendTo('body').modal('show')
+		);
+	},
+	getValues: function() {
+		return {
+			'name': this.$el.find('#filterName').val(),
+			'jql': this.$el.find('#filterJQL').val(),
+			'type': this.$el.find('#filterType').val()
+		};
+	},
+	save: function() {
+		var attributes = this.getValues();
+		if (this.model) {
+			this.model.set(attributes);
+		} else {
+			app.server.filters.add(FilterModel(attributes));
+		}
+	},
+	create: function() {
+		var attributes = this.getValues();
+		app.server.trigger('filter:add', attributes);
+	}
+});
+
 //-------------------------------------------------------
 //-- NavBar View
 
@@ -153,11 +186,9 @@ var NavBarBtnView = Backbone.View.extend({
 		this.model.update();
 	},
 	edit: function() {
-		var dlg = $("#dlgFilterEdit");
-		dlg.find('#filterName').val(filter.get('name'));
-		dlg.find('#filterJQL').val(filter.get('jql'));
-		dlg.find('#filterType').val(filter.get('type'));
-		dlg.find('.filter-save').attr('cid', filter.cid);
+		new FilterEditView({
+			model: this.model
+		});
 	},
 	delete: function() {
 		$(templates.dlgConfirm({
@@ -173,6 +204,11 @@ var NavBarView = Backbone.View.extend({
 	selectedFilter: null,
 	filters: [],
 	buttons: [],
+	events: {
+		'click .filter-create': function() {
+			new FilterEditView();
+		}
+	},
 	'connect': function(e) {
 		//console.log($('#dlg-connect').modal('show'));
 	},
@@ -233,28 +269,6 @@ var NavBarView = Backbone.View.extend({
 		$('#dlg-connect').on('hide.bs.modal', function() {
 			$('#dlg-connect .alert').addClass('hidden').text('');
 		});
-
-		$('.filter-save').click(function (e) {
-			var dlg = $("#dlgFilterEdit");
-			var filter = {
-				'name': dlg.find('#filterName').val(),
-				'jql': dlg.find('#filterJQL').val(),
-				'type': dlg.find('#filterType').val()
-			};
-			var cid = e.target.getAttribute('cid');
-			if (cid) {
-				this_.model.trigger('filter:save', {
-					'cid': cid,
-					'filter': filter
-				});
-			} else {
-				this_.model.trigger('filter:add', {
-					'cid': cid,
-					'filter': filter
-				});
-			}
-		});
-
 
 		//-- Initialization
 
