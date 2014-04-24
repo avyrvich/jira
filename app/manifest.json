@@ -10,7 +10,6 @@
   "permissions": [
     "<all_urls>", "storage", "webview"
   ],
-  "content_security_policy": "default-src 'self'; connect-src *; style-src 'self' 'unsafe-inline'; img-src *",
   "app": {
     "background": {
       "scripts": [

@@ -125,12 +125,54 @@ var FilterView = Backbone.View.extend({
 //-------------------------------------------------------
 //-- NavBar View
 
+var NavBarBtnView = Backbone.View.extend({
+	events: {
+		'click a.filter-update': 'update',
+		'click a.filter-edit': 'edit',
+		'click a.filter-delete': 'delete',
+		'click a.filter-show': function (e) {
+			$(e.target.getAttribute('href')).fullCalendar('render');
+		}
+	},
+	initialize: function() {
+		this.setElement(
+			$(templates.filterButton({
+				'cid': this.model['cid'],
+				'name': this.model.get('name'),
+				'count': this.model.issues.length
+			})).appendTo('.navbar-filters')
+		);
+		if (app.server.filters.models[0] === this.model) {
+			this.$el.find('[data-toggle="tab"]').tab('show');
+		}
+		this.listenTo(this.model, 'updated', function(){
+			this.$el.find('.badge').text(this.model.issues.length);
+		});
+	},
+	update: function() {
+		this.model.update();
+	},
+	edit: function() {
+		var dlg = $("#dlgFilterEdit");
+		dlg.find('#filterName').val(filter.get('name'));
+		dlg.find('#filterJQL').val(filter.get('jql'));
+		dlg.find('#filterType').val(filter.get('type'));
+		dlg.find('.filter-save').attr('cid', filter.cid);
+	},
+	delete: function() {
+		$(templates.dlgConfirm({
+			'title': 'Delete filter',
+			'message': 'Are you sure you want to delete this filter?'
+		})).modal('show');
+	}
+
+});
+
+
 var NavBarView = Backbone.View.extend({
 	selectedFilter: null,
 	filters: [],
-	events: {
-		'click .btn.connect': 'connect'
-	},
+	buttons: [],
 	'connect': function(e) {
 		//console.log($('#dlg-connect').modal('show'));
 	},
@@ -167,43 +209,12 @@ var NavBarView = Backbone.View.extend({
 			this_.filters.push(new FilterView({
 				'model': filter
 			}));
-
-			var tabBtn = $(templates.filterButton({
-				'cid': filter['cid'],
-				'name': filter.get('name'),
-				'count': ''
-			})).appendTo('.navbar-filters');
-
-			tabBtn.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-			  $(e.target.getAttribute('href')).fullCalendar('render');
-			});
-
-			tabBtn.find('a[data-target="#dlgFilterEdit"]').click(function() {
-				var dlg = $("#dlgFilterEdit");
-				dlg.find('#filterName').val(filter.get('name'));
-				dlg.find('#filterJQL').val(filter.get('jql'));
-				dlg.find('#filterType').val(filter.get('type'));
-				dlg.find('.filter-save').attr('cid', filter.cid);
-
-			});
-
-			tabBtn.find('.filter-update').click(function() {
-				filter.update();
-			});
-
-			if (!this_.selectedFilter) {
-				this_.selectedFilter = filter.cid;
-				tabBtn.find('[data-toggle="tab"]').tab('show');
-			}
-		}
-		function updateFilter(filter) {
-			$('#btn-filter-' + filter['cid']).find('.badge').text(filter.issues.length);
+			this_.buttons.push(new NavBarBtnView({
+				'model': filter
+			}));
 		}
 
 		this.listenTo(app.server.filters, 'created', addFilter);
-		this.listenTo(app.server.filters, 'updated', updateFilter);
-
-
 
 		$('#dlg-connect .btn-primary').click(function() {
 			app.server.trigger('login', {

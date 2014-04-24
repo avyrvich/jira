@@ -33,7 +33,7 @@
  */
 {template .filterButton}
 	<li class="dropdown" id="btn-filter-{$cid}">
-	  <a href="#tab-filter-{$cid}" class="navbar-nav" data-toggle="tab">
+	  <a href="#tab-filter-{$cid}" class="navbar-nav filter-show" data-toggle="tab">
 	  	{$name} 
 	  	<span class="badge">{$count}</span>
 	  </a>
@@ -43,9 +43,9 @@
 	  </a>
 	  <ul class="dropdown-menu">
 	    <li><a href="#" class="filter-update"><span class="glyphicon"></span> Refresh</a></li>
-	    <li><a href="#" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+	    <li><a href="#"  class="filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
 	    <li class="divider"></li>
-	    <li><a href="#"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
+	    <li><a href="#" class="filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
 	  </ul>
 	</li>
 {/template}
@@ -230,6 +230,35 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-warning stop-progress">Cancel Progress</button>
         <button type="button" class="btn btn-primary">Log Work</button>
+      </div>
+    </div>
+  </div>
+</div>
+{/template}
+
+
+
+
+
+/**
+ * Conifrm Modal Dialog
+ * @param title
+ * @param message
+ */
+{template .dlgConfirm}
+<div class="modal fade" id="dlg-confirm" tabindex="-1" role="dialog" aria-labelledby="dlg-confirm-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="dlg-confirm-label">{$title}</h4>
+      </div>
+      <div class="modal-body">
+        {$message}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary">Ok</button>
       </div>
     </div>
   </div>
