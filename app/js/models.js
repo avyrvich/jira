@@ -175,6 +175,12 @@ var ServerModel = Backbone.Model.extend({
 			})
 		});
 
+		this.listenTo(this.filters, 'all', function(e) {
+			if (e == 'add' || e == 'remove' || e == 'change') {
+				this.save();
+			}
+		});
+
 		this.on('filter:add', function(attributes) {
 			this.filters.add(attributes);
 			this.save();

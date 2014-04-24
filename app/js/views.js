@@ -191,10 +191,13 @@ var NavBarBtnView = Backbone.View.extend({
 		});
 	},
 	delete: function() {
+		var this_ = this;
 		$(templates.dlgConfirm({
 			'title': 'Delete filter',
 			'message': 'Are you sure you want to delete this filter?'
-		})).modal('show');
+		})).modal('show').find('.btn-primary').click(function() {
+			app.server.filters.remove(this_.model);
+		});
 	}
 
 });
@@ -249,8 +252,13 @@ var NavBarView = Backbone.View.extend({
 				'model': filter
 			}));
 		}
-
-		this.listenTo(app.server.filters, 'created', addFilter);
+		function removeFilter(filter, collection) {
+			console.log(filter, collection);
+		}
+		this.listenTo(app.server.filters, {
+			'add': addFilter,
+			'remove': removeFilter
+		});
 
 		$('#dlg-connect .btn-primary').click(function() {
 			app.server.trigger('login', {
