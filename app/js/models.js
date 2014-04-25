@@ -64,6 +64,9 @@ var Issue = Backbone.Model.extend({
 				chrome.storage.local.remove(this.get('key'));
 			}
 		});
+	},
+	worklog: function(data) {
+		app.server.api.worklog(this.get('self'), data);
 	}
 });
 
@@ -180,18 +183,7 @@ var ServerModel = Backbone.Model.extend({
 				this.save();
 			}
 		});
-
-		this.on('filter:add', function(attributes) {
-			this.filters.add(attributes);
-			this.save();
-		});
-		this.on('filter:delete', function() {
-			console.log('filter:delete');
-		});
-		this.on('filter:edit', function() {
-			console.log('filter:edit');
-		});
-
+		
 		this.fetch();
 	}
 });

@@ -13,20 +13,17 @@ function JIRA(_serverURL, token) {
 
 
 	function init(callback) {
-
 		$.ajaxSetup({
 			'beforeSend': function(xhr) { 
 				xhr.setRequestHeader('Authorization', this.token); 
 			}
 		});
-
 		return $.ajax({
 			'url': serverURL + '/rest/api/2/resolution'
 		}).then(function(data) {
 				self.resolutions = data;
 				callback(true, self.token);
 		});
-
 	}
 
 	this.login = function(username, password, callback) {
@@ -117,6 +114,16 @@ function JIRA(_serverURL, token) {
 			'success': function(data){ callback && callback(data); } 
 		});
 	};
+
+	this.worklog = function(url, data, callback) {
+		$.ajax({
+			'url': url + '/worklog?adjustEstimate=auto&reduceBy', 
+			'type': 'POST',
+			'contentType': 'application/json', 
+			'data': JSON.stringify(data), 
+			'success': function(data){ callback && callback(data); } 
+		});
+	}
 
 	this.getAssignableUsers = function(key, callback) {
 		$.ajax({

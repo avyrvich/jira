@@ -16,7 +16,15 @@ var FilterView = Backbone.View.extend({
 				this_.render();
 			}			
 		}
-		this.model.on('updated', onUpdated);
+		function onRemoved() {
+			this_.remove();		
+		}
+
+		this.listenTo(this.model, {
+			'updated': onUpdated,
+			'remove': onRemoved
+		});
+
 		if (this.model.issues) {
 			onUpdated();
 		}
@@ -26,14 +34,10 @@ var FilterView = Backbone.View.extend({
 	},
 	events: {
 		'click .log-issue': function(evt) {
-			app.server.api.getAssignableUsers(this.getKeyByNode(evt.target), function(users) {
-				var dlg = $(templates.dlgLogIssue({
-					'resolutions': app.server.api.resolutions,
-					'users': users
-				})).appendTo('body');
-				dlg.find('#issueAssignee').select2();
-				dlg.find('#issueDate').get(0).valueAsDate = new Date();
-				dlg.modal('show');
+			new IssueLogView({
+				model: this.model.issues.findWhere({
+					'key': this.getKeyByNode(evt.target)
+				})
 			});
 		},
 		'click .start-progress': function(evt) {
@@ -128,10 +132,13 @@ var FilterEditView = Backbone.View.extend({
 		'click .filter-create': 'create'
 	},
 	initialize: function() {
+		var this_ = this;
 		this.setElement(
 			$(templates.dlgEditIssue( this.model ? {
 				'filter': this.model.toJSON()
-			} : null )).appendTo('body').modal('show')
+			} : null )).appendTo('body').modal('show').on('hidden.bs.modal', function() {
+				this_.remove();
+			})
 		);
 	},
 	getValues: function() {
@@ -151,7 +158,7 @@ var FilterEditView = Backbone.View.extend({
 	},
 	create: function() {
 		var attributes = this.getValues();
-		app.server.trigger('filter:add', attributes);
+		app.server.filters.add(attributes);
 	}
 });
 
@@ -178,8 +185,14 @@ var NavBarBtnView = Backbone.View.extend({
 		if (app.server.filters.models[0] === this.model) {
 			this.$el.find('[data-toggle="tab"]').tab('show');
 		}
-		this.listenTo(this.model, 'updated', function(){
-			this.$el.find('.badge').text(this.model.issues.length);
+		this.listenTo(this.model, {
+			'updated': function(){
+				this.$el.find('.badge').text(this.model.issues.length);
+				this.$el.find('.title').text(this.model.get('name'));
+			},
+			'remove': function() {
+				this.remove();
+			}
 		});
 	},
 	update: function() {
@@ -199,9 +212,50 @@ var NavBarBtnView = Backbone.View.extend({
 			app.server.filters.remove(this_.model);
 		});
 	}
-
 });
 
+
+var IssueLogView = Backbone.View.extend({
+	events: {
+		'click button.log-work': 'log'
+	},
+	initialize: function() {
+		var this_ = this;
+		app.server.api.getAssignableUsers(this.model.get('key'), function(users) {
+			this_.setElement(
+				$(templates.dlgLogIssue({
+					resolutions: app.server.api.resolutions,
+					users: users
+				})).appendTo('body')
+			);
+			if (this_.model.get('started')) {
+				var timespent = moment(this_.model.get('started')).fromNow();
+				this_.$el.find('#issueTimeSpent').val(timespent);
+			}
+			this_.$el.find('#issueDate').get(0).valueAsDate = new Date();
+			this_.$el.find('#issueAssignee').select2();
+			this_.$el.modal('show').on('hidden.bs.modal', function() {
+				this_.remove();
+			});
+		});
+	},
+	log: function() {
+		var data = {
+			log: this.$el.find('#issueLog').val(),
+			comment: this.$el.find('#issueComment').val(),
+			timeSpent: this.$el.find('#issueTimeSpent').val(),
+			resolution: this.$el.find('#issueResolution').val(),
+			assignee: this.$el.find('#issueAssignee').select2('val')
+		};
+
+		if (data.timeSpent) {
+			this.model.worklog({
+				'comment': data.log,
+				'timeSpent': data.timeSpent
+			});
+		}
+	}
+});
 
 var NavBarView = Backbone.View.extend({
 	selectedFilter: null,
@@ -252,12 +306,9 @@ var NavBarView = Backbone.View.extend({
 				'model': filter
 			}));
 		}
-		function removeFilter(filter, collection) {
-			console.log(filter, collection);
-		}
+
 		this.listenTo(app.server.filters, {
-			'add': addFilter,
-			'remove': removeFilter
+			'add': addFilter
 		});
 
 		$('#dlg-connect .btn-primary').click(function() {
