@@ -1,10 +1,4 @@
 
-
-
-//http://www.softomate.net/jira/rest/api/2/search?jql=assignee=currentUser()+order+by+duedate&fields=id,key,summary,timeoriginalestimate
-
-
-
 function JIRA(_serverURL, token) {
 	var self = this;
 	var serverURL = _serverURL;
@@ -115,6 +109,18 @@ function JIRA(_serverURL, token) {
 		});
 	};
 
+	this.comment = function(url, msg, callback) {
+		$.ajax({
+			'url': url + '/comment', 
+			'type': 'POST',
+			'contentType': 'application/json', 
+			'data': JSON.stringify({
+				'body': msg
+			}), 
+			'success': function(data){ callback && callback(data); } 
+		});
+	};
+
 	this.worklog = function(url, data, callback) {
 		$.ajax({
 			'url': url + '/worklog?adjustEstimate=auto&reduceBy', 
@@ -123,7 +129,7 @@ function JIRA(_serverURL, token) {
 			'data': JSON.stringify(data), 
 			'success': function(data){ callback && callback(data); } 
 		});
-	}
+	};
 
 	this.getAssignableUsers = function(key, callback) {
 		$.ajax({

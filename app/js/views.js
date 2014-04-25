@@ -254,6 +254,15 @@ var IssueLogView = Backbone.View.extend({
 				'timeSpent': data.timeSpent
 			});
 		}
+		if (data.assignee) {
+			this.trigger('change:assignee', data.assignee);
+		}
+		if (data.resolution) {
+			this.trigger('change:resolution', data.resolution);
+		}
+		if (data.comment) {
+			this.model.comment(data.comment);
+		}
 	}
 });
 

@@ -29,44 +29,56 @@ var Issue = Backbone.Model.extend({
 			}
 		});
 
-		this.on('change:duedate', function(e) {
-			app.server.api.updateIssue(this.get('self'), {
-				'duedate': moment(e.start).format('YYYY-MM-DD')
-			}, function(issue) {
-				this_.set({
-					'duedate': new Date(issue['fields']['duedate'])
+		this.on({
+			'change:assignee': function(user) {
+				app.server.api.updateIssue(this.get('self'), {
+					'assignee': user
+				}, function(issue) {
+					this_.set({
+						'assignee': issue['fields']['assignee']
+					});
 				});
-			});
-		});
-
-		this.on('change:estiamte', function(e) {
-			app.server.api.updateIssue(this.get('self'), {
-				'timetracking': {
-					'originalEstimateSeconds': (e.end - e.start)/1000
+			},
+			'change:duedate': function(e) {
+				app.server.api.updateIssue(this.get('self'), {
+					'duedate': moment(e.start).format('YYYY-MM-DD')
+				}, function(issue) {
+					this_.set({
+						'duedate': new Date(issue['fields']['duedate'])
+					});
+				});
+			},
+			'change:estiamte': function(e) {
+				app.server.api.updateIssue(this.get('self'), {
+					'timetracking': {
+						'originalEstimateSeconds': (e.end - e.start)/1000
+					}
+				}, function(issue) {
+					this_.set({
+						'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds'])
+					});
+				});
+			},
+			'change:progress': function(started) {
+				if (started) {
+					this.set({'started': new Date()});
+					var obj = {};
+					obj[this.get('key')] = {
+						'started': new Date()
+					};
+					chrome.storage.local.set(obj);
+				} else {
+					this.unset('started');
+					chrome.storage.local.remove(this.get('key'));
 				}
-			}, function(issue) {
-				this_.set({
-					'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds'])
-				});
-			});
-		});
-
-		this.on('change:progress', function(started) {
-			if (started) {
-				this.set({'started': new Date()});
-				var obj = {};
-				obj[this.get('key')] = {
-					'started': new Date()
-				};
-				chrome.storage.local.set(obj);
-			} else {
-				this.unset('started');
-				chrome.storage.local.remove(this.get('key'));
 			}
 		});
 	},
 	worklog: function(data) {
 		app.server.api.worklog(this.get('self'), data);
+	},
+	comment: function(data) {
+		app.server.api.comment(this.get('self'), data);
 	}
 });
 
