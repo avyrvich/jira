@@ -39,6 +39,15 @@ var Issue = Backbone.Model.extend({
 					});
 				});
 			},
+			'change:resolution': function(resolution) {
+				app.server.api.updateIssue(this.get('self'), {
+					'resolution': resolution
+				}, function(issue) {
+					this_.set({
+						'resolution': issue['fields']['resolution']
+					});
+				});
+			},
 			'change:duedate': function(e) {
 				app.server.api.updateIssue(this.get('self'), {
 					'duedate': moment(e.start).format('YYYY-MM-DD')
