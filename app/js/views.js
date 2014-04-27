@@ -33,8 +33,69 @@ var FilterView = Backbone.View.extend({
 		return $(node).parents('[jira-key]').attr('jira-key');
 	},
 	events: {
+		'click .comment-issue': function(evt) {
+			new IssueEditView({
+				options: {
+						title: 'Post Comment',
+						button: 'Post Comment',
+						fields: {
+							log: false,
+							comment: true,
+							resolution: false,
+							assignee: false
+						}
+				},
+				model: this.model.issues.findWhere({
+					'key': this.getKeyByNode(evt.target)
+				})
+			});
+		},
+		'click .resolve-issue': function(evt) {
+			new IssueEditView({
+				options: {
+						title: 'Resolve Issue',
+						button: 'Resolve',
+						fields: {
+							log: false,
+							comment: true,
+							resolution: true,
+							assignee: false
+						}
+				},
+				model: this.model.issues.findWhere({
+					'key': this.getKeyByNode(evt.target)
+				})
+			});
+		},
+		'click .assign-issue': function(evt) {
+			new IssueEditView({
+				options: {
+						title: 'Change Assignee',
+						button: 'Assign',
+						fields: {
+							log: false,
+							comment: true,
+							resolution: false,
+							assignee: true
+						}
+				},
+				model: this.model.issues.findWhere({
+					'key': this.getKeyByNode(evt.target)
+				})
+			});
+		},
 		'click .log-issue': function(evt) {
-			new IssueLogView({
+			new IssueEditView({
+				options: {
+					title: 'Log Issue',
+					button: 'Log Work',
+					fields: {
+						log: true,
+						comment: true,
+						resolution: true,
+						assignee: true
+					}
+				},
 				model: this.model.issues.findWhere({
 					'key': this.getKeyByNode(evt.target)
 				})
@@ -134,7 +195,7 @@ var FilterEditView = Backbone.View.extend({
 	initialize: function() {
 		var this_ = this;
 		this.setElement(
-			$(templates.dlgEditIssue( this.model ? {
+			$(templates.dlgEditFilter( this.model ? {
 				'filter': this.model.toJSON()
 			} : null )).appendTo('body').modal('show').on('hidden.bs.modal', function() {
 				this_.remove();
@@ -215,31 +276,52 @@ var NavBarBtnView = Backbone.View.extend({
 });
 
 
-var IssueLogView = Backbone.View.extend({
+var IssueEditView = Backbone.View.extend({
+	users: null,
 	events: {
-		'click button.log-work': 'log'
+		'click button.btn-primary': 'apply'
 	},
-	initialize: function() {
+	initialize: function(param) {
 		var this_ = this;
-		app.server.api.getAssignableUsers(this.model.get('key'), function(users) {
-			this_.setElement(
-				$(templates.dlgLogIssue({
-					resolutions: app.server.api.resolutions,
-					users: users
-				})).appendTo('body')
-			);
+		this_.options = param.options;
+		if (this_.options.fields.assignee) {
+			app.server.api.getAssignableUsers(this.model.get('key'), function(users) {
+				this_.users = users;
+				this_.render();
+			});
+		} else {
+			this_.render();
+		}
+	},
+	render: function() {
+		var this_ = this;
+		this_.setElement(
+			$(templates.dlgEditIssue({
+				title: this_.options.title,
+				button: this_.options.button,
+				fields: this_.options.fields,
+				resolutions: app.server.api.resolutions,
+				users: this_.users
+			})).appendTo('body')
+		);
+		if (this_.options.fields.log) {
 			if (this_.model.get('started')) {
 				var timespent = moment(this_.model.get('started')).fromNow();
 				this_.$el.find('#issueTimeSpent').val(timespent);
 			}
 			this_.$el.find('#issueDate').get(0).valueAsDate = new Date();
+		}
+
+		if (this_.options.fields.assignee) {
 			this_.$el.find('#issueAssignee').select2();
-			this_.$el.modal('show').on('hidden.bs.modal', function() {
-				this_.remove();
-			});
+		}
+
+		this_.$el.modal('show').on('hidden.bs.modal', function() {
+			this_.remove();
 		});
+
 	},
-	log: function() {
+	apply: function() {
 		var data = {
 			log: this.$el.find('#issueLog').val(),
 			comment: this.$el.find('#issueComment').val(),
