@@ -241,7 +241,7 @@ var NavBarBtnView = Backbone.View.extend({
 				'cid': this.model['cid'],
 				'name': this.model.get('name'),
 				'count': this.model.issues.length
-			})).appendTo('.navbar-filters')
+			})).insertBefore('.navbar-filters li:last-child')
 		);
 		if (app.server.filters.models[0] === this.model) {
 			this.$el.find('[data-toggle="tab"]').tab('show');
