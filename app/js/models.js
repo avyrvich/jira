@@ -101,11 +101,17 @@ var Filter = Backbone.Model.extend({
 	'issues': new Issues(),
 	'initialize': function(filter) {
 		var this_ = this;
-
 		this.on('change', function() {
 			this.update();
 		});
-
+		this.issues.on({
+			'change': function() {
+				this.trigger('updated', this);
+			},
+			'reset': function() {
+				this.trigger('updated', this);
+			}
+		});
 		this.set({
 			'name': filter['name'],
 			'jql': filter['jql'],
@@ -120,10 +126,7 @@ var Filter = Backbone.Model.extend({
 	'update': function() {
 		var this_ = this;
 		this.collection.server.api.executeJQL(this.get('jql'), function(issues) {
-			this_['issues'] = new Issues(issues);
-			this_['issues'].on('change', function() {
-				this_.trigger('updated', this_);
-			})
+			this_.issues.reset(issues);
 			this_.trigger('updated', this_);
 		});
 	}
@@ -188,7 +191,7 @@ var ServerModel = Backbone.Model.extend({
 						'url': e.url,
 						'token': data,
 						'username': e.username,
-						'filters': this.get('filters') || app.FILTERS_DEFAULT
+						'filters': this_.get('filters') || app.FILTERS_DEFAULT
 					});
 					this_.save();
 					this_.api = api;

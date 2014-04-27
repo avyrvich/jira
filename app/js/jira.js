@@ -74,7 +74,11 @@ function JIRA(_serverURL, token) {
 			'error': function(xhr) {
 				var res = null;
 				if (xhr.responseText) {
-					res = JSON.parse(xhr.responseText)['errorMessages'].join('\n');
+					try {
+						res = JSON.parse(xhr.responseText)['errorMessages'].join('\n');
+					} catch (err) {
+						res = $(xhr.responseText).text();
+					}
 				} else {
 					res = xhr.statusText;
 				}
