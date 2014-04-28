@@ -33,13 +33,13 @@
  */
 {template .filterButton}
   <li class="dropdown" id="btn-filter-{$cid}">
+    <a href="#" class="navbar-nav dropdown-toggle" data-toggle="dropdown">
+      <span class="caret"></span>
+      <span class="sr-only">Toggle Dropdown</span>
+    </a>
     <a href="#tab-filter-{$cid}" class="navbar-nav filter-show" data-toggle="tab">
       <span class="title">{$name}</span>
       <span class="badge">{$count}</span>
-    </a>
-    <a href="#" class="navbar-nav dropdown-toggle" data-toggle="dropdown">
-    <span class="caret"></span>
-        <span class="sr-only">Toggle Dropdown</span>
     </a>
     <ul class="dropdown-menu">
       <li><a href="#" class="filter-update"><span class="glyphicon"></span> Refresh</a></li>
@@ -81,9 +81,9 @@
         <th>Key</th>
         <th>Summary</th>
         <th class="hidden-xs hidden-sm">Progress</th>
-        <th>Assignee</th>
-        <th class="hidden-xs">Reporter</th>
-        <th>Estimate</th>
+        <th class="hidden-xs">Assignee</th>
+        <th class="hidden-xs hidden-sm">Reporter</th>
+        <th class="hidden-xs">Estimate</th>
         <th class="hidden-xs"></th>
         <th class="hidden-xs"></th>
         <th>Duedate</th>
@@ -130,11 +130,11 @@
     {/if}
     </td>
     <td><span data-toggle="tooltip" title="{$assignee.emailAddress}" data-delay="1000">{$assignee.displayName}</span></td>
-    <td class="hidden-xs"><span data-toggle="tooltip" title="{$reporter.emailAddress}" data-delay="1000">{$reporter.displayName}</span></td>
-    <td>{$estimate}</td>
+    <td class="hidden-xs hidden-sm"><span data-toggle="tooltip" title="{$reporter.emailAddress}" data-delay="1000">{$reporter.displayName}</span></td>
+    <td class="hidden-xs">{$estimate}</td>
     <td class="hidden-xs"><img csp-src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
     <td class="hidden-xs"><img csp-src="{$priority.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
-    <td>{$duedate}</td>
+    <td class="hidden-xs">{$duedate}</td>
     <td>
       <div class="btn-group" jira-key="{$key}">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">

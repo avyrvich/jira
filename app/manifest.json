@@ -5,10 +5,14 @@
   "minimum_chrome_version": "23",
   "icons": {
     "16": "img/logo-32.png",
+    "36": "img/logo-36.png",
+    "48": "img/logo-48.png",
+    "78": "img/logo-78.png",
+    "96": "img/logo-96.png",
     "128": "img/logo-128.png"
   },
   "permissions": [
-    "<all_urls>", "storage", "webview"
+    "<all_urls>", "storage"
   ],
   "app": {
     "background": {
