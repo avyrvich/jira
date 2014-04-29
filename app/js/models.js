@@ -142,13 +142,7 @@ var ServerModel = Backbone.Model.extend({
 	api: null,
 	sync: function(cmd, server){
 		var this_ = this;
-		console.log(cmd);
-		if (cmd === 'create') {
-			this.set('filters', this.filters.toJSON());
-			chrome.storage.local.set({
-				'server': this_.attributes
-			});
-		} else if (cmd === 'read') {
+		if (cmd === 'read') {
 			chrome.storage.local.get('server', function(data) {
 				this_.set(data['server']);
 				this_.trigger('load');
@@ -162,23 +156,30 @@ var ServerModel = Backbone.Model.extend({
 			this.filters.add(this.get('filters'));
 		});
 
-		this.on('load', function() {
-			var this_ = this;
-			if (this.get('url') && this.get('token')) {
-				var api = new JIRA(this.get('url'), this.get('url'));
-				api.checkAuthorization(function(res, msg) {
-					if (res) {
-						this_.api = api;
-						this_.trigger('connected');
-					} else {
-						this_.trigger('disconnected');
-						if (msg) {
-							this_.trigger('connection-error', msg);
+		this.on({
+			'load': function() {
+				var this_ = this;
+				if (this.get('url') && this.get('token')) {
+					var api = new JIRA(this.get('url'), this.get('url'));
+					api.checkAuthorization(function(res, msg) {
+						if (res) {
+							this_.api = api;
+							this_.trigger('connected');
+						} else {
+							this_.trigger('disconnected');
+							if (msg) {
+								this_.trigger('connection-error', msg);
+							}
 						}
-					}
+					});
+				} else {
+					this.trigger('disconnected');
+				}
+			},
+			'change': function() {
+				chrome.storage.local.set({
+					'server': this.toJSON()
 				});
-			} else {
-				this.trigger('disconnected');
 			}
 		});
 
@@ -190,10 +191,13 @@ var ServerModel = Backbone.Model.extend({
 					this_.set({
 						'url': e.url,
 						'token': data,
-						'username': e.username,
-						'filters': this_.get('filters') || app.FILTERS_DEFAULT
+						'username': e.username
 					});
-					this_.save();
+					if (!this_.get('filters')) {
+						this_.set({
+							'filters': app.FILTERS_DEFAULT
+						});
+					}
 					this_.api = api;
 					this_.trigger('connected');
 				} else {
@@ -204,7 +208,8 @@ var ServerModel = Backbone.Model.extend({
 
 		this.listenTo(this.filters, 'all', function(e) {
 			if (e == 'add' || e == 'remove' || e == 'change') {
-				this.save();
+				this.set('filters', this.filters.toJSON());
+				this.trigger('change');
 			}
 		});
 		
