@@ -14,7 +14,7 @@ function JIRA(_serverURL, token) {
 		});
 		return $.ajax({
 			'url': serverURL + '/rest/api/2/resolution'
-		}).then(function(data) {
+		}).then( function(data) {
 				self.resolutions = data;
 				callback(true, self.token);
 		});
@@ -141,6 +141,15 @@ function JIRA(_serverURL, token) {
 			'data': {
 				'issueKey': key
 			},
+			'type': 'GET',
+			'contentType': 'application/json', 
+			'success': function(data){ callback && callback(data); } 
+		});
+	};
+
+	this.getFavouriteFilters = function(callback) {
+		$.ajax({
+			'url': serverURL + '/rest/api/2/filter/favourite',
 			'type': 'GET',
 			'contentType': 'application/json', 
 			'success': function(data){ callback && callback(data); } 

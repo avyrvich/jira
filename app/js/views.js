@@ -190,17 +190,27 @@ var FilterView = Backbone.View.extend({
 var FilterEditView = Backbone.View.extend({
 	'events': {
 		'click .filter-save': 'save',
-		'click .filter-create': 'create'
+		'click .filter-create': 'create',
+		'change #favouriteFilters': function(evt) {
+			var node = evt.target.options[evt.target.selectedIndex];
+			if (node.getAttribute('data-jql')) {
+				this.$el.find('#filterName').val(node.getAttribute('data-name'));
+				this.$el.find('#filterJQL').val(node.getAttribute('data-jql'));
+			}
+		}
 	},
 	initialize: function() {
 		var this_ = this;
-		this.setElement(
-			$(templates.dlgEditFilter( this.model ? {
-				'filter': this.model.toJSON()
-			} : null )).appendTo('body').modal('show').on('hidden.bs.modal', function() {
-				this_.remove();
-			})
-		);
+		app.server.api.getFavouriteFilters(function(filters) {
+			this_.setElement(
+				$(templates.dlgEditFilter({
+					filter: this_.model ? this_.model.toJSON() : null,
+					favouriteFilters: filters
+				})).appendTo('body').modal('show').on('hidden.bs.modal', function() {
+					this_.remove();
+				})
+			)
+		})
 	},
 	getValues: function() {
 		return {
@@ -241,7 +251,7 @@ var NavBarBtnView = Backbone.View.extend({
 				'cid': this.model['cid'],
 				'name': this.model.get('name'),
 				'count': this.model.issues.length
-			})).insertBefore('.navbar-filters li:last-child')
+			})).insertBefore('.navbar-filters > li:last-child')
 		);
 		if (app.server.filters.models[0] === this.model) {
 			this.$el.find('[data-toggle="tab"]').tab('show');

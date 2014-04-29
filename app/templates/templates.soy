@@ -161,6 +161,7 @@
 /**
  * Modal Edit Issue dialog
  * @param? filter
+ * @param? favouriteFilters
  */
 {template .dlgEditFilter}
 <div class="modal fade" id="dlg-filter" tabindex="-1" role="dialog" aria-labelledby="dlg-filter-label" aria-hidden="true">
@@ -172,6 +173,18 @@
       </div>
       <div class="modal-body">
         <form role="form">
+          {if $favouriteFilters}
+            <div class="form-group">
+              <label for="favouriteFilters">Favourite Filters</label>
+              <select id="favouriteFilters" class="form-control">
+                <option/>
+                {foreach $filter in $favouriteFilters}
+                  <option data-name="{$filter.name}" data-jql="{$filter.jql}">{$filter.name}</option>
+                {/foreach}
+              </select>
+            </div>
+          {/if}
+
           <div class="form-group">
             <label for="filterName">Filter Name</label>
             <input type="text" class="form-control" id="filterName" placeholder="Filter Name" value="{if $filter}{$filter.name}{/if}">
