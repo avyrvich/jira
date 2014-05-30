@@ -5,7 +5,7 @@ if (typeof templates == 'undefined') { var templates = {}; }
 
 
 templates.errorMessage = function(opt_data, opt_ignored) {
-  var output = '<div class="alert alert-danger fade in"><button type="button" class="close glyphicon glyphicon-remove" data-dismiss="alert" aria-hidden="true"></button><h4>Oh snap! You got an error!</h4><p>' + soy.$$filterNoAutoescape(opt_data.message) + '</p>';
+  var output = '<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><h4>Oh snap! You got an error!</h4><p>' + soy.$$filterNoAutoescape(opt_data.message) + '</p>';
   if (opt_data.buttons) {
     output += '<p>';
     var buttonList10 = opt_data.buttons;
@@ -22,7 +22,12 @@ templates.errorMessage = function(opt_data, opt_ignored) {
 
 
 templates.filterButton = function(opt_data, opt_ignored) {
-  return '<li class="dropdown" id="btn-filter-' + soy.$$escapeHtml(opt_data.cid) + '"><a href="#" class="navbar-nav dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></a><a href="#tab-filter-' + soy.$$escapeHtml(opt_data.cid) + '" class="navbar-nav filter-show" data-toggle="tab"><span class="title">' + soy.$$escapeHtml(opt_data.name) + '</span><span class="badge">' + soy.$$escapeHtml(opt_data.count) + '</span></a><ul class="dropdown-menu"><li><a href="#" class="filter-update"><span class="glyphicon"></span> Refresh</a></li><li><a href="#"  class="filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li><li class="divider"></li><li><a href="#" class="filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</a></li></ul></li>';
+  return '<li class="dropdown" id="btn-filter-' + soy.$$escapeHtml(opt_data.cid) + '"><a href="#tab-filter-' + soy.$$escapeHtml(opt_data.cid) + '" class="navbar-nav filter-show" data-toggle="tab"><span class="title">' + soy.$$escapeHtml(opt_data.name) + '</span><span class="badge">' + soy.$$escapeHtml(opt_data.count) + '</span></a></li>';
+};
+
+
+templates.filterButtonSet = function(opt_data, opt_ignored) {
+  return '<div class="btn-group pull-right btn-group-xs"><button type="button" class="btn btn-default filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</button><button type="button" class="btn btn-default filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</button><button type="button" class="btn btn-default filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</button></div><div class="panel panel-default"><div class="panel-body"></div></div>';
 };
 
 
@@ -46,11 +51,11 @@ templates.dlgEditFilter = function(opt_data, opt_ignored) {
   var output = '<div class="modal fade" id="dlg-filter" tabindex="-1" role="dialog" aria-labelledby="dlg-filter-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlg-filter-label">' + ((opt_data.filter) ? 'Edit' : 'Create') + ' JIRA Filter</h4></div><div class="modal-body"><form role="form">';
   if (opt_data.favouriteFilters) {
     output += '<div class="form-group"><label for="favouriteFilters">Favourite Filters</label><select id="favouriteFilters" class="form-control"><option/>';
-    var filterList108 = opt_data.favouriteFilters;
-    var filterListLen108 = filterList108.length;
-    for (var filterIndex108 = 0; filterIndex108 < filterListLen108; filterIndex108++) {
-      var filterData108 = filterList108[filterIndex108];
-      output += '<option data-name="' + soy.$$escapeHtml(filterData108.name) + '" data-jql="' + soy.$$escapeHtml(filterData108.jql) + '">' + soy.$$escapeHtml(filterData108.name) + '</option>';
+    var filterList110 = opt_data.favouriteFilters;
+    var filterListLen110 = filterList110.length;
+    for (var filterIndex110 = 0; filterIndex110 < filterListLen110; filterIndex110++) {
+      var filterData110 = filterList110[filterIndex110];
+      output += '<option data-name="' + soy.$$escapeHtml(filterData110.name) + '" data-jql="' + soy.$$escapeHtml(filterData110.jql) + '">' + soy.$$escapeHtml(filterData110.name) + '</option>';
     }
     output += '</select></div>';
   }
@@ -63,11 +68,11 @@ templates.dlgEditIssue = function(opt_data, opt_ignored) {
   var output = '<div class="modal fade" id="dlg-edit-issue" tabindex="-1" role="dialog" aria-labelledby="dlg-edit-issue-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlg-edit-issue-label">' + soy.$$escapeHtml(opt_data.title) + '</h4></div><div class="modal-body"><form role="form">' + ((opt_data.fields.log) ? '<div class="form-group col-sm-6""><label for="issueSpent">Time Spent</label><input type="text" class="form-control" id="issueTimeSpent" placeholder="" value=""></div>' : '') + ((opt_data.fields.log) ? '<div class="form-group col-sm-6"><label for="issueDate">Resolve Date</label><input type="date" class="form-control" id="issueDate" placeholder="Date"></div>' : '');
   if (opt_data.fields.resolution) {
     output += '<div class="form-group"><label for="issueResolution">Resolution</label><select id="issueResolution" class="form-control">';
-    var resolutionList154 = opt_data.resolutions;
-    var resolutionListLen154 = resolutionList154.length;
-    for (var resolutionIndex154 = 0; resolutionIndex154 < resolutionListLen154; resolutionIndex154++) {
-      var resolutionData154 = resolutionList154[resolutionIndex154];
-      output += '<option value="' + soy.$$escapeHtml(resolutionData154.id) + '" title="' + soy.$$escapeHtml(resolutionData154.description) + '">' + soy.$$escapeHtml(resolutionData154.name) + '</option>';
+    var resolutionList156 = opt_data.resolutions;
+    var resolutionListLen156 = resolutionList156.length;
+    for (var resolutionIndex156 = 0; resolutionIndex156 < resolutionListLen156; resolutionIndex156++) {
+      var resolutionData156 = resolutionList156[resolutionIndex156];
+      output += '<option value="' + soy.$$escapeHtml(resolutionData156.id) + '" title="' + soy.$$escapeHtml(resolutionData156.description) + '">' + soy.$$escapeHtml(resolutionData156.name) + '</option>';
     }
     output += '</select></div>';
   }
@@ -75,11 +80,11 @@ templates.dlgEditIssue = function(opt_data, opt_ignored) {
     output += '<div class="form-group"><label for="issueAssignee">Assignee</label><select id="issueAssignee" class="form-control">';
     if (opt_data.users) {
       output += '<option/>';
-      var userList170 = opt_data.users;
-      var userListLen170 = userList170.length;
-      for (var userIndex170 = 0; userIndex170 < userListLen170; userIndex170++) {
-        var userData170 = userList170[userIndex170];
-        output += '<option value="' + soy.$$escapeHtml(userData170.name) + '" title="' + soy.$$escapeHtml(userData170.displayName) + '">' + soy.$$escapeHtml(userData170.displayName) + '</option>';
+      var userList172 = opt_data.users;
+      var userListLen172 = userList172.length;
+      for (var userIndex172 = 0; userIndex172 < userListLen172; userIndex172++) {
+        var userData172 = userList172[userIndex172];
+        output += '<option value="' + soy.$$escapeHtml(userData172.name) + '" title="' + soy.$$escapeHtml(userData172.displayName) + '">' + soy.$$escapeHtml(userData172.displayName) + '</option>';
       }
     }
     output += '</select></div>';

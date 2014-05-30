@@ -113,6 +113,18 @@ function JIRA(_serverURL, token) {
 		});
 	};
 
+	this.assignee = function(url, name, callback) {
+		$.ajax({
+			'url': url + '/assignee', 
+			'type': 'PUT',
+			'contentType': 'application/json', 
+			'data': JSON.stringify({
+				'name': name
+			}), 
+			'success': function(data){ callback && callback(data); } 
+		});
+	};
+
 	this.comment = function(url, msg, callback) {
 		$.ajax({
 			'url': url + '/comment', 
@@ -140,6 +152,18 @@ function JIRA(_serverURL, token) {
 			'url': serverURL + '/rest/api/2/user/assignable/search',
 			'data': {
 				'issueKey': key
+			},
+			'type': 'GET',
+			'contentType': 'application/json', 
+			'success': function(data){ callback && callback(data); } 
+		});
+	};
+
+	this.getTransitions = function(url, callback) {
+		$.ajax({
+			'url': url + '/transitions',
+			'data': {
+
 			},
 			'type': 'GET',
 			'contentType': 'application/json', 

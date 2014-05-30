@@ -8,7 +8,7 @@
  */
 {template .errorMessage}
 <div class="alert alert-danger fade in">
-  <button type="button" class="close glyphicon glyphicon-remove" data-dismiss="alert" aria-hidden="true"></button>
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
   <h4>Oh snap! You got an error!</h4>
   <p>{$message |noAutoescape}</p>
   {if $buttons}
@@ -33,21 +33,27 @@
  */
 {template .filterButton}
   <li class="dropdown" id="btn-filter-{$cid}">
-    <a href="#" class="navbar-nav dropdown-toggle" data-toggle="dropdown">
-      <span class="caret"></span>
-      <span class="sr-only">Toggle Dropdown</span>
-    </a>
     <a href="#tab-filter-{$cid}" class="navbar-nav filter-show" data-toggle="tab">
       <span class="title">{$name}</span>
       <span class="badge">{$count}</span>
     </a>
-    <ul class="dropdown-menu">
-      <li><a href="#" class="filter-update"><span class="glyphicon"></span> Refresh</a></li>
-      <li><a href="#"  class="filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
-      <li class="divider"></li>
-      <li><a href="#" class="filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
-    </ul>
   </li>
+{/template}
+
+
+/**
+ * filter edit buttonset
+ */
+{template .filterButtonSet}
+  <div class="btn-group pull-right btn-group-xs">
+    <button type="button" class="btn btn-default filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+    <button type="button" class="btn btn-default filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+    <button type="button" class="btn btn-default filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+    </div>
+  </div>
 {/template}
 
 

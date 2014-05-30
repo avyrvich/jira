@@ -31,9 +31,7 @@ var Issue = Backbone.Model.extend({
 
 		this.on({
 			'change:assignee': function(user) {
-				app.server.api.updateIssue(this.get('self'), {
-					'assignee': user
-				}, function(issue) {
+				app.server.api.assigne(this.get('self'), user, function(issue) {
 					this_.set({
 						'assignee': issue['fields']['assignee']
 					});
@@ -88,6 +86,19 @@ var Issue = Backbone.Model.extend({
 	},
 	comment: function(data) {
 		app.server.api.comment(this.get('self'), data);
+	},
+	resolve: function() {
+		app.server.api.udpate(this.get('self'), {
+    		'transition': {
+        		'name': 'Resolved'
+			}
+		});
+	},
+	getAssignableUsers: function(callback) {
+		app.server.api.getAssignableUsers(callback);
+	},
+	getTransitions: function(callback) {
+		app.server.api.getTransitions(this.get('self'), callback);
 	}
 });
 

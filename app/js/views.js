@@ -110,10 +110,28 @@ var FilterView = Backbone.View.extend({
 			this.model.issues.findWhere({
 				'key': this.getKeyByNode(evt.target)
 			}).trigger('change:progress', false);
+		},
+		'click .filter-update': function() {
+			this.model.update();
+		},
+		'click .filter-edit': function() {
+			new FilterEditView({
+				model: this.model
+			});
+		},
+		'click .filter-delete': function() {
+			var this_ = this;
+			$(templates.dlgConfirm({
+				'title': 'Delete filter',
+				'message': 'Are you sure you want to delete this filter?'
+			})).modal('show').find('.btn-primary').click(function() {
+				app.server.filters.remove(this_.model);
+			});
 		}
 	},
 	render: function() {
-		this.$el.empty();
+		this.$el.html(templates.filterButtonSet());
+
 		if (this.model.get('type') === app.FILTER_TYPE_CALENDAR) {
 			this.renderCalendar();
 		} else {
@@ -122,7 +140,7 @@ var FilterView = Backbone.View.extend({
 		$('[data-toggle="tooltip"]').tooltip();
 	},
 	renderTable: function() {
-		var $tbody = this.$el.append(templates.filterTable()).find('tbody');
+		var $tbody = this.$el.find('.panel-body').append(templates.filterTable()).find('tbody');
 		$.each(this.model.issues.models, function(i, issue) {
 			$tbody.append(templates.filterTableRow(
 				$.extend({}, issue.attributes,  {
@@ -135,7 +153,7 @@ var FilterView = Backbone.View.extend({
 	},
 	renderCalendar: function() {
 		var view = this;
-		this.$el.fullCalendar({
+		this.$el.find('.panel-body').fullCalendar({
 			'defaultView': 'agendaWeek',
 			'header': {
 				left: 'agendaWeek,month',
@@ -216,7 +234,7 @@ var FilterEditView = Backbone.View.extend({
 		return {
 			'name': this.$el.find('#filterName').val(),
 			'jql': this.$el.find('#filterJQL').val(),
-			'type': this.$el.find('#filterType').val()
+			'type': parseInt(this.$el.find('#filterType').val())
 		};
 	},
 	save: function() {
@@ -238,9 +256,6 @@ var FilterEditView = Backbone.View.extend({
 
 var NavBarBtnView = Backbone.View.extend({
 	events: {
-		'click a.filter-update': 'update',
-		'click a.filter-edit': 'edit',
-		'click a.filter-delete': 'delete',
 		'click a.filter-show': function (e) {
 			$(e.target.getAttribute('href')).fullCalendar('render');
 		}
@@ -265,23 +280,6 @@ var NavBarBtnView = Backbone.View.extend({
 				this.remove();
 			}
 		});
-	},
-	update: function() {
-		this.model.update();
-	},
-	edit: function() {
-		new FilterEditView({
-			model: this.model
-		});
-	},
-	delete: function() {
-		var this_ = this;
-		$(templates.dlgConfirm({
-			'title': 'Delete filter',
-			'message': 'Are you sure you want to delete this filter?'
-		})).modal('show').find('.btn-primary').click(function() {
-			app.server.filters.remove(this_.model);
-		});
 	}
 });
 
@@ -295,7 +293,7 @@ var IssueEditView = Backbone.View.extend({
 		var this_ = this;
 		this_.options = param.options;
 		if (this_.options.fields.assignee) {
-			app.server.api.getAssignableUsers(this.model.get('key'), function(users) {
+			this_.model.getAssignableUsers(function(users) {
 				this_.users = users;
 				this_.render();
 			});
