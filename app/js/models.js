@@ -112,7 +112,7 @@ var Filter = Backbone.Model.extend({
 			this_.trigger('updated', this);
 		});
 		this.issues.on('change reset', function() {
-			this_.trigger('updated', this);
+			this_.trigger('updated', this_);
 		});
 		this.set({
 			'name': filter['name'],

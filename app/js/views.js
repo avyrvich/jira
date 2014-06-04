@@ -118,6 +118,7 @@ var FilterView = Backbone.View.extend({
 		}
 
 		this.listenTo(this.model, {
+			'change:type': onUpdated,
 			'updated': onUpdated,
 			'remove': onRemoved
 		});
@@ -128,7 +129,6 @@ var FilterView = Backbone.View.extend({
 	},
 	render: function() {
 		this.$el.html(templates.filterButtonSet());
-
 		if (this.model.get('type') === app.FILTER_TYPE_CALENDAR) {
 			this.renderCalendar();
 		} else {
@@ -267,8 +267,10 @@ var NavBarBtnView = Backbone.View.extend({
 			this.$el.find('[data-toggle="tab"]').tab('show');
 		}
 		this.listenTo(this.model, {
-			'change': function(){
+			'updated': function(){
 				this.$el.find('.badge').text(this.model.issues.length);
+			}, 
+			'change:name': function() {
 				this.$el.find('.title').text(this.model.get('name'));
 			},
 			'remove': function() {
