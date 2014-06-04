@@ -2,33 +2,6 @@
 //-- Views
 
 var FilterView = Backbone.View.extend({
-	initialize: function() {
-		var this_ = this;
-		this.$el
-			.attr('id', 'tab-filter-' + this.model['cid'])
-			.addClass('tab-pane')
-			.appendTo('.tab-content');
-
-		function onUpdated() {
-			if (this_.$el.find('.fc') && this_.model.get('type') === app.FILTER_TYPE_CALENDAR) {
-				this_.$el.find('.fc').fullCalendar('render')
-			} else {
-				this_.render();
-			}			
-		}
-		function onRemoved() {
-			this_.remove();		
-		}
-
-		this.listenTo(this.model, {
-			'updated': onUpdated,
-			'remove': onRemoved
-		});
-
-		if (this.model.issues) {
-			onUpdated();
-		}
-	},
 	getKeyByNode: function(node) {
 		return $(node).parents('[jira-key]').attr('jira-key');
 	},
@@ -55,6 +28,7 @@ var FilterView = Backbone.View.extend({
 				options: {
 						title: 'Resolve Issue',
 						button: 'Resolve',
+						resolution: 1,
 						fields: {
 							log: false,
 							comment: true,
@@ -129,6 +103,29 @@ var FilterView = Backbone.View.extend({
 			});
 		}
 	},
+	initialize: function() {
+		var this_ = this;
+		this.$el
+			.attr('id', 'tab-filter-' + this.model['cid'])
+			.addClass('tab-pane')
+			.appendTo('.tab-content');
+
+		function onUpdated() {
+			this_.render();
+		}
+		function onRemoved() {
+			this_.remove();		
+		}
+
+		this.listenTo(this.model, {
+			'updated': onUpdated,
+			'remove': onRemoved
+		});
+
+		if (this.model.issues) {
+			onUpdated();
+		}
+	},
 	render: function() {
 		this.$el.html(templates.filterButtonSet());
 
@@ -141,9 +138,6 @@ var FilterView = Backbone.View.extend({
 	},
 	renderTable: function() {
 		var $tbody = this.$el.append(templates.filterTable()).find('tbody');
-
-		console.log(this.$el, this.model, this.model.issues.models);
-
 		$.each(this.model.issues.models, function(i, issue) {
 			$tbody.append(templates.filterTableRow(
 				$.extend({}, issue.attributes,  {
@@ -157,13 +151,9 @@ var FilterView = Backbone.View.extend({
 	renderCalendar: function() {
 		var view = this;
 		this.$el.append(
-			$('<div/>').fullCalendar({
+			$('<div />').fullCalendar({
 				'defaultView': 'agendaWeek',
-				'header': {
-					left: 'agendaWeek,month',
-					center: '',
-					right: 'today prev,next'
-				},
+				'header': 'agendaWeek,month today prev,next',
 				'allDaySlot': false,
 				'editable': true,
 				'events': this.model.issues.map(function(issue, index, issues) {
@@ -297,14 +287,16 @@ var IssueEditView = Backbone.View.extend({
 	initialize: function(param) {
 		var this_ = this;
 		this_.options = param.options;
-		if (this_.options.fields.assignee) {
-			this_.model.getAssignableUsers(function(users) {
+		$.when(
+			this_.options.fields.assignee ? this_.model.getAssignableUsers(function(users) {
 				this_.users = users;
-				this_.render();
-			});
-		} else {
+			}) : null,
+			this_.options.fields.resolution ? this_.model.getTransitions(function(transitions) {
+				this_.transitions = transitions;
+			}) : null
+		).then(function() {
 			this_.render();
-		}
+		});
 	},
 	render: function() {
 		var this_ = this;
@@ -313,6 +305,7 @@ var IssueEditView = Backbone.View.extend({
 				title: this_.options.title,
 				button: this_.options.button,
 				fields: this_.options.fields,
+				resolution: this_.options.resolution,
 				resolutions: app.server.api.resolutions,
 				assignee: this_.model.get('assignee'),
 				users: this_.users
@@ -343,7 +336,6 @@ var IssueEditView = Backbone.View.extend({
 			resolution: this.$el.find('#issueResolution').val(),
 			assignee: this.$el.find('#issueAssignee').select2('val')
 		};
-
 		if (data.timeSpent) {
 			this.model.worklog({
 				'comment': data.log,
@@ -351,10 +343,10 @@ var IssueEditView = Backbone.View.extend({
 			});
 		}
 		if (data.assignee) {
-			this.trigger('change:assignee', data.assignee);
+			this.model.assign(data.assignee);
 		}
 		if (data.resolution) {
-			this.trigger('change:resolution', data.resolution);
+			this.model.resolve(data.resolution);
 		}
 		if (data.comment) {
 			this.model.comment(data.comment);

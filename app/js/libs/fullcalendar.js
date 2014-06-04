@@ -27,11 +27,7 @@ var defaults = {
 	// display
 	defaultView: 'month',
 	aspectRatio: 1.35,
-	header: {
-		left: 'title',
-		center: '',
-		right: 'today prev,next'
-	},
+	header: 'title today prev,next',
 	weekends: true,
 	weekNumbers: false,
 
@@ -134,11 +130,7 @@ var langOptionHash = {
 
 // right-to-left defaults
 var rtlDefaults = {
-	header: {
-		left: 'next,prev today',
-		center: '',
-		right: 'title'
-	},
+	header: 'next,prev today title',
 	buttonIcons: {
 		prev: 'right-single-arrow',
 		next: 'left-single-arrow',
@@ -1069,14 +1061,7 @@ function Header(calendar, options) {
 		tm = options.theme ? 'ui' : 'fc';
 		var sections = options.header;
 		if (sections) {
-			element = $("<table class='fc-header' style='width:100%'/>")
-				.append(
-					$("<tr/>")
-						.append(renderSection('left'))
-						.append(renderSection('center'))
-						.append(renderSection('right'))
-				);
-			return element;
+			return renderSection();
 		}
 	}
 	
@@ -1087,22 +1072,21 @@ function Header(calendar, options) {
 	
 	
 	function renderSection(position) {
-		var e = $("<td class='fc-header-" + position + "'/>");
-		var buttonStr = options.header[position];
+		var e = $("<div />");
+		var buttonStr = options.header;
 		if (buttonStr) {
 			$.each(buttonStr.split(' '), function(i) {
 				if (i > 0) {
 					e.append("<span class='fc-header-space'/>");
 				}
-				var prevButton;
+				var container = e;
+				if (this.split(',').length > 0) {
+					container = $('<div class="btn-group btn-group-xs">').appendTo(container);
+				}
 				$.each(this.split(','), function(j, buttonName) {
 					if (buttonName == 'title') {
-						e.append("<span class='fc-header-title'><h2>&nbsp;</h2></span>");
-						if (prevButton) {
-							prevButton.addClass(tm + '-corner-right');
-						}
-						prevButton = null;
-					}else{
+						container.append("<span class='fc-header-title'><h2>&nbsp;</h2></span>");
+					} else {
 						var buttonClick;
 						if (calendar[buttonName]) {
 							buttonClick = calendar[buttonName]; // calendar method
@@ -1132,49 +1116,20 @@ function Header(calendar, options) {
 							}
 
 							var button = $(
-								"<span class='btn btn-primary fc-button-" + buttonName + " " + icon + " " + tm + "-state-default'>" +
+								"<button class='btn btn-default fc-button-" + buttonName + " " + icon + " " + tm + "-state-default'>" +
 									html +
-								"</span>"
+								"</button>"
 								)
 								.click(function() {
 									if (!button.hasClass(tm + '-state-disabled')) {
 										buttonClick();
 									}
 								})
-								.mousedown(function() {
-									button
-										.not('.' + tm + '-state-active')
-										.not('.' + tm + '-state-disabled')
-										.addClass(tm + '-state-down');
-								})
-								.mouseup(function() {
-									button.removeClass(tm + '-state-down');
-								})
-								.hover(
-									function() {
-										button
-											.not('.' + tm + '-state-active')
-											.not('.' + tm + '-state-disabled')
-											.addClass(tm + '-state-hover');
-									},
-									function() {
-										button
-											.removeClass(tm + '-state-hover')
-											.removeClass(tm + '-state-down');
-									}
-								)
-								.appendTo(e);
+								.appendTo(container);
 							disableTextSelection(button);
-							if (!prevButton) {
-								button.addClass(tm + '-corner-left');
-							}
-							prevButton = button;
 						}
 					}
 				});
-				if (prevButton) {
-					prevButton.addClass(tm + '-corner-right');
-				}
 			});
 		}
 		return e;
