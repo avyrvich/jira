@@ -2,6 +2,7 @@
   "manifest_version": 2,
   "name": "JIRA Assist",
   "version": "0.0.0.1",
+    "description": "Get over your JIRA issues, bugs or tasks just in one click",
   "minimum_chrome_version": "23",
   "icons": {
     "16": "img/logo-32.png",
@@ -14,17 +15,23 @@
   "permissions": [
     "<all_urls>", "storage"
   ],
-  "app": {
-    "background": {
-      "scripts": [
-        "js/libs/jquery-1.11.0.min.js",
-        "js/libs/moment.min.js",
-        "js/libs/underscore-min.js",
-        "js/libs/backbone-min.js",
-        "js/models.js",
-        "js/jira.js",
-        "js/app.js"
-      ]
-    }
+  "background": {
+    "scripts": [
+      "js/libs/jquery-1.11.0.min.js",
+      "js/libs/moment.min.js",
+      "js/libs/underscore-min.js",
+      "js/libs/backbone-min.js",
+      "js/models.js",
+      "js/jira.js",
+      "js/app.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "img/logo-18.png",
+      "38": "img/logo-36.png"
+    },
+    "default_title": "JIRA Assist",
+    "default_popup": "index.html"
   }
 }

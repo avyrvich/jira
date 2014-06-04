@@ -10,8 +10,8 @@ var FilterView = Backbone.View.extend({
 			.appendTo('.tab-content');
 
 		function onUpdated() {
-			if (this_.$el.is('.fc') && this_.model.get('type') === app.FILTER_TYPE_CALENDAR) {
-				this_.$el.fullCalendar('render')
+			if (this_.$el.find('.fc') && this_.model.get('type') === app.FILTER_TYPE_CALENDAR) {
+				this_.$el.find('.fc').fullCalendar('render')
 			} else {
 				this_.render();
 			}			
@@ -140,7 +140,10 @@ var FilterView = Backbone.View.extend({
 		$('[data-toggle="tooltip"]').tooltip();
 	},
 	renderTable: function() {
-		var $tbody = this.$el.find('.panel-body').append(templates.filterTable()).find('tbody');
+		var $tbody = this.$el.append(templates.filterTable()).find('tbody');
+
+		console.log(this.$el, this.model, this.model.issues.models);
+
 		$.each(this.model.issues.models, function(i, issue) {
 			$tbody.append(templates.filterTableRow(
 				$.extend({}, issue.attributes,  {
@@ -153,54 +156,56 @@ var FilterView = Backbone.View.extend({
 	},
 	renderCalendar: function() {
 		var view = this;
-		this.$el.find('.panel-body').fullCalendar({
-			'defaultView': 'agendaWeek',
-			'header': {
-				left: 'agendaWeek,month',
-				center: '',
-				right: 'today prev,next'
-			},
-			'allDaySlot': false,
-			'editable': true,
-			'events': this.model.issues.map(function(issue, index, issues) {
-				if (issue.get('duedate')) {
-					var defaultDuration = 3600;
-					var startDate = issue.get('duedate');
-					var duration = (issue.get('estimate') || defaultDuration) * 1000;
-					for (var i = 0; i < index; i++) {
-						if (issues[i].get('duedate').getTime() === issue.get('duedate').getTime()) {
-							startDate = new Date(startDate.getTime() + (issues[i].get('estimate') || defaultDuration) * 1000);
+		this.$el.append(
+			$('<div/>').fullCalendar({
+				'defaultView': 'agendaWeek',
+				'header': {
+					left: 'agendaWeek,month',
+					center: '',
+					right: 'today prev,next'
+				},
+				'allDaySlot': false,
+				'editable': true,
+				'events': this.model.issues.map(function(issue, index, issues) {
+					if (issue.get('duedate')) {
+						var defaultDuration = 3600;
+						var startDate = issue.get('duedate');
+						var duration = (issue.get('estimate') || defaultDuration) * 1000;
+						for (var i = 0; i < index; i++) {
+							if (issues[i].get('duedate').getTime() === issue.get('duedate').getTime()) {
+								startDate = new Date(startDate.getTime() + (issues[i].get('estimate') || defaultDuration) * 1000);
+							}
 						}
+						return {
+							'allDay': false,
+							'title': issue.get('key') + ': ' + issue.get('summary'),
+							'start': startDate,
+							'end': new Date(startDate.getTime() + duration),
+							'duration': issue.get('estimate'),
+							'issue': issue
+						};
 					}
-					return {
-						'allDay': false,
-						'title': issue.get('key') + ': ' + issue.get('summary'),
-						'start': startDate,
-						'end': new Date(startDate.getTime() + duration),
-						'duration': issue.get('estimate'),
-						'issue': issue
-					};
+				}),
+				'eventRender': function(event, element) {
+					element.popover({
+						'title': event.issue.get('key'),
+						'content': templates.issuePopover({
+							'summary': event.issue.get('summary'),
+							'estimate': 'Estimate: ' + moment.duration(event.issue.get('estimate'), 's').humanize()
+						}),
+						'html': true,
+						'placement': 'top',
+						'trigger': 'hover'
+					});
+				},
+				eventDrop: function(event, delta) {
+					event.issue.trigger('change:duedate', event);
+				},
+				eventResize: function(event, delta) {
+					event.issue.trigger('change:estiamte', event);
 				}
-			}),
-			'eventRender': function(event, element) {
-				element.popover({
-					'title': event.issue.get('key'),
-					'content': templates.issuePopover({
-						'summary': event.issue.get('summary'),
-						'estimate': 'Estimate: ' + moment.duration(event.issue.get('estimate'), 's').humanize()
-					}),
-					'html': true,
-					'placement': 'top',
-					'trigger': 'hover'
-				});
-			},
-			eventDrop: function(event, delta) {
-				event.issue.trigger('change:duedate', event);
-			},
-			eventResize: function(event, delta) {
-				event.issue.trigger('change:estiamte', event);
-			}
-		});
+			})
+		);
 	}
 });
 
@@ -272,7 +277,7 @@ var NavBarBtnView = Backbone.View.extend({
 			this.$el.find('[data-toggle="tab"]').tab('show');
 		}
 		this.listenTo(this.model, {
-			'updated': function(){
+			'change': function(){
 				this.$el.find('.badge').text(this.model.issues.length);
 				this.$el.find('.title').text(this.model.get('name'));
 			},
@@ -390,9 +395,12 @@ var NavBarView = Backbone.View.extend({
 			$('#dlg-connect').modal('hide');
 			$('#navbar').removeClass('disconnected').addClass('connected');
 		}
-		this.listenTo(app.server, 'login-error', loginError);
-		this.listenTo(app.server, 'connection-error', connectionError);
-		this.listenTo(app.server, 'connected', onConnected);
+
+		this.listenTo(app.server, {
+			'login-error': loginError,
+			'connection-error': connectionError,
+			'connected': onConnected
+		});
 
 		//-------------------------------
 		//-- Listen to filters events
