@@ -314,6 +314,7 @@ var IssueEditView = Backbone.View.extend({
 				button: this_.options.button,
 				fields: this_.options.fields,
 				resolutions: app.server.api.resolutions,
+				assignee: this_.model.get('assignee'),
 				users: this_.users
 			})).appendTo('body')
 		);

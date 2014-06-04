@@ -95,7 +95,7 @@ var Issue = Backbone.Model.extend({
 		});
 	},
 	getAssignableUsers: function(callback) {
-		app.server.api.getAssignableUsers(callback);
+		app.server.api.getAssignableUsers(this.get('key'), callback);
 	},
 	getTransitions: function(callback) {
 		app.server.api.getTransitions(this.get('self'), callback);

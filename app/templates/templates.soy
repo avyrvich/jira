@@ -112,7 +112,7 @@
  * @param started
  */
 {template .filterTableRow}
-  <tr {if $started}class="success"{/if}>
+  <tr {if $started}class="success"{/if} jira-key="{$key}">
     <td class="hidden-xs"><img csp-src="{$project.iconUrl}" data-toggle="tooltip" title="{$project.name}"></td>
     <td><a href="{$url}" target="_new">{$key}</a></td>
     <td>{$summary}</td>
@@ -131,14 +131,24 @@
       {/if}
     {/if}
     </td>
-    <td><span data-toggle="tooltip" title="{$assignee.emailAddress}" data-delay="1000">{$assignee.displayName}</span></td>
-    <td class="hidden-xs hidden-sm"><span data-toggle="tooltip" title="{$reporter.emailAddress}" data-delay="1000">{$reporter.displayName}</span></td>
-    <td class="hidden-xs">{$estimate}</td>
+    <td>
+      <a href="#" class="assign-issue" data-toggle="tooltip" title="{$assignee.emailAddress}" data-delay="1000">
+        {$assignee.displayName}
+      </a>
+    </td>
+    <td class="hidden-xs hidden-sm">
+      <span data-toggle="tooltip" title="{$reporter.emailAddress}" data-delay="1000">
+        {$reporter.displayName}
+      </span>
+    </td>
+    <td class="hidden-xs">
+      {$estimate}
+    </td>
     <td class="hidden-xs"><img csp-src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
     <td class="hidden-xs"><img csp-src="{$priority.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
     <td class="hidden-xs">{$duedate}</td>
     <td>
-      <div class="btn-group" jira-key="{$key}">
+      <div class="btn-group">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
           <span class="caret"></span>
         </button>
@@ -227,6 +237,7 @@
  * @param fields
  * @param? resolutions
  * @param? users
+ * @param? assignee
  */
 {template .dlgEditIssue}
 <div class="modal fade" id="dlg-edit-issue" tabindex="-1" role="dialog" aria-labelledby="dlg-edit-issue-label" aria-hidden="true">
@@ -271,7 +282,9 @@
                   {if $users}
                     <option/>
                     {foreach $user in $users}
-                      <option value="{$user.name}" title="{$user.displayName}">{$user.displayName}</option>
+                      <option value="{$user.name}" title="{$user.displayName}"{if $assignee.name==$user.name} selected{/if}>
+                        {$user.displayName}
+                      </option>
                     {/foreach}
                   {/if}
               </select>
