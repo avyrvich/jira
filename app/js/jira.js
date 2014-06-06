@@ -207,4 +207,5 @@ function JIRA(_serverURL, token) {
 		});
 	};
 
+
 }

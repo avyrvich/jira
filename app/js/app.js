@@ -8,3 +8,9 @@ app.FILTERS_DEFAULT = [{
 }];
 
 app.server = new ServerModel;
+
+if (chrome.browserAction) {
+	chrome.browserAction.setBadgeBackgroundColor({
+		'color': '#3399F3'
+	});
+}

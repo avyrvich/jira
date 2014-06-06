@@ -7,7 +7,7 @@ var Issue = Backbone.Model.extend({
 		var this_ = this;
 		this.set({
 			'key': issue['key'],
-			'duedate': new Date(issue['fields']['duedate']),
+			'duedate': issue['fields']['duedate'] ? new Date(issue['fields']['duedate']) : null,
 			'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds']),
 			'project': {
 				'name': issue['fields']['project']['name'],
@@ -62,6 +62,7 @@ var Issue = Backbone.Model.extend({
 					this.unset('started');
 					chrome.storage.local.remove(this.get('key'));
 				}
+				this_.collection.filter.trigger('updated');
 			}
 		});
 	},
@@ -108,17 +109,18 @@ var Filter = Backbone.Model.extend({
 		this.on('change:jql', function() {
 			this.update();
 		});
-		this.on('change', function() {
-			this_.trigger('updated', this);
-		});
+
 		this.issues.on('change reset', function() {
 			this_.trigger('updated', this_);
+			this_.updateBadge();
 		});
+
 		this.set({
 			'name': filter['name'],
 			'jql': filter['jql'],
 			'type': filter['type'] || app.FILTER_TYPE_TABLE
 		});
+
 		this.update();
 		this.collection.trigger('created', this);
 		this.timeout = window.setInterval(function() {
@@ -130,6 +132,13 @@ var Filter = Backbone.Model.extend({
 		this.collection.server.api.executeJQL(this.get('jql'), function(issues) {
 			this_.issues.reset(issues);
 		});
+	},
+	'updateBadge': function() {
+		if (chrome.browserAction && this.collection.models[0] == this) {
+			chrome.browserAction.setBadgeText({
+				'text': this['issues'].length.toString()
+			});
+		}
 	}
 });
 

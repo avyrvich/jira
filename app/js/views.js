@@ -386,6 +386,7 @@ var NavBarView = Backbone.View.extend({
 			);
 		}
 		function onConnected() {
+			$('.jumbotron').hide();
 			$('#dropdown-filters').removeClass('hide');
 			$('#dlg-connect').modal('hide');
 			$('#navbar').removeClass('disconnected').addClass('connected');

@@ -1,0 +1,45 @@
+require 'rake'
+require 'fileutils'
+require 'rubygems'
+require 'zip'
+require 'json'
+
+$OUTPUT_FILENAME = './jira.zip'
+$WORKING_FOLDER = './app/'
+$version = '0.0.0.1'
+task build: ["jira:init", "jira:compileSOY", "jira:compileLESS", "jira:pack"]
+
+namespace :jira do
+
+  task :init do
+  	json = File.read("#{$WORKING_FOLDER}manifest.json")
+		manifest = JSON.parse(json)
+		versions = manifest['version'].split('.')
+		versions[3] = Integer(versions[3])+1
+		$version = versions.join('.')
+		manifest['version'] = $version
+		File.write("#{$WORKING_FOLDER}manifest.json", manifest.to_json)
+ 	end
+
+ 	task :compileSOY do
+ 		sh 'java -jar tools/SoyToJsSrcCompiler.jar --outputPathFormat app/js/templates.js --srcs templates/templates.soy'
+ 	end
+ 	task :compileLESS do
+		sh 'lessc -x templates/style.less app/css/style.css'
+		sh 'lessc -x templates/content.less app/css/content.css'
+ 	end
+
+ 	task :pack do
+		directory = $WORKING_FOLDER
+		zipfile_name = $OUTPUT_FILENAME
+		rm zipfile_name
+		Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
+		    Dir[File.join(directory, '**', '**')].each do |file|
+		      zipfile.add(file.sub(directory, ''), file)
+		    end
+		end
+	end
+
+ 	task :default => [:init,:pack] 
+
+end 
