@@ -31,13 +31,7 @@ var Issue = Backbone.Model.extend({
 
 		this.on({
 			'change:duedate': function(e) {
-				app.server.api.updateIssue(this.get('self'), {
-					'duedate': moment(e.start).format('YYYY-MM-DD')
-				}, function(issue) {
-					this_.set({
-						'duedate': new Date(issue['fields']['duedate'])
-					});
-				});
+
 			},
 			'change:estiamte': function(e) {
 				app.server.api.updateIssue(this.get('self'), {
@@ -49,22 +43,42 @@ var Issue = Backbone.Model.extend({
 						'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds'])
 					});
 				});
-			},
-			'change:progress': function(started) {
-				if (started) {
-					this.set({'started': new Date()});
-					var obj = {};
-					obj[this.get('key')] = {
-						'started': new Date()
-					};
-					chrome.storage.local.set(obj);
-				} else {
-					this.unset('started');
-					chrome.storage.local.remove(this.get('key'));
-				}
-				this_.collection.filter.trigger('updated');
 			}
 		});
+	},
+	changeDuedate: function(even) {
+		app.server.api.updateIssue(this.get('self'), {
+			'duedate': moment(even.start).format('YYYY-MM-DD')
+		}, function(issue) {
+			this_.set({
+				'duedate': new Date(issue['fields']['duedate'])
+			});
+		});
+	},
+	changeEstimate: function(event) {
+		app.server.api.updateIssue(this.get('self'), {
+			'timetracking': {
+				'originalEstimateSeconds': (event.end - event.start)/1000
+			}
+		}, function(issue) {
+			this_.set({
+				'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds'])
+			});
+		});
+	},
+	progress: function(started) {
+		if (started) {
+			this.set({'started': new Date()});
+			var obj = {};
+			obj[this.get('key')] = {
+				'started': new Date()
+			};
+			chrome.storage.local.set(obj);
+		} else {
+			this.unset('started');
+			chrome.storage.local.remove(this.get('key'));
+		}
+		this_.collection.filter.trigger('updated');
 	},
 	assign: function(username) {
 		var this_ = this;
@@ -105,14 +119,18 @@ var Filter = Backbone.Model.extend({
 		var this_ = this;
 		this_.issues = new Issues();
 		this_.issues.filter = this_;
-
-		this.on('change:jql', function() {
-			this.update();
-		});
-
-		this.issues.on('change reset', function() {
+		this_.issues.on('reset', function() {
 			this_.trigger('updated', this_);
 			this_.updateBadge();
+		});
+
+		this.on({
+			'change:jql': function() {
+				this.update();
+			},
+			'change': function() {
+				his_.trigger('updated', this_);
+			}
 		});
 
 		this.set({
@@ -129,7 +147,7 @@ var Filter = Backbone.Model.extend({
 	},
 	'update': function() {
 		var this_ = this;
-		this.collection.server.api.executeJQL(this.get('jql'), function(issues) {
+		this_.collection.server.api.executeJQL(this_.get('jql'), function(issues) {
 			this_.issues.reset(issues);
 		});
 	},

@@ -78,12 +78,12 @@ var FilterView = Backbone.View.extend({
 		'click .start-progress': function(evt) {
 			this.model.issues.findWhere({
 				'key': this.getKeyByNode(evt.target)
-			}).trigger('change:progress', true);
+			}).progress(true);
 		},
 		'click .stop-progress': function(evt) {
 			this.model.issues.findWhere({
 				'key': this.getKeyByNode(evt.target)
-			}).trigger('change:progress', false);
+			}).progress(false);
 		},
 		'click .filter-update': function() {
 			this.model.update();
@@ -175,7 +175,7 @@ var FilterView = Backbone.View.extend({
 							'issue': issue
 						};
 					}
-				}),
+				}).filter(function(obj) {return !!obj}),
 				'eventRender': function(event, element) {
 					element.popover({
 						'title': event.issue.get('key'),
