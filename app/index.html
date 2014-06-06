@@ -8,6 +8,8 @@
   <link rel="stylesheet" type="text/css" href="css/select2.css">
   <link rel="stylesheet" type="text/css" href="css/select2-bootstrap.css">
 
+  <script type="text/javascript" src="js/popup.js"></script>
+
   <!-- Common libs -->
 	<script type="text/javascript" src="js/libs/jquery-1.11.0.min.js"></script>
   <script type="text/javascript" src="js/libs/underscore-min.js"></script>
@@ -49,15 +51,24 @@
       </a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right navbar-collapse collapse ">
-      <li><a id="filter-add" href="#" class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#dlg-connect">
-        <span class="sr-only">Server settings</span>
-      </a></li>
+
+      <li class="dropdown">
+        <a id="filter-add" href="#" class="glyphicon glyphicon-cog" id="settingsMenu" data-toggle="dropdown">
+          <span class="sr-only">Settings</span>
+        </a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="settingsMenu">
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#dlg-connect">Server Settings</a></li>
+          <li role="presentation" class="divider"></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=TRSCE62LWTWT6">Donate</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" target="_blank" href="https://github.com/andry-virvich/jira/issues">Report Issue</a></li>
+        </ul>
+      </li>
     </ul>
   </div>
 </nav>
 
 <!-- Tab panes -->
-<div class="tab-content" style="margin-top:40px;">
+<div class="tab-content">
   
 </div>
 
@@ -115,6 +126,12 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="jumbotron">
+  <h1>Hello, World!</h1>
+  <p>Thanks for installing JIRA Assist extension. The only step left is to connect JIRA server to the extension. Please, press the "Connect Now" button below.</p>
+  <p><a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#dlg-connect">Connect Now</a></p>
 </div>
 
 </body>

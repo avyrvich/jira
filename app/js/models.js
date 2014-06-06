@@ -7,7 +7,7 @@ var Issue = Backbone.Model.extend({
 		var this_ = this;
 		this.set({
 			'key': issue['key'],
-			'duedate': new Date(issue['fields']['duedate']),
+			'duedate': issue['fields']['duedate'] ? new Date(issue['fields']['duedate']) : null,
 			'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds']),
 			'project': {
 				'name': issue['fields']['project']['name'],
@@ -30,30 +30,8 @@ var Issue = Backbone.Model.extend({
 		});
 
 		this.on({
-			'change:assignee': function(user) {
-				app.server.api.assigne(this.get('self'), user, function(issue) {
-					this_.set({
-						'assignee': issue['fields']['assignee']
-					});
-				});
-			},
-			'change:resolution': function(resolution) {
-				app.server.api.updateIssue(this.get('self'), {
-					'resolution': resolution
-				}, function(issue) {
-					this_.set({
-						'resolution': issue['fields']['resolution']
-					});
-				});
-			},
 			'change:duedate': function(e) {
-				app.server.api.updateIssue(this.get('self'), {
-					'duedate': moment(e.start).format('YYYY-MM-DD')
-				}, function(issue) {
-					this_.set({
-						'duedate': new Date(issue['fields']['duedate'])
-					});
-				});
+
 			},
 			'change:estiamte': function(e) {
 				app.server.api.updateIssue(this.get('self'), {
@@ -65,20 +43,49 @@ var Issue = Backbone.Model.extend({
 						'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds'])
 					});
 				});
-			},
-			'change:progress': function(started) {
-				if (started) {
-					this.set({'started': new Date()});
-					var obj = {};
-					obj[this.get('key')] = {
-						'started': new Date()
-					};
-					chrome.storage.local.set(obj);
-				} else {
-					this.unset('started');
-					chrome.storage.local.remove(this.get('key'));
-				}
 			}
+		});
+	},
+	changeDuedate: function(even) {
+		app.server.api.updateIssue(this.get('self'), {
+			'duedate': moment(even.start).format('YYYY-MM-DD')
+		}, function(issue) {
+			this_.set({
+				'duedate': new Date(issue['fields']['duedate'])
+			});
+		});
+	},
+	changeEstimate: function(event) {
+		app.server.api.updateIssue(this.get('self'), {
+			'timetracking': {
+				'originalEstimateSeconds': (event.end - event.start)/1000
+			}
+		}, function(issue) {
+			this_.set({
+				'estimate': parseInt(issue['fields']['timetracking']['originalEstimateSeconds'])
+			});
+		});
+	},
+	progress: function(started) {
+		if (started) {
+			this.set({'started': new Date()});
+			var obj = {};
+			obj[this.get('key')] = {
+				'started': new Date()
+			};
+			chrome.storage.local.set(obj);
+		} else {
+			this.unset('started');
+			chrome.storage.local.remove(this.get('key'));
+		}
+		this_.collection.filter.trigger('updated');
+	},
+	assign: function(username) {
+		var this_ = this;
+		app.server.api.assign(this.get('self'), username, function(issue) {
+			this_.set({
+				'assignee': issue['fields']['assignee']
+			});
 		});
 	},
 	worklog: function(data) {
@@ -87,18 +94,17 @@ var Issue = Backbone.Model.extend({
 	comment: function(data) {
 		app.server.api.comment(this.get('self'), data);
 	},
-	resolve: function() {
-		app.server.api.udpate(this.get('self'), {
-    		'transition': {
-        		'name': 'Resolved'
-			}
+	resolve: function(resolution) {
+		var this_ = this;
+		app.server.api.resolve(this.get('self'), resolution, function() {
+			this_.collection.filter.update();
 		});
 	},
 	getAssignableUsers: function(callback) {
-		app.server.api.getAssignableUsers(this.get('key'), callback);
+		return app.server.api.getAssignableUsers(this.get('key'), callback);
 	},
 	getTransitions: function(callback) {
-		app.server.api.getTransitions(this.get('self'), callback);
+		return app.server.api.getTransitions(this.get('self'), callback);
 	}
 });
 
@@ -112,17 +118,27 @@ var Filter = Backbone.Model.extend({
 	'initialize': function(filter) {
 		var this_ = this;
 		this_.issues = new Issues();
-		this.on('change:jql', function() {
-			this.update();
+		this_.issues.filter = this_;
+		this_.issues.on('reset', function() {
+			this_.trigger('updated', this_);
+			this_.updateBadge();
 		});
-		this.issues.on('change reset', function() {
-			this_.trigger('updated', this);
+
+		this.on({
+			'change:jql': function() {
+				this.update();
+			},
+			'change': function() {
+				his_.trigger('updated', this_);
+			}
 		});
+
 		this.set({
 			'name': filter['name'],
 			'jql': filter['jql'],
 			'type': filter['type'] || app.FILTER_TYPE_TABLE
 		});
+
 		this.update();
 		this.collection.trigger('created', this);
 		this.timeout = window.setInterval(function() {
@@ -131,9 +147,16 @@ var Filter = Backbone.Model.extend({
 	},
 	'update': function() {
 		var this_ = this;
-		this.collection.server.api.executeJQL(this.get('jql'), function(issues) {
+		this_.collection.server.api.executeJQL(this_.get('jql'), function(issues) {
 			this_.issues.reset(issues);
 		});
+	},
+	'updateBadge': function() {
+		if (chrome.browserAction && this.collection.models[0] == this) {
+			chrome.browserAction.setBadgeText({
+				'text': this['issues'].length.toString()
+			});
+		}
 	}
 });
 

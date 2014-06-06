@@ -1,0 +1,1 @@
+var app = chrome.extension.getBackgroundPage().app;

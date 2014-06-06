@@ -61,8 +61,17 @@ function JIRA(_serverURL, token) {
 		});
 	};
 
+	this.get = function(url, callback) {
+		return $.ajax({
+			'url': url,
+			'success': function(response) {
+				callback(response['issues']);
+			}
+		});
+	};
+
 	this.checkAuthorization = function(callback) {
-		$.ajax({
+		return $.ajax({
 			'url': serverURL + '/rest/auth/1/session',
 			'type': 'GET',
 			'beforeSend': function(xhr) { 
@@ -102,7 +111,7 @@ function JIRA(_serverURL, token) {
 	};
 
 	this.updateIssue = function(url, filds, callback) {
-		$.ajax({
+		return $.ajax({
 			'url': url, 
 			'type': 'PUT',
 			'contentType': 'application/json', 
@@ -113,8 +122,8 @@ function JIRA(_serverURL, token) {
 		});
 	};
 
-	this.assignee = function(url, name, callback) {
-		$.ajax({
+	this.assign = function(url, name, callback) {
+		return $.ajax({
 			'url': url + '/assignee', 
 			'type': 'PUT',
 			'contentType': 'application/json', 
@@ -126,7 +135,7 @@ function JIRA(_serverURL, token) {
 	};
 
 	this.comment = function(url, msg, callback) {
-		$.ajax({
+		return $.ajax({
 			'url': url + '/comment', 
 			'type': 'POST',
 			'contentType': 'application/json', 
@@ -138,7 +147,7 @@ function JIRA(_serverURL, token) {
 	};
 
 	this.worklog = function(url, data, callback) {
-		$.ajax({
+		return $.ajax({
 			'url': url + '/worklog?adjustEstimate=auto&reduceBy', 
 			'type': 'POST',
 			'contentType': 'application/json', 
@@ -147,8 +156,29 @@ function JIRA(_serverURL, token) {
 		});
 	};
 
+	this.resolve = function(url, resolution, callback) {
+		return $.ajax({
+			'url': url + '/transitions', 
+			'type': 'POST',
+			'contentType': 'application/json', 
+			'data': JSON.stringify({
+				'transition': {
+					'id': '5'
+	    	},
+	    	'fields': {
+	    		'resolution': {
+	    			'id': resolution
+	    		}
+	    	}
+			}),
+			'success': function(data){ 
+				callback && callback(data); 
+			} 
+		});
+	};
+
 	this.getAssignableUsers = function(key, callback) {
-		$.ajax({
+		return $.ajax({
 			'url': serverURL + '/rest/api/2/user/assignable/search',
 			'data': {
 				'issueKey': key
@@ -160,24 +190,22 @@ function JIRA(_serverURL, token) {
 	};
 
 	this.getTransitions = function(url, callback) {
-		$.ajax({
+		return $.ajax({
 			'url': url + '/transitions',
-			'data': {
-
-			},
 			'type': 'GET',
 			'contentType': 'application/json', 
-			'success': function(data){ callback && callback(data); } 
+			'success': function(data){ callback && callback(data['transitions']); } 
 		});
 	};
 
 	this.getFavouriteFilters = function(callback) {
-		$.ajax({
+		return $.ajax({
 			'url': serverURL + '/rest/api/2/filter/favourite',
 			'type': 'GET',
 			'contentType': 'application/json', 
 			'success': function(data){ callback && callback(data); } 
 		});
 	};
+
 
 }
