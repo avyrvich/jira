@@ -1,1 +1,54 @@
-{"manifest_version":2,"name":"JIRA Assist","version":"0.0.0.12","description":"Get over your JIRA issues, bugs or tasks just in one click","minimum_chrome_version":"23","icons":{"16":"img/logo-32.png","36":"img/logo-36.png","48":"img/logo-48.png","78":"img/logo-78.png","96":"img/logo-96.png","128":"img/logo-128.png"},"permissions":["<all_urls>","storage"],"background":{"scripts":["js/libs/jquery-1.11.0.min.js","js/libs/moment.min.js","js/libs/underscore-min.js","js/libs/backbone-min.js","js/models.js","js/jira.js","js/app.js"]},"content_scripts":[{"all_frames":false,"js":["js/libs/jquery-1.11.0.min.js","js/content/dragdrop.js"],"css":["css/content.css"],"matches":["<all_urls>"],"run_at":"document_start"}],"browser_action":{"default_icon":{"19":"img/logo-18.png","38":"img/logo-36.png"},"default_title":"JIRA Assist","default_popup":"index.html"}}
+{
+  "manifest_version": 2,
+  "name": "JIRA Assist",
+  "version": "0.0.0.15",
+  "description": "Get over your JIRA issues, bugs or tasks just in one click",
+  "minimum_chrome_version": "23",
+  "icons": {
+    "16": "img/logo-32.png",
+    "36": "img/logo-36.png",
+    "48": "img/logo-48.png",
+    "78": "img/logo-78.png",
+    "96": "img/logo-96.png",
+    "128": "img/logo-128.png"
+  },
+  "permissions": [
+    "<all_urls>",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "js/libs/jquery-1.11.0.min.js",
+      "js/libs/moment.min.js",
+      "js/libs/underscore-min.js",
+      "js/libs/backbone-min.js",
+      "js/models.js",
+      "js/jira.js",
+      "js/app.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "all_frames": false,
+      "js": [
+        "js/libs/jquery-1.11.0.min.js",
+        "js/content/dragdrop.js"
+      ],
+      "css": [
+        "css/content.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "19": "img/logo-18.png",
+      "38": "img/logo-36.png"
+    },
+    "default_title": "JIRA Assist",
+    "default_popup": "index.html"
+  }
+}

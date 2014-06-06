@@ -5,21 +5,28 @@ require 'zip'
 require 'json'
 
 $OUTPUT_FILENAME = './jira.zip'
-$WORKING_FOLDER = './app/'
+$SRC_FOLDER = './app/'
+$WORKING_FOLDER = './release/'
 $version = '0.0.0.1'
-task build: ["jira:init", "jira:compileSOY", "jira:compileLESS", "jira:pack"]
+task build: ["jira:build"]
 
 namespace :jira do
 
   task :init do
-  	json = File.read("#{$WORKING_FOLDER}manifest.json")
+  	json = File.read("#{$SRC_FOLDER}manifest.json")
 		manifest = JSON.parse(json)
 		versions = manifest['version'].split('.')
 		versions[3] = Integer(versions[3])+1
 		$version = versions.join('.')
 		manifest['version'] = $version
-		File.write("#{$WORKING_FOLDER}manifest.json", manifest.to_json)
+		File.write("#{$SRC_FOLDER}manifest.json", JSON.pretty_generate(manifest))
  	end
+
+	task :copy do
+		mkdir_p $WORKING_FOLDER
+		cp_r "#{$SRC_FOLDER}/.",$WORKING_FOLDER
+	end
+
 
  	task :compileSOY do
  		sh 'java -jar tools/SoyToJsSrcCompiler.jar --outputPathFormat app/js/templates.js --srcs templates/templates.soy'
@@ -40,6 +47,11 @@ namespace :jira do
 		end
 	end
 
- 	task :default => [:init,:pack] 
+	task :clean do
+		rm_rf $WORKING_FOLDER
+	end
+
+ 	task :build => [:init,:copy,:compileSOY,:compileLESS,:pack,:clean] 
+
 
 end 
