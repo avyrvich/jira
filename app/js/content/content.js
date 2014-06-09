@@ -12,11 +12,14 @@ jira.getURL = function() {
 	}
 }
 
-jira.attachFiles = function(files, callback) {
+jira.attachFiles = function(formData, callback) {
 	//curl -D- -u admin:admin -X POST -H "X-Atlassian-Token: nocheck" -F "file=@myfile.txt" http://myhost/rest/api/2/issue/TEST-123/attachments
-	var formData = new FormData();
-	for (var i = 0; i < files.length; i++) {
-		formData.append('file', files[i]);
+	if (!(formData instanceof FormData)) {
+		var files = formData,
+			formData = new FormData();
+		for (var i = 0; i < files.length; i++) {
+			formData.append('file', files[i]);
+		}
 	}
 	return $.ajax({
 		'url': jira.getURL() + '/attachments',
@@ -66,8 +69,12 @@ jira.initDragAndDrop = function() {
 
 jira.initCopyPaste = function() {
 	$('textarea[name="comment"]').pasteImageReader(function(results) {
-		jira.attachFiles(results, function(a) {console.log(a)});
-	 	console.log(results);
+		var textarea = this;
+		jira.attachFiles(results, function(attachments) {
+			$.each(attachments, function(i, attachment) {
+				textarea.value += '!'+attachment['filename']+'!'
+			});
+		});
 	});
 }
 

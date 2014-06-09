@@ -14,7 +14,7 @@
   })($.event.fix);
   defaults = {
     callback: $.noop,
-    matchType: /image(.*)/
+    matchType: /image\/?(.*)/
   };
   return $.fn.pasteImageReader = function(options) {
     if (typeof options === "function") {
@@ -24,34 +24,26 @@
     }
     options = $.extend({}, defaults, options);
     return this.each(function() {
-      var $this, element;
-      element = this;
-      $this = $(this);
-      return $this.on('paste', function(event) {
-
-        console.log(event);
+      var element = this;
+      return $(this).on('paste', function(event) {
         var clipboardData, found;
         found = false;
         clipboardData = event.clipboardData;
-        var timestamp = (new Date()).toISOString().replace(/\D/g,'');
+        var timestamp = (new Date()).toISOString().replace(/\D/g, '');
         return Array.prototype.forEach.call(clipboardData.types, function(type, i) {
           var file, reader;
           if (found) {
             return;
           }
-           console.log(clipboardData.items[i].name);
-           clipboardData.items[i].filename = timestamp + i + '.png';
-          if (var ext = clipboardData.items[i].type.match(options.matchType)) {
+          var ext = clipboardData.items[i].type.match(options.matchType);
+          if (ext) {
             console.log(clipboardData.items[i]);
             file = clipboardData.items[i].getAsFile();
             reader = new FileReader();
             reader.onload = function(evt) {
-              return options.callback.call(element, {
-                dataURL: evt.target.result,
-                event: evt,
-                file: file,
-                name: file.name || (timestamp + '-' + i + '.' + ext)
-              });
+              var formData = new FormData();
+              formData.append('file', file, timestamp + i + '.png');
+              return options.callback.call(element, formData);
             };
             reader.readAsBinaryString(file);
             return found = true;
