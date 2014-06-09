@@ -65,12 +65,16 @@ jira.initDragAndDrop = function() {
 };
 
 jira.initCopyPaste = function() {
-	
+	$('textarea[name="comment"]').pasteImageReader(function(results) {
+		jira.attachFiles(results, function(a) {console.log(a)});
+	 	console.log(results);
+	});
 }
 
 
 $(function() {
 	if (jira.getURL()) {
 		jira.initDragAndDrop();
+		jira.initCopyPaste();
 	}
 });
