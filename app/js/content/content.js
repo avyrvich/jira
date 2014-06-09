@@ -1,5 +1,9 @@
 var jira = jira || {};
 
+jira.getIssueKey = function() {
+	return $('[name="ajs-issue-key"]').attr('content')
+}
+
 jira.getURL = function() {
 	if (/\/browse\/(\w+-\d+).*/.test(location.href)) {
 		return location.href.replace(/\/browse\/(\w+-\d+).*/, '/rest/api/2/issue/$1');
@@ -59,6 +63,11 @@ jira.initDragAndDrop = function() {
 		return false;
 	});
 };
+
+jira.initCopyPaste = function() {
+	
+}
+
 
 $(function() {
 	if (jira.getURL()) {
