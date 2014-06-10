@@ -365,6 +365,15 @@ var NavBarView = Backbone.View.extend({
 			new FilterEditView();
 		}
 	},
+	'unload': function() {
+		$.each(this.filters, function(i, filter) {
+			filter.remove();
+		});
+		$.each(this.buttons, function(i, button) {
+			button.remove();
+		});
+		this.remove();
+	},
 	'connect': function(e) {
 		//console.log($('#dlg-connect').modal('show'));
 	},

@@ -120,7 +120,7 @@ var Filter = Backbone.Model.extend({
 		this_.issues = new Issues();
 		this_.issues.filter = this_;
 		this_.issues.on('reset', function() {
-			this_.trigger('updated', this_);
+			this_.trigger('updated');
 			this_.updateBadge();
 		});
 
@@ -129,7 +129,7 @@ var Filter = Backbone.Model.extend({
 				this.update();
 			},
 			'change': function() {
-				his_.trigger('updated', this_);
+				this_.trigger('updated');
 			}
 		});
 
