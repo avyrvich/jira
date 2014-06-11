@@ -189,10 +189,10 @@ var FilterView = Backbone.View.extend({
 					});
 				},
 				eventDrop: function(event, delta) {
-					event.issue.trigger('change:duedate', event);
+					event.issue.changeDuedate(event);
 				},
 				eventResize: function(event, delta) {
-					event.issue.trigger('change:estiamte', event);
+					event.issue.changeEstimate(event);
 				}
 			})
 		);
