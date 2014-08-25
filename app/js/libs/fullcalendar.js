@@ -1081,7 +1081,7 @@ function Header(calendar, options) {
 				}
 				var container = e;
 				if (this.split(',').length > 0) {
-					container = $('<div class="btn-group btn-group-xs">').appendTo(container);
+					container = $('<div class="btn-group btn-group-sm">').appendTo(container);
 				}
 				$.each(this.split(','), function(j, buttonName) {
 					if (buttonName == 'title') {

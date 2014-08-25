@@ -93,6 +93,9 @@ var FilterView = Backbone.View.extend({
 				model: this.model
 			});
 		},
+		'click .filter-edit-view': function(evt) {
+			this.model.set('type', parseInt(evt.target.getAttribute('data-type')));
+		},
 		'click .filter-delete': function() {
 			var this_ = this;
 			$(templates.dlgConfirm({

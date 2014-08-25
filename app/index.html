@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <link rel="stylesheet" type="text/css" href="css/select2.css">
   <link rel="stylesheet" type="text/css" href="css/select2-bootstrap.css">
+  <link rel="stylesheet" href="css/ladda-themeless.min.css">
 
   <script type="text/javascript" src="js/popup.js"></script>
 
@@ -23,7 +24,9 @@
 	<script type="text/javascript" src="js/libs/fullcalendar.js"></script>
   <script type="text/javascript" src="js/libs/select2.min.js"></script>
   <script type="text/javascript" src="js/libs/jquery-csp.js"></script>
-	
+	<script type="text/javascript" src="js/spin.min.js"></script>
+  <script type="text/javascript" src="js/ladda.min.js"></script>
+
   <!-- Views-related scripts -->
   <script type="text/javascript" src="js/templates.js"></script>
   <script type="text/javascript" src="js/views.js"></script>
@@ -122,7 +125,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Connect</button>
+        <button type="button" class="btn btn-primary ladda-button" data-style="expand-left">
+          <span class="ladda-label">Connect</span>
+        </button>
       </div>
     </div>
   </div>
@@ -131,7 +136,11 @@
 <div class="jumbotron">
   <h1>Hello, World!</h1>
   <p>Thanks for installing JIRA Assist extension. The only step left is to connect JIRA server to the extension. Please, press the "Connect Now" button below.</p>
-  <p><a class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#dlg-connect">Connect Now</a></p>
+  <p>
+    <a class="btn btn-primary btn-lg ladda-butto" role="button" data-toggle="modal" data-target="#dlg-connect">
+      <span class="ladda-label">Connect Now</span>
+    </a>
+  </p>
 </div>
 
 </body>

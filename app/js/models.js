@@ -213,7 +213,7 @@ var ServerModel = Backbone.Model.extend({
 		this.on('login', function(e) {
 			var this_ = this;
 			var api = new JIRA(e.url);
-			api.login(e.username, e.password, function(res, data){
+			api.login(e.username, e.password, function(res, data) {
 				if (res) {
 					this_.set({
 						'url': e.url,

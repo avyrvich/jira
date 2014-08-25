@@ -27,7 +27,7 @@ templates.filterButton = function(opt_data, opt_ignored) {
 
 
 templates.filterButtonSet = function(opt_data, opt_ignored) {
-  return '<div class="btn-group pull-right btn-group-xs"><button type="button" class="btn btn-default filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</button><button type="button" class="btn btn-default filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</button><button type="button" class="btn btn-default filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</button></div>';
+  return '<div class="btn-group pull-right btn-group-sm"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">View<span class="caret"></span></button><ul class="dropdown-menu"><li><a href="#" data-type="1" class="filter-edit-view">Table</a></li><li><a href="#" data-type="2" class="filter-edit-view">Calendar</a></li></ul></div><button type="button" class="btn btn-default filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</button><button type="button" class="btn btn-default filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</button><button type="button" class="btn btn-default filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</button></div>';
 };
 
 
