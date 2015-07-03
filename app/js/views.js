@@ -76,9 +76,11 @@ var FilterView = Backbone.View.extend({
 			});
 		},
 		'click .start-progress': function(evt) {
+			
 			this.model.issues.findWhere({
 				'key': this.getKeyByNode(evt.target)
 			}).progress(true);
+
 		},
 		'click .stop-progress': function(evt) {
 			this.model.issues.findWhere({
@@ -93,9 +95,6 @@ var FilterView = Backbone.View.extend({
 				model: this.model
 			});
 		},
-		'click .filter-edit-view': function(evt) {
-			this.model.set('type', parseInt(evt.target.getAttribute('data-type')));
-		},
 		'click .filter-delete': function() {
 			var this_ = this;
 			$(templates.dlgConfirm({
@@ -104,7 +103,9 @@ var FilterView = Backbone.View.extend({
 			})).modal('show').find('.btn-primary').click(function() {
 				app.server.filters.remove(this_.model);
 			});
-		}
+		},
+		'change #swch.onoffswitch': 'swithched',
+		'click .filter-newrender': 'sw'
 	},
 	initialize: function() {
 		var this_ = this;
@@ -164,11 +165,11 @@ var FilterView = Backbone.View.extend({
 						var defaultDuration = 3600;
 						var startDate = issue.get('duedate');
 						var duration = (issue.get('estimate') || defaultDuration) * 1000;
-						for (var i = 0; i < index; i++) {
-							if (issues[i].get('duedate').getTime() === issue.get('duedate').getTime()) {
-								startDate = new Date(startDate.getTime() + (issues[i].get('estimate') || defaultDuration) * 1000);
-							}
-						}
+						//for (var i = 0; i < index; i++) {
+					    //	if (issues[i].get('duedate').getTime() === issue.get('duedate').getTime()) {
+						//		startDate = new Date(startDate.getTime() + (issues[i].get('estimate') || defaultDuration) * 1000);
+						//	}
+						//}
 						return {
 							'allDay': false,
 							'title': issue.get('key') + ': ' + issue.get('summary'),
@@ -192,13 +193,47 @@ var FilterView = Backbone.View.extend({
 					});
 				},
 				eventDrop: function(event, delta) {
-					event.issue.changeDuedate(event);
+					event.issue.trigger('change:duedate', event);
 				},
 				eventResize: function(event, delta) {
-					event.issue.changeEstimate(event);
+					event.issue.trigger('change:estiamte', event);
 				}
 			})
 		);
+	},
+	swithched: function() {
+		//for radiobuttons
+		if (this.model.get('type')==app.FILTER_TYPE_TABLE) {
+			this.$el.html(templates.filterButtonSet({
+				'type' : app.FILTER_TYPE_CALENDAR
+			}));
+			this.model.set('type', app.FILTER_TYPE_CALENDAR);
+		}else{
+			try{
+				this.$el.html(templates.filterButtonSet({
+				'type' : app.FILTER_TYPE_TABLE
+				}));
+				this.model.set('type', app.FILTER_TYPE_TABLE);					
+			}catch(e){
+				this.initialize();
+				this.$el.html(templates.filterButtonSet({
+				'type' : app.FILTER_TYPE_TABLE
+				}));
+			}
+			
+		};
+	},
+	sw: function(){
+		if (this.model.get('type')==app.FILTER_TYPE_TABLE) {
+			this.model.set('type', app.FILTER_TYPE_CALENDAR);
+		}else{
+			try{
+				this.model.set('type', app.FILTER_TYPE_TABLE);					
+			}catch(e){
+				this.initialize();
+			}
+			
+		};
 	}
 });
 
@@ -245,7 +280,7 @@ var FilterEditView = Backbone.View.extend({
 	},
 	create: function() {
 		var attributes = this.getValues();
-		app.server.filters.add(attributes);
+			app.server.filters.add(attributes);
 	}
 });
 
@@ -367,15 +402,6 @@ var NavBarView = Backbone.View.extend({
 		'click .filter-create': function() {
 			new FilterEditView();
 		}
-	},
-	'unload': function() {
-		$.each(this.filters, function(i, filter) {
-			filter.remove();
-		});
-		$.each(this.buttons, function(i, button) {
-			button.remove();
-		});
-		this.remove();
 	},
 	'connect': function(e) {
 		//console.log($('#dlg-connect').modal('show'));

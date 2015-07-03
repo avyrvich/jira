@@ -1,6 +1,6 @@
 //-------------------------------------------------------
 //-- Controller
-var app = app || {};
+
 $(function() {
 	moment.lang('en', {
 	    relativeTime : {
@@ -20,8 +20,4 @@ $(function() {
 	});
 	
 	app.navbar = new NavBarView({'el': $('#navbar')});
-
-	$(window).bind('unload', function() {
-		app.navbar.unload();
-	})
 })

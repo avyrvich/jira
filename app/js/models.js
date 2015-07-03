@@ -78,7 +78,7 @@ var Issue = Backbone.Model.extend({
 			this.unset('started');
 			chrome.storage.local.remove(this.get('key'));
 		}
-		this_.collection.filter.trigger('updated');
+		this.collection.filter.trigger('updated');
 	},
 	assign: function(username) {
 		var this_ = this;
@@ -120,7 +120,7 @@ var Filter = Backbone.Model.extend({
 		this_.issues = new Issues();
 		this_.issues.filter = this_;
 		this_.issues.on('reset', function() {
-			this_.trigger('updated');
+			this_.trigger('updated', this_);
 			this_.updateBadge();
 		});
 
@@ -129,7 +129,7 @@ var Filter = Backbone.Model.extend({
 				this.update();
 			},
 			'change': function() {
-				this_.trigger('updated');
+				this_.trigger('updated', this_);
 			}
 		});
 
@@ -213,7 +213,7 @@ var ServerModel = Backbone.Model.extend({
 		this.on('login', function(e) {
 			var this_ = this;
 			var api = new JIRA(e.url);
-			api.login(e.username, e.password, function(res, data) {
+			api.login(e.username, e.password, function(res, data){
 				if (res) {
 					this_.set({
 						'url': e.url,

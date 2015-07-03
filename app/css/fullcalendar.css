@@ -239,6 +239,9 @@ a.fc-event {
   border-style: solid;
   border-width: 0;
   overflow: hidden; }
+.fc-event-inner.success{
+  background-color: #dff0d8;
+}
 
 .fc-event-time, .fc-event-title {
   padding: 0 1px; }
