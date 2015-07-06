@@ -197,9 +197,19 @@ var FilterView = Backbone.View.extend({
 				},
 				eventResize: function(event, delta) {
 					event.issue.trigger('change:estiamte', event);
-				}
+				},
+
+				eventClick: function(calEvent, jsEvent, view) {
+			        //alert('Event: ' + calEvent.title);
+			        //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+			        //alert('View: ' + view.name);
+			        // change the border color just for fun
+			        $('#calendarModal').modal('show');  
+			        $(this).css('border-color', 'red');
+			    }
 			})
 		);
+		this.$el.append(templates.calendarModal());
 	},
 	swithched: function() {
 		//for radiobuttons

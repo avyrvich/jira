@@ -56,28 +56,6 @@
     <button type="button" class="btn btn-default filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</button>
   </div>
   
-  <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="CalendarModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Modal title</h4>
-      </div>
-      <div class="modal-body">
-       <div class="btn-group">
-        <ul class="nav nav-pills nav-stacked">
-          <li><a href="#" class="start-progress">Start Progress</a></li>
-          <li><a href="#" class="log-issue">Log Work</a></li>
-          <li class="divider"></li>
-          <li><a href="#" class="assign-issue">Assign</a></li>
-          <li><a href="#" class="resolve-issue">Resolve</a></li>
-          <li><a href="#" class="comment-issue">Comment</a></li>
-        </ul>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 {/template}
 
 
@@ -374,4 +352,32 @@
     </div>
   </div>
 </div>
+{/template}
+
+
+/**
+ * Calendar Modal Action Bar
+ */
+{template .calendarModal}
+<div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="CalendarModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+       <div class="btn-group">
+        <ul class="nav nav-pills nav-stacked">
+          <li><a href="#" class="start-progress">Start Progress</a></li>
+          <li><a href="#" class="log-issue">Log Work</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="assign-issue">Assign</a></li>
+          <li><a href="#" class="resolve-issue">Resolve</a></li>
+          <li><a href="#" class="comment-issue">Comment</a></li>
+        </ul>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {/template}
