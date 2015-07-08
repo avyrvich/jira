@@ -1,6 +1,6 @@
 //-------------------------------------------------------
 //-- Views
-
+var cal=null;
 var FilterView = Backbone.View.extend({
 	getKeyByNode: function(node) {
 		return $(node).parents('[jira-key]').attr('jira-key');
@@ -22,6 +22,7 @@ var FilterView = Backbone.View.extend({
 					'key': this.getKeyByNode(evt.target)
 				})
 			});
+			
 		},
 		'click .resolve-issue': function(evt) {
 			new IssueEditView({
@@ -40,6 +41,7 @@ var FilterView = Backbone.View.extend({
 					'key': this.getKeyByNode(evt.target)
 				})
 			});
+			$('div').remove(".modal-backdrop");
 		},
 		'click .assign-issue': function(evt) {
 			new IssueEditView({
@@ -74,18 +76,20 @@ var FilterView = Backbone.View.extend({
 					'key': this.getKeyByNode(evt.target)
 				})
 			});
+			$('div').remove(".modal-backdrop");
 		},
 		'click .start-progress': function(evt) {
-			
 			this.model.issues.findWhere({
 				'key': this.getKeyByNode(evt.target)
 			}).progress(true);
-
+			$('div').remove(".modal-backdrop");
+			
 		},
 		'click .stop-progress': function(evt) {
 			this.model.issues.findWhere({
 				'key': this.getKeyByNode(evt.target)
 			}).progress(false);
+			$('div').remove(".modal-backdrop");
 		},
 		'click .filter-update': function() {
 			this.model.update();
@@ -104,8 +108,14 @@ var FilterView = Backbone.View.extend({
 				app.server.filters.remove(this_.model);
 			});
 		},
-		'change #swch.onoffswitch': 'swithched',
-		'click .filter-newrender': 'sw'
+		'click .filter-edit-view': function(evt) {
+				try{
+					this.model.set('type', parseInt(evt.target.getAttribute('data-type')));
+				}catch(e){
+					console.log(e);
+					this.initialize();
+				}
+		},
 	},
 	initialize: function() {
 		var this_ = this;
@@ -154,6 +164,8 @@ var FilterView = Backbone.View.extend({
 	},
 	renderCalendar: function() {
 		var view = this;
+		cal=this;				
+		
 		this.$el.append(
 			$('<div />').fullCalendar({
 				'defaultView': 'agendaWeek',
@@ -191,6 +203,11 @@ var FilterView = Backbone.View.extend({
 						'placement': 'top',
 						'trigger': 'hover'
 					});
+					element.find('.fc-event-title').attr('jira-key', event.issue.get('key'));
+				 	if(event.issue.get('started')) {
+						element.find('.fc-event-inner').addClass('success');
+					};
+	
 				},
 				eventDrop: function(event, delta) {
 					event.issue.trigger('change:duedate', event);
@@ -200,50 +217,21 @@ var FilterView = Backbone.View.extend({
 				},
 
 				eventClick: function(calEvent, jsEvent, view) {
-			        //alert('Event: ' + calEvent.title);
+			        //alert('Event: ' + calEvent.issue.attributes.key);
 			        //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
 			        //alert('View: ' + view.name);
 			        // change the border color just for fun
-			        $('#calendarModal').modal('show');  
+			        $('#calendarModal').remove();
+			        cal.$el.append(templates.calendarModal({
+						'key' :calEvent.issue.attributes.key,
+						'started' : calEvent.issue.attributes.started
+						}));
+			        $('#calendarModal').modal('show').attr('jira-key', calEvent.issue.attributes.key);
 			        $(this).css('border-color', 'red');
 			    }
 			})
 		);
-		this.$el.append(templates.calendarModal());
-	},
-	swithched: function() {
-		//for radiobuttons
-		if (this.model.get('type')==app.FILTER_TYPE_TABLE) {
-			this.$el.html(templates.filterButtonSet({
-				'type' : app.FILTER_TYPE_CALENDAR
-			}));
-			this.model.set('type', app.FILTER_TYPE_CALENDAR);
-		}else{
-			try{
-				this.$el.html(templates.filterButtonSet({
-				'type' : app.FILTER_TYPE_TABLE
-				}));
-				this.model.set('type', app.FILTER_TYPE_TABLE);					
-			}catch(e){
-				this.initialize();
-				this.$el.html(templates.filterButtonSet({
-				'type' : app.FILTER_TYPE_TABLE
-				}));
-			}
-			
-		};
-	},
-	sw: function(){
-		if (this.model.get('type')==app.FILTER_TYPE_TABLE) {
-			this.model.set('type', app.FILTER_TYPE_CALENDAR);
-		}else{
-			try{
-				this.model.set('type', app.FILTER_TYPE_TABLE);					
-			}catch(e){
-				this.initialize();
-			}
-			
-		};
+		
 	}
 });
 

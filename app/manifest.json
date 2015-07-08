@@ -32,7 +32,8 @@
       "all_frames": false,
       "js": [
         "js/libs/jquery-1.11.0.min.js",
-        "js/content/dragdrop.js"
+        "js/content/content.js",
+        "js/content/jquery.paste_image_reader.js"
       ],
       "css": [
         "css/content.css"
