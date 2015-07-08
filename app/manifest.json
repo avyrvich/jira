@@ -34,6 +34,7 @@
         "js/libs/jquery-1.11.0.min.js",
         "js/content/content.js",
         "js/content/jquery.paste_image_reader.js"
+
       ],
       "css": [
         "css/content.css"

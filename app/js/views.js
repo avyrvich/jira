@@ -224,7 +224,8 @@ var FilterView = Backbone.View.extend({
 			        $('#calendarModal').remove();
 			        cal.$el.append(templates.calendarModal({
 						'key' :calEvent.issue.attributes.key,
-						'started' : calEvent.issue.attributes.started
+						'started' : calEvent.issue.attributes.started,
+						'url' : calEvent.issue.attributes.url
 						}));
 			        $('#calendarModal').modal('show').attr('jira-key', calEvent.issue.attributes.key);
 			        $(this).css('border-color', 'red');

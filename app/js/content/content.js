@@ -130,6 +130,7 @@ jira.initCopyPaste = function() {
 }
 
 
+
 $(function() {
 	if (jira.getURL()) {
 		jira.initDragAndDrop();
