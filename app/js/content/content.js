@@ -68,14 +68,65 @@ jira.initDragAndDrop = function() {
 };
 
 jira.initCopyPaste = function() {
-	$('textarea[name="comment"]').pasteImageReader(function(results) {
-		var textarea = this;
-		jira.attachFiles(results, function(attachments) {
-			$.each(attachments, function(i, attachment) {
-				textarea.value += '!'+attachment['filename']+'!'
+	$('body').on('click', '#footer-comment-button', (function(event) {
+		/* Act on the event */
+		$('textarea[name="comment"]').pasteImageReader(function(results) {
+			var textarea = this;
+			jira.attachFiles(results, function(attachments) {
+				$.each(attachments, function(i, attachment) {
+					textarea.value += '!'+attachment['filename']+'!'
+				});
 			});
 		});
-	});
+	}));
+
+	$('body').on('click', '#comment-issue', (function(event) {
+		/* Act on the event */
+		$('textarea[name="comment"]').pasteImageReader(function(results) {
+			var textarea = this;
+			jira.attachFiles(results, function(attachments) {
+				$.each(attachments, function(i, attachment) {
+					textarea.value += '!'+attachment['filename']+'!'
+				});
+			});
+		});
+	}));
+
+	$('body').on('click', '#log-work', (function(event) {
+		/* Act on the event */
+		$('textarea[name="comment"]').pasteImageReader(function(results) {
+			var textarea = this;
+			jira.attachFiles(results, function(attachments) {
+				$.each(attachments, function(i, attachment) {
+					textarea.value += '!'+attachment['filename']+'!'
+				});
+			});
+		});
+	}));
+	$('body').on('click', '#attach-file', (function(event) {
+		/* Act on the event */
+		$('textarea[name="comment"]').pasteImageReader(function(results) {
+			var textarea = this;
+			jira.attachFiles(results, function(attachments) {
+				$.each(attachments, function(i, attachment) {
+					textarea.value += '!'+attachment['filename']+'!'
+				});
+			});
+		});
+	}));
+	$('body').on('click', '#edit-issue', (function(event) {
+		/* Act on the event */
+		setTimeout(function(){
+			$('textarea[name="comment"]').pasteImageReader(function(results) {
+				var textarea = this;
+				jira.attachFiles(results, function(attachments) {
+					$.each(attachments, function(i, attachment) {
+						textarea.value += '!'+attachment['filename']+'!'
+					});
+				});
+			});
+		}, 1000);
+	}));
 }
 
 
@@ -85,3 +136,5 @@ $(function() {
 		jira.initCopyPaste();
 	}
 });
+
+
