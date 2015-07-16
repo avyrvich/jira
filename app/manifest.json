@@ -27,25 +27,21 @@
       "js/app.js"
     ]
   },
-  "content_scripts": [
-    {
-      "all_frames": false,
-      "js": [
-        "js/libs/jquery-1.11.0.min.js",
-        "js/content/content.js",
-        "js/content/pasteRTF.js",
-        "js/content/jquery.paste_image_reader.js"
-
-      ],
-      "css": [
-        "css/content.css"
-      ],
-      "matches": [
-        "<all_urls>"
-      ],
-      "run_at": "document_start"
-    }
-  ],
+  "content_scripts": [{
+    "all_frames": false,
+    "js": [
+      "js/libs/jquery-1.11.0.min.js",
+      "js/content/content.js",
+      "js/content/jquery.paste_image_reader.js"
+    ],
+    "css": [
+      "css/content.css"
+    ],
+    "matches": [
+      "<all_urls>"
+    ],
+    "run_at": "document_start"
+  }],
   "browser_action": {
     "default_icon": {
       "19": "img/logo-18.png",

@@ -1,4 +1,3 @@
-
 //-------------------------------------------------------
 //-- Models
 
@@ -36,7 +35,7 @@ var Issue = Backbone.Model.extend({
 			'change:estiamte': function(e) {
 				app.server.api.updateIssue(this.get('self'), {
 					'timetracking': {
-						'originalEstimateSeconds': (e.end - e.start)/1000
+						'originalEstimateSeconds': (e.end - e.start) / 1000
 					}
 				}, function(issue) {
 					this_.set({
@@ -58,7 +57,7 @@ var Issue = Backbone.Model.extend({
 	changeEstimate: function(event) {
 		app.server.api.updateIssue(this.get('self'), {
 			'timetracking': {
-				'originalEstimateSeconds': (event.end - event.start)/1000
+				'originalEstimateSeconds': (event.end - event.start) / 1000
 			}
 		}, function(issue) {
 			this_.set({
@@ -68,7 +67,9 @@ var Issue = Backbone.Model.extend({
 	},
 	progress: function(started) {
 		if (started) {
-			this.set({'started': new Date()});
+			this.set({
+				'started': new Date()
+			});
 			var obj = {};
 			obj[this.get('key')] = {
 				'started': new Date()
@@ -113,7 +114,7 @@ var Issues = Backbone.Collection.extend({
 });
 
 var Filter = Backbone.Model.extend({
-	UPDATE_INTERVAL: 1*60000, // 1min
+	UPDATE_INTERVAL: 1 * 60000, // 1min
 	timeout: null,
 	'initialize': function(filter) {
 		var this_ = this;
@@ -160,15 +161,15 @@ var Filter = Backbone.Model.extend({
 	}
 });
 
-var Filters = Backbone.Collection.extend({ 
-    model: Filter
+var Filters = Backbone.Collection.extend({
+	model: Filter
 });
 
 
 var ServerModel = Backbone.Model.extend({
 	filters: new Filters,
 	api: null,
-	sync: function(cmd, server){
+	sync: function(cmd, server) {
 		var this_ = this;
 		if (cmd === 'read') {
 			chrome.storage.local.get('server', function(data) {
@@ -213,7 +214,7 @@ var ServerModel = Backbone.Model.extend({
 		this.on('login', function(e) {
 			var this_ = this;
 			var api = new JIRA(e.url);
-			api.login(e.username, e.password, function(res, data){
+			api.login(e.username, e.password, function(res, data) {
 				if (res) {
 					this_.set({
 						'url': e.url,
@@ -239,7 +240,7 @@ var ServerModel = Backbone.Model.extend({
 				this.trigger('change');
 			}
 		});
-		
+
 		this.fetch();
 	}
 });

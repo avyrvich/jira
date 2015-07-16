@@ -1,6 +1,6 @@
 //-------------------------------------------------------
 //-- Views
-var cal=null;
+var cal = null;
 var FilterView = Backbone.View.extend({
 	getKeyByNode: function(node) {
 		return $(node).parents('[jira-key]').attr('jira-key');
@@ -9,33 +9,33 @@ var FilterView = Backbone.View.extend({
 		'click .comment-issue': function(evt) {
 			new IssueEditView({
 				options: {
-						title: 'Post Comment',
-						button: 'Post Comment',
-						fields: {
-							log: false,
-							comment: true,
-							resolution: false,
-							assignee: false
-						}
+					title: 'Post Comment',
+					button: 'Post Comment',
+					fields: {
+						log: false,
+						comment: true,
+						resolution: false,
+						assignee: false
+					}
 				},
 				model: this.model.issues.findWhere({
 					'key': this.getKeyByNode(evt.target)
 				})
 			});
-			
+
 		},
 		'click .resolve-issue': function(evt) {
 			new IssueEditView({
 				options: {
-						title: 'Resolve Issue',
-						button: 'Resolve',
-						resolution: 1,
-						fields: {
-							log: false,
-							comment: true,
-							resolution: true,
-							assignee: false
-						}
+					title: 'Resolve Issue',
+					button: 'Resolve',
+					resolution: 1,
+					fields: {
+						log: false,
+						comment: true,
+						resolution: true,
+						assignee: false
+					}
 				},
 				model: this.model.issues.findWhere({
 					'key': this.getKeyByNode(evt.target)
@@ -46,14 +46,14 @@ var FilterView = Backbone.View.extend({
 		'click .assign-issue': function(evt) {
 			new IssueEditView({
 				options: {
-						title: 'Change Assignee',
-						button: 'Assign',
-						fields: {
-							log: false,
-							comment: true,
-							resolution: false,
-							assignee: true
-						}
+					title: 'Change Assignee',
+					button: 'Assign',
+					fields: {
+						log: false,
+						comment: true,
+						resolution: false,
+						assignee: true
+					}
 				},
 				model: this.model.issues.findWhere({
 					'key': this.getKeyByNode(evt.target)
@@ -83,7 +83,6 @@ var FilterView = Backbone.View.extend({
 				'key': this.getKeyByNode(evt.target)
 			}).progress(true);
 			$('div').remove(".modal-backdrop");
-			
 		},
 		'click .stop-progress': function(evt) {
 			this.model.issues.findWhere({
@@ -109,12 +108,12 @@ var FilterView = Backbone.View.extend({
 			});
 		},
 		'click .filter-edit-view': function(evt) {
-				try{
-					this.model.set('type', parseInt(evt.target.getAttribute('data-type')));
-				}catch(e){
-					console.log(e);
-					this.initialize();
-				}
+			try {
+				this.model.set('type', parseInt(evt.target.getAttribute('data-type')));
+			} catch (e) {
+				console.log(e);
+				this.initialize();
+			}
 		},
 	},
 	initialize: function() {
@@ -127,8 +126,9 @@ var FilterView = Backbone.View.extend({
 		function onUpdated() {
 			this_.render();
 		}
+
 		function onRemoved() {
-			this_.remove();		
+			this_.remove();
 		}
 
 		this.listenTo(this.model, {
@@ -154,7 +154,7 @@ var FilterView = Backbone.View.extend({
 		var $tbody = this.$el.append(templates.filterTable()).find('tbody');
 		$.each(this.model.issues.models, function(i, issue) {
 			$tbody.append(templates.filterTableRow(
-				$.extend({}, issue.attributes,  {
+				$.extend({}, issue.attributes, {
 					'estimate': issue.get('estimate') ? moment.duration(issue.get('estimate'), 's').humanize() : '',
 					'duedate': issue.get('duedate') ? moment(issue.get('duedate')).format('l') : ''
 				})
@@ -164,8 +164,8 @@ var FilterView = Backbone.View.extend({
 	},
 	renderCalendar: function() {
 		var view = this;
-		cal=this;				
-		
+		cal = this;
+
 		this.$el.append(
 			$('<div />').fullCalendar({
 				'defaultView': 'agendaWeek',
@@ -178,7 +178,7 @@ var FilterView = Backbone.View.extend({
 						var startDate = issue.get('duedate');
 						var duration = (issue.get('estimate') || defaultDuration) * 1000;
 						//for (var i = 0; i < index; i++) {
-					    //	if (issues[i].get('duedate').getTime() === issue.get('duedate').getTime()) {
+						//	if (issues[i].get('duedate').getTime() === issue.get('duedate').getTime()) {
 						//		startDate = new Date(startDate.getTime() + (issues[i].get('estimate') || defaultDuration) * 1000);
 						//	}
 						//}
@@ -191,7 +191,9 @@ var FilterView = Backbone.View.extend({
 							'issue': issue
 						};
 					}
-				}).filter(function(obj) {return !!obj}),
+				}).filter(function(obj) {
+					return !!obj
+				}),
 				'eventRender': function(event, element) {
 					element.popover({
 						'title': event.issue.get('key'),
@@ -204,10 +206,10 @@ var FilterView = Backbone.View.extend({
 						'trigger': 'hover'
 					});
 					element.find('.fc-event-title').attr('jira-key', event.issue.get('key'));
-				 	if(event.issue.get('started')) {
+					if (event.issue.get('started')) {
 						element.find('.fc-event-inner').addClass('success');
 					};
-	
+
 				},
 				eventDrop: function(event, delta) {
 					event.issue.trigger('change:duedate', event);
@@ -217,22 +219,22 @@ var FilterView = Backbone.View.extend({
 				},
 
 				eventClick: function(calEvent, jsEvent, view) {
-			        //alert('Event: ' + calEvent.issue.attributes.key);
-			        //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-			        //alert('View: ' + view.name);
-			        // change the border color just for fun
-			        $('#calendarModal').remove();
-			        cal.$el.append(templates.calendarModal({
-						'key' :calEvent.issue.attributes.key,
-						'started' : calEvent.issue.attributes.started,
-						'url' : calEvent.issue.attributes.url
-						}));
-			        $('#calendarModal').modal('show').attr('jira-key', calEvent.issue.attributes.key);
-			        $(this).css('border-color', 'red');
-			    }
+					//alert('Event: ' + calEvent.issue.attributes.key);
+					//alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+					//alert('View: ' + view.name);
+					// change the border color just for fun
+					$('#calendarModal').remove();
+					cal.$el.append(templates.calendarModal({
+						'key': calEvent.issue.attributes.key,
+						'started': calEvent.issue.attributes.started,
+						'url': calEvent.issue.attributes.url
+					}));
+					$('#calendarModal').modal('show').attr('jira-key', calEvent.issue.attributes.key);
+					$(this).css('border-color', 'red');
+				}
 			})
 		);
-		
+
 	}
 });
 
@@ -279,7 +281,7 @@ var FilterEditView = Backbone.View.extend({
 	},
 	create: function() {
 		var attributes = this.getValues();
-			app.server.filters.add(attributes);
+		app.server.filters.add(attributes);
 	}
 });
 
@@ -288,7 +290,7 @@ var FilterEditView = Backbone.View.extend({
 
 var NavBarBtnView = Backbone.View.extend({
 	events: {
-		'click a.filter-show': function (e) {
+		'click a.filter-show': function(e) {
 			$(e.target.getAttribute('href')).fullCalendar('render');
 		}
 	},
@@ -304,9 +306,9 @@ var NavBarBtnView = Backbone.View.extend({
 			this.$el.find('[data-toggle="tab"]').tab('show');
 		}
 		this.listenTo(this.model, {
-			'updated': function(){
+			'updated': function() {
 				this.$el.find('.badge').text(this.model.issues.length);
-			}, 
+			},
 			'change:name': function() {
 				this.$el.find('.title').text(this.model.get('name'));
 			},
@@ -414,6 +416,7 @@ var NavBarView = Backbone.View.extend({
 				'message': message
 			}));
 		}
+
 		function connectionError(message) {
 			$('body').append(
 				templates.errorMessage({
@@ -422,6 +425,7 @@ var NavBarView = Backbone.View.extend({
 				})
 			);
 		}
+
 		function onConnected() {
 			$('.jumbotron').hide();
 			$('#dropdown-filters').removeClass('hide');
