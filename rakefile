@@ -5,28 +5,21 @@ require 'zip'
 require 'json'
 
 $OUTPUT_FILENAME = './jira.zip'
-$OUTPUT_CRX = './jira.crx'
 $SRC_FOLDER = './app/'
 $WORKING_FOLDER = './release/'
 $version = '0.0.0.1'
-$manifest = 'manifest.json'
-$pem = 'app.pem'
-
 task build: ["jira:build"]
 
 namespace :jira do
 
-  task :increment do
-  	json = File.read("#{$SRC_FOLDER}#{$manifest}")
+  task :init do
+  	json = File.read("#{$SRC_FOLDER}manifest.json")
 		manifest = JSON.parse(json)
 		versions = manifest['version'].split('.')
 		versions[3] = Integer(versions[3])+1
 		$version = versions.join('.')
 		manifest['version'] = $version
-		File.write("#{$SRC_FOLDER}#{$manifest}", JSON.pretty_generate(manifest))
-
-		rm Dir.glob("#{$WORKING_FOLDER}*.json")
-		File.write("#{$WORKING_FOLDER}manifest.json", manifest.to_json)
+		File.write("#{$SRC_FOLDER}manifest.json", JSON.pretty_generate(manifest))
  	end
 
 	task :copy do
@@ -58,11 +51,7 @@ namespace :jira do
 		rm_rf $WORKING_FOLDER
 	end
 
-	task :src => [:copy,:increment,:compileSOY,:compileLESS]
- 	task :build => [:src,:pack,:clean] 
+ 	task :build => [:init,:copy,:compileSOY,:compileLESS,:pack,:clean] 
 
- 	task :app do
- 		$manifest = 'manifest.app.json'
- 		Rake::Task['build'].invoke
- 	end
+
 end 

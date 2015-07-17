@@ -1,27 +1,25 @@
 //-------------------------------------------------------
 //-- Controller
-var app = app || {};
+
 $(function() {
 	moment.lang('en', {
-	    relativeTime : {
+		relativeTime: {
 			past: "1m",
-			s:  "1m",
-			m:  "1m",
+			s: "1m",
+			m: "1m",
 			mm: "%dm",
-			h:  "1h",
+			h: "1h",
 			hh: "%dh",
-			d:  "1d",
+			d: "1d",
 			dd: "%dd",
-			M:  "1M",
+			M: "1M",
 			MM: "%dM",
-			y:  "1y",
+			y: "1y",
 			yy: "%dy"
-	    }
+		}
 	});
-	
-	app.navbar = new NavBarView({'el': $('#navbar')});
 
-	$(window).bind('unload', function() {
-		app.navbar.unload();
-	})
+	app.navbar = new NavBarView({
+		'el': $('#navbar')
+	});
 })

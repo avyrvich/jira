@@ -1,22 +1,20 @@
-
 function JIRA(_serverURL, token) {
 	var self = this;
 	var serverURL = _serverURL;
 	this.token = token;
 	this.resolutions = [];
 
-
 	function init(callback) {
 		$.ajaxSetup({
-			'beforeSend': function(xhr) { 
-				xhr.setRequestHeader('Authorization', this.token); 
+			'beforeSend': function(xhr) {
+				xhr.setRequestHeader('Authorization', this.token);
 			}
 		});
 		return $.ajax({
 			'url': serverURL + '/rest/api/2/resolution'
-		}).then( function(data) {
-				self.resolutions = data;
-				callback(true, self.token);
+		}).then(function(data) {
+			self.resolutions = data;
+			callback(true, self.token);
 		});
 	}
 
@@ -29,8 +27,8 @@ function JIRA(_serverURL, token) {
 		return $.ajax({
 			'url': serverURL + '/rest/auth/1/session',
 			'type': 'GET',
-			'beforeSend': function (xhr){ 
-				xhr.setRequestHeader('Authorization', make_base_auth(username, password)); 
+			'beforeSend': function(xhr) {
+				xhr.setRequestHeader('Authorization', make_base_auth(username, password));
 			},
 			'success': function(response) {
 				self.token = make_base_auth(username, password);
@@ -39,20 +37,24 @@ function JIRA(_serverURL, token) {
 			'error': function(xhr) {
 				var err = '';
 				switch (xhr.status) {
-					case 404: err = 'Server not found'; break;
-					case 403: 
+					case 404:
+						err = 'Server not found';
+						break;
+					case 403:
 						if (xhr.getResponseHeader('X-Authentication-Denied-Reason')) {
 							var url = xhr.getResponseHeader('X-Authentication-Denied-Reason').split('url=').pop();
-							err = 'Unable to login. Please login manually at <a href="'+url+'">' + url + '</a>';
+							err = 'Unable to login. Please login manually at <a href="' + url + '">' + url + '</a>';
 						} else {
 							err = 'Encountered a 403 - Forbidden error while auth request';
 						}
 						break;
-					case 401: err = 'Username or password is incorrect'; break;
-					default: 
+					case 401:
+						err = 'Username or password is incorrect';
+						break;
+					default:
 						try {
 							res = JSON.parse(xhr.responseText)['errorMessages'].join('\n');
-						} catch(e) {
+						} catch (e) {
 							err = 'Unknown error';
 						}
 				}
@@ -74,8 +76,8 @@ function JIRA(_serverURL, token) {
 		return $.ajax({
 			'url': serverURL + '/rest/auth/1/session',
 			'type': 'GET',
-			'beforeSend': function(xhr) { 
-				xhr.setRequestHeader('Authorization', this.token); 
+			'beforeSend': function(xhr) {
+				xhr.setRequestHeader('Authorization', this.token);
 			},
 			'success': function(response) {
 				init(callback);
@@ -112,68 +114,76 @@ function JIRA(_serverURL, token) {
 
 	this.updateIssue = function(url, filds, callback) {
 		return $.ajax({
-			'url': url, 
+			'url': url,
 			'type': 'PUT',
-			'contentType': 'application/json', 
+			'contentType': 'application/json',
 			'data': JSON.stringify({
 				'fields': filds
-			}), 
-			'success': function(data){ callback && callback(data); } 
+			}),
+			'success': function(data) {
+				callback && callback(data);
+			}
 		});
 	};
 
 	this.assign = function(url, name, callback) {
 		return $.ajax({
-			'url': url + '/assignee', 
+			'url': url + '/assignee',
 			'type': 'PUT',
-			'contentType': 'application/json', 
+			'contentType': 'application/json',
 			'data': JSON.stringify({
 				'name': name
-			}), 
-			'success': function(data){ callback && callback(data); } 
+			}),
+			'success': function(data) {
+				callback && callback(data);
+			}
 		});
 	};
 
 	this.comment = function(url, msg, callback) {
 		return $.ajax({
-			'url': url + '/comment', 
+			'url': url + '/comment',
 			'type': 'POST',
-			'contentType': 'application/json', 
+			'contentType': 'application/json',
 			'data': JSON.stringify({
 				'body': msg
-			}), 
-			'success': function(data){ callback && callback(data); } 
+			}),
+			'success': function(data) {
+				callback && callback(data);
+			}
 		});
 	};
 
 	this.worklog = function(url, data, callback) {
 		return $.ajax({
-			'url': url + '/worklog?adjustEstimate=auto&reduceBy', 
+			'url': url + '/worklog?adjustEstimate=auto&reduceBy',
 			'type': 'POST',
-			'contentType': 'application/json', 
-			'data': JSON.stringify(data), 
-			'success': function(data){ callback && callback(data); } 
+			'contentType': 'application/json',
+			'data': JSON.stringify(data),
+			'success': function(data) {
+				callback && callback(data);
+			}
 		});
 	};
 
 	this.resolve = function(url, resolution, callback) {
 		return $.ajax({
-			'url': url + '/transitions', 
+			'url': url + '/transitions',
 			'type': 'POST',
-			'contentType': 'application/json', 
+			'contentType': 'application/json',
 			'data': JSON.stringify({
 				'transition': {
 					'id': '5'
-	    	},
-	    	'fields': {
-	    		'resolution': {
-	    			'id': resolution
-	    		}
-	    	}
+				},
+				'fields': {
+					'resolution': {
+						'id': resolution
+					}
+				}
 			}),
-			'success': function(data){ 
-				callback && callback(data); 
-			} 
+			'success': function(data) {
+				callback && callback(data);
+			}
 		});
 	};
 
@@ -184,8 +194,10 @@ function JIRA(_serverURL, token) {
 				'issueKey': key
 			},
 			'type': 'GET',
-			'contentType': 'application/json', 
-			'success': function(data){ callback && callback(data); } 
+			'contentType': 'application/json',
+			'success': function(data) {
+				callback && callback(data);
+			}
 		});
 	};
 
@@ -193,8 +205,10 @@ function JIRA(_serverURL, token) {
 		return $.ajax({
 			'url': url + '/transitions',
 			'type': 'GET',
-			'contentType': 'application/json', 
-			'success': function(data){ callback && callback(data['transitions']); } 
+			'contentType': 'application/json',
+			'success': function(data) {
+				callback && callback(data['transitions']);
+			}
 		});
 	};
 
@@ -202,10 +216,10 @@ function JIRA(_serverURL, token) {
 		return $.ajax({
 			'url': serverURL + '/rest/api/2/filter/favourite',
 			'type': 'GET',
-			'contentType': 'application/json', 
-			'success': function(data){ callback && callback(data); } 
+			'contentType': 'application/json',
+			'success': function(data) {
+				callback && callback(data);
+			}
 		});
 	};
-
-
 }

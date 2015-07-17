@@ -45,21 +45,29 @@
  * filter edit buttonset
  */
 {template .filterButtonSet}
-  <div class="btn-group pull-right btn-group-sm">
-    <div class="btn-group">
+  <div class="btn-group pull-right btn-group-xs">
+  
       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        View
+        <span class="glyphicon glyphicon-eye-open"></span> View
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
         <li><a href="#" data-type="1" class="filter-edit-view">Table</a></li>
+        <li class="divider"></li>
         <li><a href="#" data-type="2" class="filter-edit-view">Calendar</a></li>
       </ul>
-    </div>
-    <button type="button" class="btn btn-default filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
-    <button type="button" class="btn btn-default filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
-    <button type="button" class="btn btn-default filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+ 
+    <button type="button" class="btn btn-default filter-update">
+      <span class="glyphicon glyphicon-refresh"></span> Refresh
+    </button>
+    <button type="button" class="btn btn-default filter-edit" data-toggle="modal" data-target="#dlgFilterEdit">
+      <span class="glyphicon glyphicon-pencil"></span> Edit
+    </button>
+    <button type="button" class="btn btn-default filter-delete">
+      <span class="glyphicon glyphicon-trash"></span> Delete
+    </button>
   </div>
+  
 {/template}
 
 
@@ -356,5 +364,41 @@
     </div>
   </div>
 </div>
+{/template}
+
+
+
+/**
+ * Calendar Modal Action Bar
+ * @param key
+ * @param started
+ * @param url
+ */
+{template .calendarModal}
+<div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="CalendarModalLabel">
+  <div class="modal-dialog modal-sm" role="document" style="width:180px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Action menu for:</br> <a href="{$url}" target="_new">{$key}</a></h4>
+      </div>
+      <div class="modal-body">
+       <div class="btn-group">
+        <ul class="nav nav-pills nav-stacked">
+        {if $started}
+          <li><a href="#" class="stop-progress">Stop Progress</a></li>
+        {else}
+          <li><a href="#" class="start-progress">Start Progress</a></li>
+        {/if}
+          <li><a href="#" class="log-issue">Log Work</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="assign-issue">Assign</a></li>
+          <li><a href="#" class="resolve-issue">Resolve</a></li>
+          <li><a href="#" class="comment-issue">Comment</a></li>
+        </ul>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {/template}
 
