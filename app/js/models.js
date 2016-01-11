@@ -13,9 +13,16 @@ var Issue = Backbone.Model.extend({
 				'name': issue['fields']['project']['name'],
 				'iconUrl': issue['fields']['project']['avatarUrls']['16x16']
 			},
+			'fixVersions': _.map(issue['fields']['fixVersions'], function(version) {
+				return {
+					'name': version['name'],
+					'description': version['description'],
+					'url': app.server.get('url') + 'browse/' + issue['fields']['project']['key'] + '/fixforversion/' + version['id']
+				}
+			}),
 			'summary': issue['fields']['summary'],
-			'assignee': issue['fields']['assignee'],
-			'reporter': issue['fields']['reporter'],
+			'assignee': issue['fields']['assignee'] || {},
+			'reporter': issue['fields']['reporter'] || {},
 			'issuetype': issue['fields']['issuetype'],
 			'priority': issue['fields']['priority'],
 			'status': issue['fields']['status'],

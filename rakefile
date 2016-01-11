@@ -46,7 +46,7 @@ namespace :jira do
  	task :pack do
 		directory = $WORKING_FOLDER
 		zipfile_name = $OUTPUT_FILENAME
-		rm zipfile_name
+		rm zipfile_name if File.exists? zipfile_name
 		Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
 		    Dir[File.join(directory, '**', '**')].each do |file|
 		      zipfile.add(file.sub(directory, ''), file)

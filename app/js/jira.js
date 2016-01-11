@@ -97,7 +97,7 @@ function JIRA(_serverURL, token) {
 	};
 
 	this.executeJQL = function(jql, callback, opt_fields) {
-		var fields = opt_fields || 'id,key,summary,timetracking,duedate,issuetype,reporter,priority,status,assignee,progress,project';
+		var fields = opt_fields || 'id,key,summary,timetracking,duedate,fixVersions,issuetype,reporter,priority,status,assignee,progress,project';
 		return $.ajax({
 			'url': serverURL + '/rest/api/2/search',
 			'data': {

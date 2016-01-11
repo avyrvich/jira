@@ -92,12 +92,13 @@
         <th class="hidden-xs"></th>
         <th>Key</th>
         <th>Summary</th>
-        <th class="hidden-xs hidden-sm">Progress</th>
-        <th class="hidden-xs">Assignee</th>
-        <th class="hidden-xs hidden-sm">Reporter</th>
-        <th class="hidden-xs">Estimate</th>
-        <th class="hidden-xs"></th>
-        <th class="hidden-xs"></th>
+        <th class="hidden-xs field-progress hidden-sm">Progress</th>
+        <th class="hidden-xs field-fixVersions">Version</th>
+        <th class="hidden-xs field-assignee">Assignee</th>
+        <th class="hidden-xs field-reporter hidden-sm">Reporter</th>
+        <th class="hidden-xs field-estimate">Estimate</th>
+        <th class="hidden-xs field-status"></th>
+        <th class="hidden-xs field-priority"></th>
         <th>Duedate</th>
       </thead>
       <tbody></tbody>
@@ -116,6 +117,7 @@
  * @param assignee
  * @param reporter
  * @param status
+ * @param fixVersions
  * @param priority
  * @param estimate
  * @param duedate
@@ -140,6 +142,11 @@
         </div>
       {/if}
     {/if}
+    </td>
+    <td>
+      {foreach $version in $fixVersions}
+        <a href="{$version.url}" target="_new" data-toggle="tooltip" title="{$version.description}">{$version.name}</a> 
+      {/foreach}
     </td>
     <td>
       <a href="#" class="assign-issue" data-toggle="tooltip" title="{$assignee.emailAddress}" data-delay="1000">

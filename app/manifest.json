@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "JIRA Assist",
-  "version": "0.0.0.48",
+  "version": "0.0.0.61",
   "description": "Get over your JIRA issues, bugs or tasks just in one click",
   "minimum_chrome_version": "23",
   "icons": {
@@ -16,6 +16,9 @@
     "<all_urls>",
     "storage"
   ],
+  "omnibox": {
+    "keyword": "jira"
+  },
   "background": {
     "scripts": [
       "js/libs/jquery-1.11.0.min.js",
