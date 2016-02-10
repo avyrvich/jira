@@ -164,9 +164,11 @@ var FilterView = Backbone.View.extend({
 						var defaultDuration = 3600;
 						var startDate = issue.get('duedate');
 						var duration = (issue.get('estimate') || defaultDuration) * 1000;
-						for (var i = 0; i < index; i++) {
-							if (issues[i].get('duedate').getTime() === issue.get('duedate').getTime()) {
-								startDate = new Date(startDate.getTime() + (issues[i].get('estimate') || defaultDuration) * 1000);
+						if (startDate) {
+							for (var i = 0; i < index; i++) {
+								if (issues[i].get('duedate') && issues[i].get('duedate').getTime() === startDate.getTime()) {
+									startDate = new Date(startDate.getTime() + (issues[i].get('estimate') || defaultDuration) * 1000);
+								}
 							}
 						}
 						return {

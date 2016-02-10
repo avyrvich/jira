@@ -120,6 +120,8 @@ var Issues = Backbone.Collection.extend({
 });
 
 var Filter = Backbone.Model.extend({
+	defaults: {
+	},
 	UPDATE_INTERVAL: 1*60000, // 1min
 	timeout: null,
 	'initialize': function(filter) {
