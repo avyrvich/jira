@@ -2,6 +2,22 @@
 
 
 /**
+ * jumbotron
+ */
+{template .jumbotron}
+<div class="jumbotron">
+  <h1>Hello, World!</h1>
+  <p>Thanks for installing JIRA Assist extension. The only step left is to connect JIRA server to the extension. Please, press the "Connect Now" button below.</p>
+  <p>
+    <a class="btn btn-primary btn-lg server-settings" role="button">
+      <span class="ladda-label">Connect Now</span>
+    </a>
+  </p>
+</div>
+{/template}
+
+
+/**
  * errorMessage
  * @param message
  * @param? buttons
@@ -33,39 +49,22 @@
  */
 {template .filterButton}
   <li class="dropdown" id="btn-filter-{$cid}">
-    <a href="#tab-filter-{$cid}" class="navbar-nav filter-show" data-toggle="tab">
+    <a href="#tab-filter-{$cid}" class="navbar-nav filter-show pull-left" data-toggle="tab">
       <span class="title">{$name}</span>
       <span class="badge">{$count}</span>
     </a>
+    <a href="#" class="dropdown-toggle pull-left" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+    <ul class="dropdown-menu">
+      <li><a href="#" data-type="1" class="filter-edit-view">Table view</a></li>
+      <li><a href="#" data-type="2" class="filter-edit-view">Calendar view</a></li>
+      <li role="separator" class="divider"></li>
+      <li><a href="#" class="filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></li>
+      <li><a href="#" class="filter-edit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+      <li role="separator" class="divider"></li>
+      <li><a href="#" class="filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
+    </ul>
   </li>
 {/template}
-
-
-/**
- * filter edit buttonset
- */
-{template .filterButtonSet}
-  <div class="btn-group pull-right btn-group-sm">
-    <div class="btn-group">
-      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        View
-        <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu">
-        <li><a href="#" data-type="1" class="filter-edit-view">Table</a></li>
-        <li><a href="#" data-type="2" class="filter-edit-view">Calendar</a></li>
-      </ul>
-    </div>
-    <button type="button" class="btn btn-default filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
-    <button type="button" class="btn btn-default filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
-    <button type="button" class="btn btn-default filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</button>
-  </div>
-{/template}
-
-
-
-
-
 
 /**
  * @param summary Name of the filter
@@ -80,30 +79,15 @@
 
 
 
-
-
-
 /**
  * Table View filter
  */
-{template .filterTable}
-  <table class="table table-condensed table-striped table-responsive">
-    <thead>
-        <th class="hidden-xs"></th>
-        <th>Key</th>
-        <th>Summary</th>
-        <th class="hidden-xs field-progress hidden-sm">Progress</th>
-        <th class="hidden-xs field-fixVersions">Version</th>
-        <th class="hidden-xs field-assignee">Assignee</th>
-        <th class="hidden-xs field-reporter hidden-sm">Reporter</th>
-        <th class="hidden-xs field-estimate">Estimate</th>
-        <th class="hidden-xs field-status"></th>
-        <th class="hidden-xs field-priority"></th>
-        <th>Duedate</th>
-      </thead>
-      <tbody></tbody>
+{template .issuesTable}
+  <table class="table table-condensed table-striped table-responsive table-hover">
+    <tbody></tbody>
   </table>
 {/template}
+
 
 
 
@@ -113,7 +97,6 @@
  * @param project
  * @param key
  * @param summary
- * @param progress
  * @param assignee
  * @param reporter
  * @param status
@@ -121,70 +104,98 @@
  * @param priority
  * @param estimate
  * @param duedate
- * @param started
+ * @param? transitions
  */
-{template .filterTableRow}
-  <tr {if $started}class="success"{/if} jira-key="{$key}">
-    <td class="hidden-xs"><img csp-src="{$project.iconUrl}" data-toggle="tooltip" title="{$project.name}"></td>
-    <td><a href="{$url}" target="_new">{$key}</a></td>
-    <td>{$summary}</td>
-    <td class="hidden-xs hidden-sm">
-    {if $progress}
-      {if $progress.percent >= 0}
-        <div class="progress progress-striped">
-          {if $progress.percent > 100}
-            <div class="progress-bar progress-bar" role="progressbar" aria-valuenow="{$progress.percent}%" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-          {else}
-            <div class="progress-bar  progress-bar-success" role="progressbar" aria-valuenow="{$progress.percent}%" aria-valuemin="0" aria-valuemax="100" style="width: {$progress.percent}%;">
-          {/if}
-              {$progress.percent}%
-          </div>
-        </div>
-      {/if}
-    {/if}
-    </td>
+{template .issueItem}
     <td>
-      {foreach $version in $fixVersions}
-        <a href="{$version.url}" target="_new" data-toggle="tooltip" title="{$version.description}">{$version.name}</a> 
-      {/foreach}
-    </td>
-    <td>
-      <a href="#" class="assign-issue" data-toggle="tooltip" title="{$assignee.emailAddress}" data-delay="1000">
-        {$assignee.displayName}
-      </a>
-    </td>
-    <td class="hidden-xs hidden-sm">
-      <span data-toggle="tooltip" title="{$reporter.emailAddress}" data-delay="1000">
-        {$reporter.displayName}
-      </span>
-    </td>
-    <td class="hidden-xs">
-      {$estimate}
-    </td>
-    <td class="hidden-xs"><img csp-src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
-    <td class="hidden-xs"><img csp-src="{$priority.iconUrl}" data-toggle="tooltip" title="{$status.description}"></td>
-    <td class="hidden-xs">{$duedate}</td>
-    <td>
-      <div class="btn-group">
-        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-right" role="menu">
-          {if $started}
-            <li><a href="#" class="stop-progress">Stop Progress</a></li>
-          {else}
-            <li><a href="#" class="start-progress">Start Progress</a></li>
-          {/if}
-          <li><a href="#" class="log-issue">Log Work</a></li>
-          <li class="divider"></li>
-          <li><a href="#" class="assign-issue">Assign</a></li>
-          <li><a href="#" class="resolve-issue">Resolve</a></li>
-          <li><a href="#" class="comment-issue">Comment</a></li>
-        </ul>
-      </div>
-  </tr>
-{/template}
+      <div class="issue-title">
 
+        <span class="prop" style="float:left;">
+          <img src="{$project.avatarUrls['32x32']}" data-toggle="tooltip" title="{$project.name}">
+        </span>
+        <span class="prop">
+          <a href="{$url}" target="_new">{$key}</a>
+        </span>
+
+        <span class="prop">
+          {$summary}
+        </span>
+
+        <div class="btn-group btn-group-xs pull-right">
+          {if $transitions}
+            {foreach $transition in $transitions}
+            <button type="button" class="btn btn-default issue-transit" data-transition="{$transition.id}">
+              {$transition.name}
+            </button>
+            {/foreach}
+          {/if}
+          <button type="button" class="btn btn-default" data-toggle="dropdown">
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right" role="menu">
+            <li><a href="#" class="assign-issue">Assign</a></li>
+            <li><a href="#" class="comment-issue">Comment</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="issue-properies">
+        
+        {foreach $version in $fixVersions}
+        <span class="prop">
+          <a href="{$version.url}" class="value" target="_new" {if $version.description} data-toggle="tooltip" title="{$version.description}"{/if}>
+            {$version.name}
+          </a>
+        </span>
+        {/foreach}
+        
+        {if $assignee}
+        <span class="prop">
+          Assignee: 
+          <a href="#" class="assign-issue value" data-toggle="tooltip" title="{$assignee.emailAddress}" data-delay="1000">
+            {$assignee.displayName}
+          </a>
+        </span>
+        {/if}
+
+        {if $reporter}
+        <span class="prop">
+          Reporter: 
+          <span class="value" data-toggle="tooltip" title="{$reporter.emailAddress}" data-delay="1000">
+            {$reporter.displayName}
+          </span>
+        </span>
+        {/if}
+
+
+        {if $estimate}
+        <span class="prop">
+          Estimate: <span class="value">{$estimate}</span>
+        </span>
+        {/if}
+
+        {if $duedate}
+        <span class="prop">
+          Due: <span class="value">{$duedate}</span>
+        </span>
+        {/if}
+
+
+        {if $status}
+        <span class="prop">
+          <img src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.description}">
+        </span>
+        {/if}
+
+        {if $priority}
+        <span class="prop">
+          <img src="{$priority.iconUrl}" data-toggle="tooltip" title="{$priority.description}">
+        </span>
+        {/if}
+
+
+      </div>
+    </td>
+{/template}
 
 
 /**
@@ -269,7 +280,7 @@
         <form role="form">
 
           {if $fields.log}
-            <div class="form-group col-sm-6"">
+            <div class="form-group col-sm-6">
               <label for="issueSpent">Time Spent</label>
               <input type="text" class="form-control input-sm" id="issueTimeSpent" placeholder="" value="">
             </div>
@@ -359,6 +370,93 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+{/template}
+
+
+
+/**
+ * Error Message
+ * @param message
+ */
+{template .error}
+<div class="alert alert-danger" role="alert">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  {$message}
+</div>
+{/template}
+
+/**
+ * Loader
+ */
+{template .loader}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="loader"><i class="fa fa-spinner fa-spin"></i></div>
+  </div>
+</div>
+{/template}
+
+
+
+/**
+ * Login Modal Dialog
+ * @param url
+ * @param username
+ */
+{template .dlgLogin}
+<div class="modal fade" id="dlg-connect" tabindex="-1" role="dialog" aria-labelledby="dlg-connect-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="dlg-connect-label">Connect to JIRA Server</h4>
+      </div>
+      <div class="modal-body">
+        <span class="alertsArea"></span>
+        <form class="form-horizontal">
+          <fieldset>
+
+          <!-- Text input-->
+          <div class="control-group">
+            <label class="control-label" for="url">Server URL</label>
+            <div class="controls">
+              <input id="url" name="url" type="text" placeholder="e.g http://www.domain.com/jira" class="form-control input-xlarge" required="" value="{$url}">
+              
+            </div>
+          </div>
+
+          <!-- Text input-->
+          <div class="control-group">
+            <label class="control-label" for="username">Username</label>
+            <div class="controls">
+              <input id="username" name="username" type="text" placeholder="" class="form-control input-xlarge" required="" value="{$username}">
+              
+            </div>
+          </div>
+
+          <!-- Password input-->
+          <div class="control-group">
+            <label class="control-label" for="password">Password</label>
+            <div class="controls">
+              <input id="password" name="password" type="password" placeholder="" class="form-control input-xlarge" required="">
+              
+            </div>
+          </div>
+
+
+          </fieldset>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary ladda-button" data-style="expand-left">
+          <span class="ladda-label">Connect</span>
+        </button>
       </div>
     </div>
   </div>

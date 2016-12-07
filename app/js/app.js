@@ -7,7 +7,9 @@ app.FILTERS_DEFAULT = [{
 	'jql': 'assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC'
 }];
 
-app.server = new ServerModel;
+$(function() {
+	app.server = new ServerModel();
+});
 
 if (chrome.browserAction) {
 	chrome.browserAction.setBadgeBackgroundColor({

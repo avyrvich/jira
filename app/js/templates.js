@@ -4,15 +4,20 @@
 if (typeof templates == 'undefined') { var templates = {}; }
 
 
+templates.jumbotron = function(opt_data, opt_ignored) {
+  return '<div class="jumbotron"><h1>Hello, World!</h1><p>Thanks for installing JIRA Assist extension. The only step left is to connect JIRA server to the extension. Please, press the "Connect Now" button below.</p><p><a class="btn btn-primary btn-lg server-settings" role="button"><span class="ladda-label">Connect Now</span></a></p></div>';
+};
+
+
 templates.errorMessage = function(opt_data, opt_ignored) {
   var output = '<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><h4>Oh snap! You got an error!</h4><p>' + soy.$$filterNoAutoescape(opt_data.message) + '</p>';
   if (opt_data.buttons) {
     output += '<p>';
-    var buttonList10 = opt_data.buttons;
-    var buttonListLen10 = buttonList10.length;
-    for (var buttonIndex10 = 0; buttonIndex10 < buttonListLen10; buttonIndex10++) {
-      var buttonData10 = buttonList10[buttonIndex10];
-      output += soy.$$filterNoAutoescape(buttonData10);
+    var buttonList12 = opt_data.buttons;
+    var buttonListLen12 = buttonList12.length;
+    for (var buttonIndex12 = 0; buttonIndex12 < buttonListLen12; buttonIndex12++) {
+      var buttonData12 = buttonList12[buttonIndex12];
+      output += soy.$$filterNoAutoescape(buttonData12);
     }
     output += '</p>';
   }
@@ -22,12 +27,7 @@ templates.errorMessage = function(opt_data, opt_ignored) {
 
 
 templates.filterButton = function(opt_data, opt_ignored) {
-  return '<li class="dropdown" id="btn-filter-' + soy.$$escapeHtml(opt_data.cid) + '"><a href="#tab-filter-' + soy.$$escapeHtml(opt_data.cid) + '" class="navbar-nav filter-show" data-toggle="tab"><span class="title">' + soy.$$escapeHtml(opt_data.name) + '</span><span class="badge">' + soy.$$escapeHtml(opt_data.count) + '</span></a></li>';
-};
-
-
-templates.filterButtonSet = function(opt_data, opt_ignored) {
-  return '<div class="btn-group pull-right btn-group-sm"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">View<span class="caret"></span></button><ul class="dropdown-menu"><li><a href="#" data-type="1" class="filter-edit-view">Table</a></li><li><a href="#" data-type="2" class="filter-edit-view">Calendar</a></li></ul></div><button type="button" class="btn btn-default filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</button><button type="button" class="btn btn-default filter-edit" data-toggle="modal" data-target="#dlgFilterEdit"><span class="glyphicon glyphicon-pencil"></span> Edit</button><button type="button" class="btn btn-default filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</button></div>';
+  return '<li class="dropdown" id="btn-filter-' + soy.$$escapeHtml(opt_data.cid) + '"><a href="#tab-filter-' + soy.$$escapeHtml(opt_data.cid) + '" class="navbar-nav filter-show pull-left" data-toggle="tab"><span class="title">' + soy.$$escapeHtml(opt_data.name) + '</span><span class="badge">' + soy.$$escapeHtml(opt_data.count) + '</span></a><a href="#" class="dropdown-toggle pull-left" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#" data-type="1" class="filter-edit-view">Table view</a></li><li><a href="#" data-type="2" class="filter-edit-view">Calendar view</a></li><li role="separator" class="divider"></li><li><a href="#" class="filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></li><li><a href="#" class="filter-edit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li><li role="separator" class="divider"></li><li><a href="#" class="filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</a></li></ul></li>';
 };
 
 
@@ -36,20 +36,29 @@ templates.issuePopover = function(opt_data, opt_ignored) {
 };
 
 
-templates.filterTable = function(opt_data, opt_ignored) {
-  return '<table class="table table-condensed table-striped table-responsive"><thead><th class="hidden-xs"></th><th>Key</th><th>Summary</th><th class="hidden-xs field-progress hidden-sm">Progress</th><th class="hidden-xs field-fixVersions">Version</th><th class="hidden-xs field-assignee">Assignee</th><th class="hidden-xs field-reporter hidden-sm">Reporter</th><th class="hidden-xs field-estimate">Estimate</th><th class="hidden-xs field-status"></th><th class="hidden-xs field-priority"></th><th>Duedate</th></thead><tbody></tbody></table>';
+templates.issuesTable = function(opt_data, opt_ignored) {
+  return '<table class="table table-condensed table-striped table-responsive table-hover"><tbody></tbody></table>';
 };
 
 
-templates.filterTableRow = function(opt_data, opt_ignored) {
-  var output = '<tr ' + ((opt_data.started) ? 'class="success"' : '') + ' jira-key="' + soy.$$escapeHtml(opt_data.key) + '"><td class="hidden-xs"><img csp-src="' + soy.$$escapeHtml(opt_data.project.iconUrl) + '" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.project.name) + '"></td><td><a href="' + soy.$$escapeHtml(opt_data.url) + '" target="_new">' + soy.$$escapeHtml(opt_data.key) + '</a></td><td>' + soy.$$escapeHtml(opt_data.summary) + '</td><td class="hidden-xs hidden-sm">' + ((opt_data.progress) ? (opt_data.progress.percent >= 0) ? '<div class="progress progress-striped">' + ((opt_data.progress.percent > 100) ? '<div class="progress-bar progress-bar" role="progressbar" aria-valuenow="' + soy.$$escapeHtml(opt_data.progress.percent) + '%" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">' : '<div class="progress-bar  progress-bar-success" role="progressbar" aria-valuenow="' + soy.$$escapeHtml(opt_data.progress.percent) + '%" aria-valuemin="0" aria-valuemax="100" style="width: ' + soy.$$escapeHtml(opt_data.progress.percent) + '%;">') + soy.$$escapeHtml(opt_data.progress.percent) + '%</div></div>' : '' : '') + '</td><td>';
-  var versionList73 = opt_data.fixVersions;
-  var versionListLen73 = versionList73.length;
-  for (var versionIndex73 = 0; versionIndex73 < versionListLen73; versionIndex73++) {
-    var versionData73 = versionList73[versionIndex73];
-    output += '<a href="' + soy.$$escapeHtml(versionData73.url) + '" target="_new" data-toggle="tooltip" title="' + soy.$$escapeHtml(versionData73.description) + '">' + soy.$$escapeHtml(versionData73.name) + '</a>';
+templates.issueItem = function(opt_data, opt_ignored) {
+  var output = '<td><div class="issue-title"><span class="prop" style="float:left;"><img src="' + soy.$$escapeHtml(opt_data.project.avatarUrls['32x32']) + '" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.project.name) + '"></span><span class="prop"><a href="' + soy.$$escapeHtml(opt_data.url) + '" target="_new">' + soy.$$escapeHtml(opt_data.key) + '</a></span><span class="prop">' + soy.$$escapeHtml(opt_data.summary) + '</span><div class="btn-group btn-group-xs pull-right">';
+  if (opt_data.transitions) {
+    var transitionList50 = opt_data.transitions;
+    var transitionListLen50 = transitionList50.length;
+    for (var transitionIndex50 = 0; transitionIndex50 < transitionListLen50; transitionIndex50++) {
+      var transitionData50 = transitionList50[transitionIndex50];
+      output += '<button type="button" class="btn btn-default issue-transit" data-transition="' + soy.$$escapeHtml(transitionData50.id) + '">' + soy.$$escapeHtml(transitionData50.name) + '</button>';
+    }
   }
-  output += '</td><td><a href="#" class="assign-issue" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.assignee.emailAddress) + '" data-delay="1000">' + soy.$$escapeHtml(opt_data.assignee.displayName) + '</a></td><td class="hidden-xs hidden-sm"><span data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.reporter.emailAddress) + '" data-delay="1000">' + soy.$$escapeHtml(opt_data.reporter.displayName) + '</span></td><td class="hidden-xs">' + soy.$$escapeHtml(opt_data.estimate) + '</td><td class="hidden-xs"><img csp-src="' + soy.$$escapeHtml(opt_data.status.iconUrl) + '" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.status.description) + '"></td><td class="hidden-xs"><img csp-src="' + soy.$$escapeHtml(opt_data.priority.iconUrl) + '" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.status.description) + '"></td><td class="hidden-xs">' + soy.$$escapeHtml(opt_data.duedate) + '</td><td><div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">' + ((opt_data.started) ? '<li><a href="#" class="stop-progress">Stop Progress</a></li>' : '<li><a href="#" class="start-progress">Start Progress</a></li>') + '<li><a href="#" class="log-issue">Log Work</a></li><li class="divider"></li><li><a href="#" class="assign-issue">Assign</a></li><li><a href="#" class="resolve-issue">Resolve</a></li><li><a href="#" class="comment-issue">Comment</a></li></ul></div></tr>';
+  output += '<button type="button" class="btn btn-default" data-toggle="dropdown"><span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" role="menu"><li><a href="#" class="assign-issue">Assign</a></li><li><a href="#" class="comment-issue">Comment</a></li></ul></div></div><div class="issue-properies">';
+  var versionList58 = opt_data.fixVersions;
+  var versionListLen58 = versionList58.length;
+  for (var versionIndex58 = 0; versionIndex58 < versionListLen58; versionIndex58++) {
+    var versionData58 = versionList58[versionIndex58];
+    output += '<span class="prop"><a href="' + soy.$$escapeHtml(versionData58.url) + '" class="value" target="_new" ' + ((versionData58.description) ? ' data-toggle="tooltip" title="' + soy.$$escapeHtml(versionData58.description) + '"' : '') + '>' + soy.$$escapeHtml(versionData58.name) + '</a></span>';
+  }
+  output += ((opt_data.assignee) ? '<span class="prop">Assignee:<a href="#" class="assign-issue value" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.assignee.emailAddress) + '" data-delay="1000">' + soy.$$escapeHtml(opt_data.assignee.displayName) + '</a></span>' : '') + ((opt_data.reporter) ? '<span class="prop">Reporter:<span class="value" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.reporter.emailAddress) + '" data-delay="1000">' + soy.$$escapeHtml(opt_data.reporter.displayName) + '</span></span>' : '') + ((opt_data.estimate) ? '<span class="prop">Estimate: <span class="value">' + soy.$$escapeHtml(opt_data.estimate) + '</span></span>' : '') + ((opt_data.duedate) ? '<span class="prop">Due: <span class="value">' + soy.$$escapeHtml(opt_data.duedate) + '</span></span>' : '') + ((opt_data.status) ? '<span class="prop"><img src="' + soy.$$escapeHtml(opt_data.status.iconUrl) + '" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.status.description) + '"></span>' : '') + ((opt_data.priority) ? '<span class="prop"><img src="' + soy.$$escapeHtml(opt_data.priority.iconUrl) + '" data-toggle="tooltip" title="' + soy.$$escapeHtml(opt_data.priority.description) + '"></span>' : '') + '</div></td>';
   return output;
 };
 
@@ -59,11 +68,11 @@ templates.dlgEditFilter = function(opt_data, opt_ignored) {
   var output = '<div class="modal fade" id="dlg-filter" tabindex="-1" role="dialog" aria-labelledby="dlg-filter-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlg-filter-label">' + ((opt_data.filter) ? 'Edit' : 'Create') + ' JIRA Filter</h4></div><div class="modal-body"><form role="form">';
   if (opt_data.favouriteFilters) {
     output += '<div class="form-group"><label for="favouriteFilters">Favourite Filters</label><select id="favouriteFilters" class="form-control input-sm"><option/>';
-    var filterList120 = opt_data.favouriteFilters;
-    var filterListLen120 = filterList120.length;
-    for (var filterIndex120 = 0; filterIndex120 < filterListLen120; filterIndex120++) {
-      var filterData120 = filterList120[filterIndex120];
-      output += '<option data-name="' + soy.$$escapeHtml(filterData120.name) + '" data-jql="' + soy.$$escapeHtml(filterData120.jql) + '">' + soy.$$escapeHtml(filterData120.name) + '</option>';
+    var filterList121 = opt_data.favouriteFilters;
+    var filterListLen121 = filterList121.length;
+    for (var filterIndex121 = 0; filterIndex121 < filterListLen121; filterIndex121++) {
+      var filterData121 = filterList121[filterIndex121];
+      output += '<option data-name="' + soy.$$escapeHtml(filterData121.name) + '" data-jql="' + soy.$$escapeHtml(filterData121.jql) + '">' + soy.$$escapeHtml(filterData121.name) + '</option>';
     }
     output += '</select></div>';
   }
@@ -73,14 +82,14 @@ templates.dlgEditFilter = function(opt_data, opt_ignored) {
 
 
 templates.dlgEditIssue = function(opt_data, opt_ignored) {
-  var output = '<div class="modal fade" id="dlg-edit-issue" tabindex="-1" role="dialog" aria-labelledby="dlg-edit-issue-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlg-edit-issue-label">' + soy.$$escapeHtml(opt_data.title) + '</h4></div><div class="modal-body"><form role="form">' + ((opt_data.fields.log) ? '<div class="form-group col-sm-6""><label for="issueSpent">Time Spent</label><input type="text" class="form-control input-sm" id="issueTimeSpent" placeholder="" value=""></div>' : '') + ((opt_data.fields.log) ? '<div class="form-group col-sm-6"><label for="issueDate">Resolve Date</label><input type="date" class="form-control input-sm" id="issueDate" placeholder="Date"></div>' : '');
+  var output = '<div class="modal fade" id="dlg-edit-issue" tabindex="-1" role="dialog" aria-labelledby="dlg-edit-issue-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlg-edit-issue-label">' + soy.$$escapeHtml(opt_data.title) + '</h4></div><div class="modal-body"><form role="form">' + ((opt_data.fields.log) ? '<div class="form-group col-sm-6"><label for="issueSpent">Time Spent</label><input type="text" class="form-control input-sm" id="issueTimeSpent" placeholder="" value=""></div>' : '') + ((opt_data.fields.log) ? '<div class="form-group col-sm-6"><label for="issueDate">Resolve Date</label><input type="date" class="form-control input-sm" id="issueDate" placeholder="Date"></div>' : '');
   if (opt_data.fields.resolution) {
     output += '<div class="form-group"><label for="issueResolution">Resolution</label><select id="issueResolution" class="form-control input-sm"><option></option>';
-    var resList166 = opt_data.resolutions;
-    var resListLen166 = resList166.length;
-    for (var resIndex166 = 0; resIndex166 < resListLen166; resIndex166++) {
-      var resData166 = resList166[resIndex166];
-      output += '<option value="' + soy.$$escapeHtml(resData166.id) + '" title="' + soy.$$escapeHtml(resData166.description) + '" ' + ((opt_data.resolution == resData166.id) ? 'selected' : '') + '>' + soy.$$escapeHtml(resData166.name) + '</option>';
+    var resList167 = opt_data.resolutions;
+    var resListLen167 = resList167.length;
+    for (var resIndex167 = 0; resIndex167 < resListLen167; resIndex167++) {
+      var resData167 = resList167[resIndex167];
+      output += '<option value="' + soy.$$escapeHtml(resData167.id) + '" title="' + soy.$$escapeHtml(resData167.description) + '" ' + ((opt_data.resolution == resData167.id) ? 'selected' : '') + '>' + soy.$$escapeHtml(resData167.name) + '</option>';
     }
     output += '</select></div>';
   }
@@ -88,11 +97,11 @@ templates.dlgEditIssue = function(opt_data, opt_ignored) {
     output += '<div class="form-group"><label for="issueAssignee">Assignee</label><select id="issueAssignee" class="form-control input-sm">';
     if (opt_data.users) {
       output += '<option/>';
-      var userList186 = opt_data.users;
-      var userListLen186 = userList186.length;
-      for (var userIndex186 = 0; userIndex186 < userListLen186; userIndex186++) {
-        var userData186 = userList186[userIndex186];
-        output += '<option value="' + soy.$$escapeHtml(userData186.name) + '" title="' + soy.$$escapeHtml(userData186.displayName) + '"' + ((opt_data.assignee.name == userData186.name) ? ' selected' : '') + '>' + soy.$$escapeHtml(userData186.displayName) + '</option>';
+      var userList187 = opt_data.users;
+      var userListLen187 = userList187.length;
+      for (var userIndex187 = 0; userIndex187 < userListLen187; userIndex187++) {
+        var userData187 = userList187[userIndex187];
+        output += '<option value="' + soy.$$escapeHtml(userData187.name) + '" title="' + soy.$$escapeHtml(userData187.displayName) + '"' + ((opt_data.assignee.name == userData187.name) ? ' selected' : '') + '>' + soy.$$escapeHtml(userData187.displayName) + '</option>';
       }
     }
     output += '</select></div>';
@@ -104,4 +113,19 @@ templates.dlgEditIssue = function(opt_data, opt_ignored) {
 
 templates.dlgConfirm = function(opt_data, opt_ignored) {
   return '<div class="modal fade" id="dlg-confirm" tabindex="-1" role="dialog" aria-labelledby="dlg-confirm-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlg-confirm-label">' + soy.$$escapeHtml(opt_data.title) + '</h4></div><div class="modal-body">' + soy.$$escapeHtml(opt_data.message) + '</div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button></div></div></div></div>';
+};
+
+
+templates.error = function(opt_data, opt_ignored) {
+  return '<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>' + soy.$$escapeHtml(opt_data.message) + '</div>';
+};
+
+
+templates.loader = function(opt_data, opt_ignored) {
+  return '<div class="panel panel-default"><div class="panel-body"><div class="loader"><i class="fa fa-spinner fa-spin"></i></div></div></div>';
+};
+
+
+templates.dlgLogin = function(opt_data, opt_ignored) {
+  return '<div class="modal fade" id="dlg-connect" tabindex="-1" role="dialog" aria-labelledby="dlg-connect-label" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="dlg-connect-label">Connect to JIRA Server</h4></div><div class="modal-body"><span class="alertsArea"></span><form class="form-horizontal"><fieldset><!-- Text input--><div class="control-group"><label class="control-label" for="url">Server URL</label><div class="controls"><input id="url" name="url" type="text" placeholder="e.g http://www.domain.com/jira" class="form-control input-xlarge" required="" value="' + soy.$$escapeHtml(opt_data.url) + '"></div></div><!-- Text input--><div class="control-group"><label class="control-label" for="username">Username</label><div class="controls"><input id="username" name="username" type="text" placeholder="" class="form-control input-xlarge" required="" value="' + soy.$$escapeHtml(opt_data.username) + '"></div></div><!-- Password input--><div class="control-group"><label class="control-label" for="password">Password</label><div class="controls"><input id="password" name="password" type="password" placeholder="" class="form-control input-xlarge" required=""></div></div></fieldset></form></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary ladda-button" data-style="expand-left"><span class="ladda-label">Connect</span></button></div></div></div></div>';
 };

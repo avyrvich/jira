@@ -68,14 +68,51 @@ jira.initDragAndDrop = function() {
 };
 
 jira.initCopyPaste = function() {
-	$('textarea[name="comment"]').pasteImageReader(function(results) {
-		var textarea = this;
+	function attachFiles(results) {
+		var element = this;
 		jira.attachFiles(results, function(attachments) {
+			var injection = '';
 			$.each(attachments, function(i, attachment) {
-				textarea.value += '!'+attachment['filename']+'!'
+				injection += '!' + attachment['filename'] + '!' + '\n';
 			});
+
+			if (element.selectionStart || element.selectionStart == '0') {
+				element.focus();
+				var startPos = element.selectionStart;
+				var endPos = element.selectionEnd;
+				element.value = element.value.substring(0, startPos) + injection + element.value.substring(endPos, element.value.length);
+			} else {
+				element.value += injection;
+			}
 		});
-	});
+	}
+	
+	$(document).on('paste', 'textarea[name="comment"]', function(e) {
+		var event = e.originalEvent;
+    var clipboardData = event.clipboardData;
+    var found = false;
+    var timestamp = (new Date()).toISOString().replace(/\D/g, '');
+    var element = e.currentTarget;
+    return Array.prototype.forEach.call(clipboardData.types, function(type, i) {
+      var file, reader;
+      if (found) {
+        return;
+      }
+      var ext = clipboardData.items[i].type.match(/image\/?(.*)/);
+      if (ext) {
+        console.log(clipboardData.items[i]);
+        file = clipboardData.items[i].getAsFile();
+        reader = new FileReader();
+        reader.onload = function(evt) {
+          var formData = new FormData();
+          formData.append('file', file, timestamp + i + '.png');
+          return attachFiles.call(element, formData);
+        };
+        reader.readAsBinaryString(file);
+        return found = true;
+      }
+    });
+  });
 }
 
 

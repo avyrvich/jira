@@ -1,0 +1,22 @@
+{
+  "name": "jira",
+  "version": "1.0.0",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-less": "^1.4.0",
+    "grunt-exec": "^1.0.1",
+    "grunt-soy-compile": "^0.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andry-virvich/jira.git"
+  },
+  "author": "andry.virvich@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andry-virvich/jira/issues"
+  },
+  "homepage": "https://github.com/andry-virvich/jira#readme"
+}

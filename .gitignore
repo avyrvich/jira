@@ -2,3 +2,5 @@ node_modules
 jira-assist-mobile
 *.zip
 *.pem
+release/
+jassist.crx

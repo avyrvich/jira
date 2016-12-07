@@ -18,7 +18,7 @@
   "app": {
     "background": {
       "scripts": [
-        "js/libs/jquery-1.11.0.min.js",
+        "js/libs/jquery-2.2.0.min.js",
         "js/libs/moment.min.js",
         "js/libs/underscore-min.js",
         "js/libs/backbone-min.js",

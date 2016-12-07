@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "JIRA Assist",
-  "version": "0.0.1.16",
+  "version": "0.0.1.88",
   "description": "Get over your JIRA issues, bugs or tasks just in one click",
   "minimum_chrome_version": "23",
   "icons": {
@@ -14,39 +14,25 @@
   },
   "permissions": [
     "<all_urls>",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "omnibox": {
     "keyword": "jira"
   },
   "background": {
     "scripts": [
-      "js/libs/jquery-1.11.0.min.js",
+      "js/libs/jquery-2.2.0.min.js",
       "js/libs/moment.min.js",
       "js/libs/underscore-min.js",
       "js/libs/backbone-min.js",
-      "js/models.js",
-      "js/jira.js",
-      "js/app.js"
+      "js/app.js",
+      "js/models/base.js",
+      "js/models/issues.js",
+      "js/models/filters.js",
+      "js/models/server.js"
     ]
   },
-  "content_scripts": [
-    {
-      "all_frames": false,
-      "js": [
-        "js/libs/jquery-1.11.0.min.js",
-        "js/content/jquery.paste_image_reader.js",
-        "js/content/content.js"
-      ],
-      "css": [
-        "css/content.css"
-      ],
-      "matches": [
-        "<all_urls>"
-      ],
-      "run_at": "document_start"
-    }
-  ],
   "browser_action": {
     "default_icon": {
       "19": "img/logo-18.png",

@@ -19,7 +19,7 @@ $(function() {
 	    }
 	});
 	
-	app.navbar = new NavBarView({'el': $('#navbar')});
+	app.navbar = new NavBarView({});
 
 	$(window).bind('unload', function() {
 		app.navbar.unload();
