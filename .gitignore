@@ -1,3 +1,5 @@
 node_modules
 jira-assist-mobile
 *.zip
+release/
+release.pem
