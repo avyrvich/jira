@@ -31,10 +31,10 @@ var NavBarBtnView = Backbone.View.extend({
 	initialize: function() {
 		this.listenTo(this.model, {
 			'issues-sync': function(){
-				this.$el.find('.badge').text(this.model.issues.length);
+				this.$('.badge').text(this.model.issues.length);
 			}, 
 			'change:name': function() {
-				this.$el.find('.title').text(this.model.get('name'));
+				this.$('.title').text(this.model.get('name'));
 			},
 			'remove': function() {
 				this.remove();
@@ -98,13 +98,12 @@ var NavBarView = Backbone.View.extend({
 		}));
 	},
 	'render': function() {
-		var this_ = this;
 		if (app.server.has('token')) {
 			this.$('.tab-content').empty();
-			app.server.filters.each(function(filter, i) {
-				this_.renderFilter(filter);
+			app.server.filters.each((filter, i) => {
+				this.renderFilter(filter);
 				if (i === 0) {
-					this_.buttons[0].$el.find('[data-toggle="tab"]').tab('show');
+					this.buttons[0].$('[data-toggle="tab"]').tab('show');
 				}
 			});
 

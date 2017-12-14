@@ -5,11 +5,6 @@ var IssueView = Backbone.View.extend({
 	template: templates.issueItem,
 	rendered: false,
 	events: {
-		// 'click td': function(e) {
-		// 	if (!$(e.target).closest('.btn-group').length) {
-		// 		$(e.currentTarget).find('.issue-properies').toggle();
-		// 	}
-		// },
 		'click .issue-pin': function(e) {
 			this.model.server.add(this.model);
 		},

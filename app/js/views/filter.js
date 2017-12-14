@@ -130,8 +130,8 @@ var FilterEditView = Backbone.View.extend({
 		'change #favouriteFilters': function(evt) {
 			var node = evt.target.options[evt.target.selectedIndex];
 			if (node.getAttribute('data-jql')) {
-				this.$el.find('#filterName').val(node.getAttribute('data-name'));
-				this.$el.find('#filterJQL').val(node.getAttribute('data-jql'));
+				this.$('#filterName').val(node.getAttribute('data-name'));
+				this.$('#filterJQL').val(node.getAttribute('data-jql'));
 			}
 		}
 	},
@@ -148,9 +148,9 @@ var FilterEditView = Backbone.View.extend({
 	},
 	getValues: function() {
 		return {
-			'name': this.$el.find('#filterName').val(),
-			'jql': this.$el.find('#filterJQL').val(),
-			'type': parseInt(this.$el.find('#filterType').val())
+			'name': this.$('#filterName').val(),
+			'jql': this.$('#filterJQL').val(),
+			'type': parseInt(this.$('#filterType').val())
 		};
 	},
 	save: function() {

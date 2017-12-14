@@ -132,44 +132,53 @@ var IssueModel = Backbone.Model.extend({
 		this_.collection.filter.trigger('updated');
 	},
 	assign: function(username) {
-		// var this_ = this;
-		// app.server.api.assign(this.get('self'), username, function(issue) {
-		// 	this_.set({
-		// 		'assignee': issue.fields['assignee']
-		// 	});
-		// });
+		return $.ajax({
+			url: this.get('self'),
+			type: 'PUT',
+			contentType: 'application/json', 
+			data: JSON.stringify({
+				update: {
+					assignee: [{
+						set: {
+							name: username
+						}
+					}]
+				}
+			})
+		}).then(() => this.fetch());
 	},
 	worklog: function(data) {
 		// app.server.api.worklog(this.get('self'), data);
 	},
-	comment: function(data) {
+	comment: function(data, callback) {
 		return $.ajax({
-			url: this.collection.server.get('url') + '/comment', 
+			url: this.get('self') + '/comment', 
 			type: 'POST',
 			contentType: 'application/json', 
 			data: JSON.stringify({
 				'body': data
 			}), 
-			'success': function(data){ callback && callback(data); } 
+			'success': function(data){ 
+				if (callback) {
+					callback(data); 
+				}
+			} 
 		});
 	},
-	resolve: function(resolution) {
-		// var this_ = this;
-		// app.server.api.resolve(this.get('self'), resolution, function() {
-		// 	this_.collection.filter.update();
-		// });
-	},
-	getAssignableUsers: function(callback) {
+	getAssignableUsers: function(username, callback) {
 		return $.ajax({
 			url: this.collection.server.get('url') + '/rest/api/2/user/assignable/search',
 			data: {
-				issueKey: this.id
+				issueKey: this.id,
+				username: username
 			},
 			type: 'GET',
 			contentType: 'application/json',
-			success: function(data) {
-				console.log(data);
-				this_.assignableUsers = data;
+			success: (data) => {
+				this.assignableUsers = data;
+				if (callback) {
+					callback(data);
+				}
 			}
 		});
 	},
@@ -277,7 +286,7 @@ var IssuesCollection = Backbone.Collection.extend({
 		}, this.UPDATE_INTERVAL);
 		_.defaults(options.data, {
 			jql: this.filter.get('jql'),
-			fields: 'id,key,summary,timetracking,duedate,fixVersions,issuetype,reporter,priority,status,assignee,progress,project'
+			//fields: 'id,key,summary,timetracking,duedate,fixVersions,issuetype,reporter,priority,status,assignee,progress,project'
 		});
 		return Backbone.Collection.prototype.fetch.call(this, options);
 	}

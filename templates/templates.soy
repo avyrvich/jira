@@ -55,9 +55,6 @@
     </a>
     <a href="#" class="dropdown-toggle pull-left" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
     <ul class="dropdown-menu">
-      <li><a href="#" data-type="1" class="filter-edit-view">Table view</a></li>
-      <li><a href="#" data-type="2" class="filter-edit-view">Calendar view</a></li>
-      <li role="separator" class="divider"></li>
       <li><a href="#" class="filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></li>
       <li><a href="#" class="filter-edit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
       <li role="separator" class="divider"></li>
@@ -102,6 +99,7 @@
  * @param status
  * @param fixVersions
  * @param priority
+ * @param issuetype
  * @param estimate
  * @param duedate
  * @param? transitions
@@ -182,16 +180,21 @@
 
         {if $status}
         <span class="prop">
-          <img src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.description}">
+          <img src="{$status.iconUrl}" data-toggle="tooltip" title="{$status.name}">
         </span>
         {/if}
 
         {if $priority}
         <span class="prop">
-          <img src="{$priority.iconUrl}" data-toggle="tooltip" title="{$priority.description}">
+          <img src="{$priority.iconUrl}" data-toggle="tooltip" title="{$priority.name}">
         </span>
         {/if}
 
+        {if $issuetype}
+        <span class="prop">
+          <img src="{$issuetype.iconUrl}" data-toggle="tooltip" title="{$issuetype.name}">
+        </span>
+        {/if}
 
       </div>
     </td>
@@ -233,13 +236,6 @@
             <label for="filterJQL">JQL</label>
             <textarea id="filterJQL" class="form-control input-sm" rows="3" placeholder="e.g. assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC">{if $filter}{$filter.jql}{/if}</textarea>
           </div>
-          <div class="form-group">
-            <label for="filterType">View Type</label>
-            <select id="filterType" class="form-control input-sm">
-              <option value="1" {if $filter and $filter.type==1}selected{/if}>Table</option>
-              <option value="2" {if $filter and $filter.type==2}selected{/if}>Calendar</option>
-            </select>
-          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -265,8 +261,6 @@
  * @param fields
  * @param? resolutions
  * @param? resolution
- * @param? users
- * @param? assignee
   */
 {template .dlgEditIssue}
 <div class="modal fade" id="dlg-edit-issue" tabindex="-1" role="dialog" aria-labelledby="dlg-edit-issue-label" aria-hidden="true">
@@ -307,19 +301,10 @@
             </div>
           {/if}
 
-          {if $users and $fields.assignee}
+          {if $fields.assignee}
             <div class="form-group">
               <label for="issueAssignee">Assignee</label>
-              <select id="issueAssignee" class="form-control input-sm">
-                  {if $users}
-                    <option/>
-                    {foreach $user in $users}
-                      <option value="{$user.name}" title="{$user.displayName}"{if $assignee.name==$user.name} selected{/if}>
-                        {$user.displayName}
-                      </option>
-                    {/foreach}
-                  {/if}
-              </select>
+              <input id="issueAssignee" class="form-control input-sm">
             </div>
           {/if}
 
@@ -348,6 +333,20 @@
 {/template}
 
 
+
+/**
+ * Conifrm Modal Dialog
+ * @param avatarUrls
+ * @param displayName
+ */
+{template .user}
+<div class='select2-result clearfix'>
+  <div class='select2-resut__avatar'><img src="{$avatarUrls['16x16']}"/></div>
+  <div class='select2-result__meta'>
+    <div class='select2-result__title'>{$displayName}</div>
+  </div>
+</div>
+{/template}
 
 
 

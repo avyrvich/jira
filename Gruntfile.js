@@ -26,9 +26,15 @@ module.exports = function(grunt) {
           "app/css/content.css": "templates/content.less"
         }
       }
+    },
+    version: {
+      defaults: {
+        src: ['app/manifest.json']
+      }
     }
   });
 
+  grunt.loadNpmTasks('grunt-version');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');
@@ -36,6 +42,7 @@ module.exports = function(grunt) {
 
   
   grunt.registerTask('default', [
+    //'version::minor',
     'clean',
     'exec:soy',
     'less',
