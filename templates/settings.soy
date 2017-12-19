@@ -1,0 +1,81 @@
+
+{namespace templates}
+
+
+/**
+ * Login Modal Dialog
+ * @param url
+ * @param username
+ */
+{template .dlgLogin}
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <span class="alertsArea"></span>
+      <form class="form form-horizontal">
+        <fieldset>
+
+          <!-- Text input-->
+          <div class="form-group">
+            <label class="control-label col-sm-4" for="url">Server URL</label>
+            <div class="controls col-sm-8">
+              <input id="url" name="url" type="text" placeholder="e.g http://www.domain.com/jira" class="form-control" required="" value="{$url}">
+              
+            </div>
+          </div>
+
+          <!-- Text input-->
+          <div class="form-group">
+            <label class="control-label col-sm-4" for="username">Username</label>
+            <div class="controls col-sm-8">
+              <input id="username" name="username" type="text" placeholder="" class="form-control" required="" value="{$username}">
+              
+            </div>
+          </div>
+
+          <!-- Password input-->
+          <div class="form-group">
+            <label class="control-label col-sm-4" for="password">Password</label>
+            <div class="controls col-sm-8">
+              <input id="password" name="password" type="password" placeholder="" class="form-control" required="">
+              
+            </div>
+          </div>
+
+
+        </fieldset>
+      </form>
+
+    </div>
+    <div class="panel-footer">
+      <button type="button" class="btn btn-primary ladda-button" data-style="expand-left">
+        <span class="ladda-label">Connect</span>
+      </button>
+    </div>
+  </div>
+</div>
+{/template}
+
+
+/**
+ * Alert
+ * @param message
+ * @param? title
+ * @param? class
+ * @param? buttons
+ */
+{template .alert}
+<div class="alert {$class} fade in">
+  {if $title != null}
+    <h4>{$title}</h4>
+  {/if}
+  <p>{$message |noAutoescape}</p>
+  {if $buttons}
+  <p>
+  {foreach $button in $buttons}
+    {$button |noAutoescape}
+  {/foreach}
+    </p>
+  {/if}
+</div>
+{/template}

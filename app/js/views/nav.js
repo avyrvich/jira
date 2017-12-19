@@ -65,9 +65,7 @@ var NavBarView = Backbone.View.extend({
 			new FilterEditView().render();
 		},
 		'click .server-settings': function() {
-			new LoginView({
-				model: app.server
-			}).render();
+			chrome.runtime.openOptionsPage();
 		}
 	},
 	'unload': function() {

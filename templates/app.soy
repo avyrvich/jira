@@ -80,12 +80,10 @@
  * Table View filter
  */
 {template .issuesTable}
-  <table class="table table-condensed table-striped table-responsive table-hover">
+  <table class="table table-condensed table-responsive">
     <tbody></tbody>
-  </table>
+  </table>  
 {/template}
-
-
 
 
 /**
@@ -122,7 +120,7 @@
         <div class="btn-group btn-group-xs pull-right">
           {if $transitions}
             {foreach $transition in $transitions}
-            <button type="button" class="btn btn-default issue-transit" data-transition="{$transition.id}">
+            <button type="button" class="btn issue-transit" data-transition="{$transition.id}" {if $transition.to and $transition.to.statusCategory}statusCategory="{$transition.to.statusCategory.colorName}"{/if}>
               {$transition.name}
             </button>
             {/foreach}
@@ -398,67 +396,3 @@
   </div>
 </div>
 {/template}
-
-
-
-/**
- * Login Modal Dialog
- * @param url
- * @param username
- */
-{template .dlgLogin}
-<div class="modal fade" id="dlg-connect" tabindex="-1" role="dialog" aria-labelledby="dlg-connect-label" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="dlg-connect-label">Connect to JIRA Server</h4>
-      </div>
-      <div class="modal-body">
-        <span class="alertsArea"></span>
-        <form class="form-horizontal">
-          <fieldset>
-
-          <!-- Text input-->
-          <div class="control-group">
-            <label class="control-label" for="url">Server URL</label>
-            <div class="controls">
-              <input id="url" name="url" type="text" placeholder="e.g http://www.domain.com/jira" class="form-control input-xlarge" required="" value="{$url}">
-              
-            </div>
-          </div>
-
-          <!-- Text input-->
-          <div class="control-group">
-            <label class="control-label" for="username">Username</label>
-            <div class="controls">
-              <input id="username" name="username" type="text" placeholder="" class="form-control input-xlarge" required="" value="{$username}">
-              
-            </div>
-          </div>
-
-          <!-- Password input-->
-          <div class="control-group">
-            <label class="control-label" for="password">Password</label>
-            <div class="controls">
-              <input id="password" name="password" type="password" placeholder="" class="form-control input-xlarge" required="">
-              
-            </div>
-          </div>
-
-
-          </fieldset>
-        </form>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary ladda-button" data-style="expand-left">
-          <span class="ladda-label">Connect</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-{/template}
-

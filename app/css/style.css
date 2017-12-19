@@ -105,3 +105,26 @@ webview {
 .select2-result .select2-result__title {
   line-height: 16px;
 }
+tr[statuscategory="yellow"] {
+  background: #ffd15136;
+}
+tr[statuscategory="green"] {
+  background: #14892b36;
+}
+.issue-transit {
+  max-width: 85px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: #ececec;
+  border-color: #b9b9b9;
+}
+.issue-transit[statuscategory="green"] {
+  background-color: #14892c;
+  border-color: #07300f;
+  color: #fff;
+}
+.issue-transit[statuscategory="yellow"] {
+  background-color: #ffd351;
+  border-color: #eaaf00;
+  color: #594300;
+}

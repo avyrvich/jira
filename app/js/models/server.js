@@ -44,7 +44,7 @@ var ServerModel = LocallyStoredModel.extend({
 			'change:token': function() {
 				$.ajaxSetup({
 					beforeSend: (xhr) => { 
-						xhr.setRequestHeader('Authorization', this.get('token')); 
+						xhr.setRequestHeader('Authorization', 'Basic ' + this.get('token')); 
 					}
 				});
 			},
@@ -63,7 +63,7 @@ var ServerModel = LocallyStoredModel.extend({
 			'url': options.url + '/rest/auth/1/session',
 			'type': 'GET',
 			'beforeSend': (xhr) => { 
-				xhr.setRequestHeader('Authorization', btoa(options.username + ':' + options.password)); 
+				xhr.setRequestHeader('Authorization', 'Basic ' + btoa(options.username + ':' + options.password)); 
 			},
 			'success': (response) => {
 				this.save({
@@ -79,7 +79,7 @@ var ServerModel = LocallyStoredModel.extend({
 			url: this.get('url') + '/rest/auth/1/session',
 			type: 'GET',
 			beforeSend: (xhr) => { 
-				xhr.setRequestHeader('Authorization', this.get('token')); 
+				xhr.setRequestHeader('Authorization', 'Basic ' + this.get('token')); 
 			},
 			error: () => {
 				this.unset('token');

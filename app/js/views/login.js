@@ -2,15 +2,7 @@
 window.LoginView = Backbone.View.extend({
 	template: templates.dlgLogin,
 	events: {
-		'hide.bs.modal': function() {
-			this.remove();
-		},
 		'click .btn-primary': 'login'
-	},
-	setMessage: function(message) {
-		this.$('.alertsArea').empty().append(templates.errorMessage({
-			message: message
-		}));
 	},
 	login: function() {
 		this.$el.addClass('modal-loader');
@@ -19,16 +11,22 @@ window.LoginView = Backbone.View.extend({
 			'username': this.$('#username').val(),
 			'password': this.$('#password').val()
 		}).then(() => {
-			this.$el.modal('hide');
-		}, () => {
-			this.setMessage('Connection error');
+			this.$('.alertsArea').empty().append(templates.alert({
+				class: 'alert-info',
+				message: 'Connected'
+			}));
+		}, (e) => {
+			this.$('.alertsArea').empty().append(templates.alert({
+				class: 'alert-danger',
+				title: 'Connection error',
+				message: e.responseJSON && e.responseJSON.errorMessages ? e.responseJSON.errorMessages.join('; ') : e.statusText
+			}));
 		}).always(() => {
 			this.$el.removeClass('modal-loader');
 		});
 	},
 	render: function() {
 		this.setElement($(this.template(this.model.toJSON())).appendTo('body'));
-		this.$el.modal('show');
 		return this.el;
 	}
 });

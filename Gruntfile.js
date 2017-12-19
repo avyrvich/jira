@@ -14,7 +14,8 @@ module.exports = function(grunt) {
       }
     },
 		exec: {
-			soy: 'java -jar tools/SoyToJsSrcCompiler.jar --outputPathFormat app/js/templates.js --srcs templates/templates.soy'
+			app: 'java -jar tools/SoyToJsSrcCompiler.jar --outputPathFormat app/js/templates/app.js --srcs templates/app.soy',
+      settings: 'java -jar tools/SoyToJsSrcCompiler.jar --outputPathFormat app/js/templates/settings.js --srcs templates/settings.soy'
 		},
     less: {
       production: {
@@ -44,7 +45,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     //'version::minor',
     'clean',
-    'exec:soy',
+    'exec',
     'less',
     'copy'
   ]);

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "JIRA Assist",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Get over your JIRA issues, bugs or tasks just in one click",
   "minimum_chrome_version": "1.1.0",
   "icons": {
@@ -40,5 +40,9 @@
     },
     "default_title": "JIRA Assist",
     "default_popup": "index.html"
+  },
+  "options_ui": {
+    "page": "settings.html",
+    "chrome_style": true
   }
 }

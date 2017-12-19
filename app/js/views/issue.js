@@ -50,8 +50,10 @@ var IssueView = Backbone.View.extend({
 		});
 	},
 	render: function() {
-		console.log('render', this.model.toJSON());
 		this.$el.html($(this.template(this.model.toJSON())));
+		if (this.model.status.has('statusCategory')) {
+			this.$el.attr({statusCategory: this.model.status.get('statusCategory').colorName});
+		}
 		this.$('[data-toggle="tooltip"]').tooltip();
 		return this.$el;
 	}
