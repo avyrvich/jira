@@ -30,7 +30,8 @@
       "js/models/base.js",
       "js/models/issues.js",
       "js/models/filters.js",
-      "js/models/server.js"
+      "js/models/server.js",
+      "js/models/app.js"
     ]
   },
   "browser_action": {

@@ -1,22 +1,14 @@
-var app = app || {};
-
-app.FILTER_TYPE_TABLE = 1;
-app.FILTER_TYPE_CALENDAR = 2;
-app.FILTERS_DEFAULT = [{
-	'name': 'Assigned to me',
-	'jql': 'assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC'
-}];
-
 $(function() {
-	app.server = new ServerModel();
+	window.app = new AppModel();
 });
 
 if (chrome.browserAction) {
 	chrome.browserAction.setBadgeBackgroundColor({
 		'color': '#3399F3'
 	});
+
 	chrome.omnibox.onInputChanged.addListener( function(text, suggest) {
-		app.server.api.executeJQL('text ~ "'+text.replace(/"/, '\\\"')+'"', function(issues) {
+		app.servers.getDefault().api.executeJQL('text ~ "'+text.replace(/"/, '\\\"')+'"', function(issues) {
 			suggest(_.map(issues, function(issue) {
 				return {
 					content: issue.key,
@@ -28,7 +20,7 @@ if (chrome.browserAction) {
 
 	chrome.omnibox.onInputEntered.addListener( function(key) {
 		chrome.tabs.create({
-			url: app.server.get('url') + '/browse/' + key
+			url: app.servers.getDefault().get('url') + '/browse/' + key
 		});
 	});
 

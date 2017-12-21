@@ -17,17 +17,19 @@ var FavoritesFiltersCollection = BaseCollection.extend({
 	}
 });
 
-var ServerModel = LocallyStoredModel.extend({
+var ServerModel = Backbone.Model.extend({
 	defaults: {
 		url: '',
 		username: ''
 	},
-	localStorageKey: 'server',
 	initialize: function() {
-		
-		this.filters = new FiltersCollection(null, {
-			server: this
-		});
+
+		if (!this.has('id')) {
+			this.set({
+				id: _.uniqueId('server_')
+			})
+		}
+
 		this.resolutions = new ResolutionsCollection(null, {
 			server: this
 		});
@@ -36,11 +38,7 @@ var ServerModel = LocallyStoredModel.extend({
 		});
 
 		this.on({
-			'sync': function() {
-				this.filters.load();
-				this.resolutions.fetch();
-				this.favoriteFilters.fetch();
-			},
+			'sync': function() {},
 			'change:token': function() {
 				$.ajaxSetup({
 					beforeSend: (xhr) => { 
@@ -49,14 +47,6 @@ var ServerModel = LocallyStoredModel.extend({
 				});
 			},
 		});
-
-		this.listenTo(this.filters, 'issues-sync', function(issues) {
-			chrome.browserAction.setBadgeText({
-				text: issues.length.toString()
-			});
-		});
-		
-		this.fetch();
 	},
 	login: function(options) {
 		return $.ajax({
@@ -66,11 +56,12 @@ var ServerModel = LocallyStoredModel.extend({
 				xhr.setRequestHeader('Authorization', 'Basic ' + btoa(options.username + ':' + options.password)); 
 			},
 			'success': (response) => {
-				this.save({
+				this.set({
 					url: options.url,
 					username: options.username,
 					token: btoa(options.username + ':' + options.password)
 				});
+				this.collection.save();
 			}
 		});
 	},
@@ -85,5 +76,22 @@ var ServerModel = LocallyStoredModel.extend({
 				this.unset('token');
 			}
 		});
+	},
+	fetch: function() {
+		this.resolutions.fetch();
+		this.favoriteFilters.fetch();
+	}
+});
+
+
+var ServersCollection = LocallyStoredCollection.extend({
+	localStorageKey: 'server',
+	model: ServerModel,
+	getDefault: function() {
+		return this.first();
+	},
+	parse: function(data) {
+		console.log(data);
+		return data;
 	}
 });

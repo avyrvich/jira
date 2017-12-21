@@ -15,16 +15,14 @@ var NavBarBtnView = Backbone.View.extend({
 				model: this.model
 			}).render();
 		},
-		'click .filter-edit-view': function(evt) {
-			this.model.set('type', parseInt(evt.target.getAttribute('data-type')));
-		},
 		'click .filter-delete': function() {
-			var this_ = this;
 			$(templates.dlgConfirm({
 				'title': 'Delete filter',
 				'message': 'Are you sure you want to delete this filter?'
-			})).modal('show').find('.btn-primary').click(function() {
-				app.server.filters.remove(this_.model);
+			})).modal('show').find('.btn-primary').click(() => {
+				let collection = this.model.collection;
+				collection.remove(this.model);
+				collection.save();
 			});
 		}
 	},
@@ -81,8 +79,7 @@ var NavBarView = Backbone.View.extend({
 		//console.log($('#dlg-connect').modal('show'));
 	},
 	initialize: function() {
-		this.listenTo(app.server, 'change:token', this.render);
-		this.listenTo(app.server.filters, {
+		this.listenTo(this.collection, {
 			'add': this.renderFilter
 		});
 		this.render();
@@ -96,18 +93,16 @@ var NavBarView = Backbone.View.extend({
 		}));
 	},
 	'render': function() {
-		if (app.server.has('token')) {
+		if (this.collection.length) {
 			this.$('.tab-content').empty();
-			app.server.filters.each((filter, i) => {
+			this.collection.each((filter, i) => {
 				this.renderFilter(filter);
 				if (i === 0) {
 					this.buttons[0].$('[data-toggle="tab"]').tab('show');
 				}
 			});
-
 		} else {
 			this.$('.tab-content').html(templates.jumbotron())
 		}
 	}
 });
-

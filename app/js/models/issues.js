@@ -56,23 +56,6 @@ var IssueModel = Backbone.Model.extend({
 		});
 
 		this.getTransitions();
-
-		// this.on({
-		// 	'change:duedate': function(e) {
-
-		// 	},
-		// 	'change:estiamte': function(e) {
-		// 		app.server.api.updateIssue(this.get('self'), {
-		// 			'timetracking': {
-		// 				'originalEstimateSeconds': (e.end - e.start)/1000
-		// 			}
-		// 		}, function(issue) {
-		// 			this_.set({
-		// 				'estimate': parseInt(issue.fields['timetracking']['originalEstimateSeconds'])
-		// 			});
-		// 		});
-		// 	}
-		// });
 	},
 	parse: function(issue) {
 		var this_ = this;
@@ -90,32 +73,12 @@ var IssueModel = Backbone.Model.extend({
 				return {
 					'name': version['name'],
 					'description': version['description'],
-					'url': app.server.get('url') + 'browse/' + issue.fields['project']['key'] + '/fixforversion/' + version['id']
+					'url': issue['self'].replace(/\/rest\/api\/2\/issue\/.*/, 'browse/' + issue.fields['project']['key'] + '/fixforversion/' + version['id'])
 				}
 			}),
 			'summary': issue.fields['summary'],
 			'url': issue['self'].replace(/\/rest\/api\/2\/issue\/.*/, '/browse/' + issue['key'])
 		};
-	},
-	changeDuedate: function(even) {
-		// app.server.api.updateIssue(this.get('self'), {
-		// 	'duedate': moment(even.start).format('YYYY-MM-DD')
-		// }, function(issue) {
-		// 	this_.set({
-		// 		'duedate': new Date(issue.fields['duedate'])
-		// 	});
-		// });
-	},
-	changeEstimate: function(event) {
-		// app.server.api.updateIssue(this.get('self'), {
-		// 	'timetracking': {
-		// 		'originalEstimateSeconds': (event.end - event.start)/1000
-		// 	}
-		// }, function(issue) {
-		// 	this_.set({
-		// 		'estimate': parseInt(issue.fields['timetracking']['originalEstimateSeconds'])
-		// 	});
-		// });
 	},
 	progress: function(started) {
 		if (started) {
@@ -147,9 +110,6 @@ var IssueModel = Backbone.Model.extend({
 			})
 		}).then(() => this.fetch());
 	},
-	worklog: function(data) {
-		// app.server.api.worklog(this.get('self'), data);
-	},
 	comment: function(data, callback) {
 		return $.ajax({
 			url: this.get('self') + '/comment', 
@@ -167,7 +127,7 @@ var IssueModel = Backbone.Model.extend({
 	},
 	getAssignableUsers: function(username, callback) {
 		return $.ajax({
-			url: this.collection.server.get('url') + '/rest/api/2/user/assignable/search',
+			url: this.collection.filter.server.get('url') + '/rest/api/2/user/assignable/search',
 			data: {
 				issueKey: this.id,
 				username: username
@@ -214,11 +174,10 @@ var IssueModel = Backbone.Model.extend({
 		});
 	},
 	transition: function(data) {
-		var this_ = this;
 		return this.post('/transitions', {
 			transition: data
-		}).complete(function() {
-			this_.fetch();
+		}).complete(() => {
+			this.fetch();
 		});
 	}
 });
@@ -226,16 +185,13 @@ var IssueModel = Backbone.Model.extend({
 var IssuesCollection = Backbone.Collection.extend({
 	model: IssueModel,
 	filter: null,
-	server: null,
 	timeout: null,
 	UPDATE_INTERVAL: 1 * 60000, 
 	url: function() {
-		return this.server.get('url') + '/rest/api/2/search';
+		return this.filter.server.get('url') + '/rest/api/2/search';
 	},
 	initialize: function(models, options) {
 		_.extendOwn(this, options);
-		var this_ = this;
-
 		this.listenTo(this.filter, 'change:jql', function() {
       this.fetch()
     });

@@ -126,7 +126,6 @@ var FilterEditView = Backbone.View.extend({
 			this.remove();
 		},
 		'click .filter-save': 'save',
-		'click .filter-create': 'create',
 		'change #favouriteFilters': function(evt) {
 			var node = evt.target.options[evt.target.selectedIndex];
 			if (node.getAttribute('data-jql')) {
@@ -136,11 +135,11 @@ var FilterEditView = Backbone.View.extend({
 		}
 	},
 	render: function() {
-		var this_ = this;
-		this_.setElement(
+		this.setElement(
 			$(templates.dlgEditFilter({
-				filter: this_.model ? this_.model.toJSON() : null,
-				favouriteFilters: app.server.favoriteFilters.toJSON(),
+				servers: app.servers.toJSON(),
+				filter: this.model ? this.model.toJSON() : null,
+				favouriteFilters: app.servers.getDefault().favoriteFilters.toJSON(),
 			})).appendTo('body')
 		);
 		this.$el.modal('show');
@@ -148,22 +147,21 @@ var FilterEditView = Backbone.View.extend({
 	},
 	getValues: function() {
 		return {
-			'name': this.$('#filterName').val(),
-			'jql': this.$('#filterJQL').val(),
-			'type': parseInt(this.$('#filterType').val())
+			server: this.$('#filterServer').val(),
+			name: this.$('#filterName').val(),
+			jql: this.$('#filterJQL').val(),
+			type: parseInt(this.$('#filterType').val())
 		};
 	},
 	save: function() {
 		var attributes = this.getValues();
+		let server = app.servers.get(attributes.server);
 		if (this.model) {
 			this.model.set(attributes);
 		} else {
-			app.server.filters.add(attributes);
+			app.filters.add(attributes);
 		}
-    app.server.filters.save();
-	},
-	create: function() {
-		var attributes = this.getValues();
-		app.server.filters.add(attributes);
+		app.filters.save();
+		app.servers.save();
 	}
 });

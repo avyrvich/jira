@@ -19,7 +19,9 @@ $(function() {
 	    }
 	});
 	
-	app.navbar = new NavBarView({});
+	new NavBarView({
+		collection: app.filters
+	});
 
 	$(window).bind('unload', function() {
 		app.navbar.unload();

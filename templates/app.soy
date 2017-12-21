@@ -55,10 +55,10 @@
     </a>
     <a href="#" class="dropdown-toggle pull-left" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
     <ul class="dropdown-menu">
-      <li><a href="#" class="filter-update"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></li>
-      <li><a href="#" class="filter-edit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+      <li><a href="#" class="filter-update"><span class="fa fa-refresh"></span> Refresh</a></li>
+      <li><a href="#" class="filter-edit"><span class="fa fa-pencil"></span> Edit</a></li>
       <li role="separator" class="divider"></li>
-      <li><a href="#" class="filter-delete"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
+      <li><a href="#" class="filter-delete"><span class="fa fa-trash"></span> Delete</a></li>
     </ul>
   </li>
 {/template}
@@ -201,6 +201,7 @@
 
 /**
  * Modal Edit Issue dialog
+ * @param? servers
  * @param? filter
  * @param? favouriteFilters
  */
@@ -213,36 +214,53 @@
         <h4 class="modal-title" id="dlg-filter-label">{if $filter}Edit{else}Create{/if} JIRA Filter</h4>
       </div>
       <div class="modal-body">
-        <form role="form">
+        <form class="form form-horizontal">
+
+          {if $servers}
+            <div class="form-group">
+              <label class="col-sm-4" for="filterServer">Server</label>
+              <div class="controls col-sm-8">
+                <select id="filterServer" class="form-control input-sm">
+                  {foreach $server in $servers}
+                    <option value="{$server.id}">{$server.url}</option>
+                  {/foreach}
+                </select>
+              </div>
+            </div>
+          {/if}
+
           {if $favouriteFilters}
             <div class="form-group">
-              <label for="favouriteFilters">Favourite Filters</label>
-              <select id="favouriteFilters" class="form-control input-sm">
-                <option/>
-                {foreach $filter in $favouriteFilters}
-                  <option data-name="{$filter.name}" data-jql="{$filter.jql}">{$filter.name}</option>
-                {/foreach}
-              </select>
+              <label class="col-sm-4" for="favouriteFilters">Favourite Filters</label>
+              <div class="controls col-sm-8">
+                <select id="favouriteFilters" class="form-control input-sm">
+                  <option/>
+                  {foreach $filter in $favouriteFilters}
+                    <option data-name="{$filter.name}" data-jql="{$filter.jql}">{$filter.name}</option>
+                  {/foreach}
+                </select>
+              </div>
             </div>
           {/if}
 
           <div class="form-group">
-            <label for="filterName">Filter Name</label>
-            <input type="text" class="form-control input-sm" id="filterName" placeholder="Filter Name" value="{if $filter}{$filter.name}{/if}">
+            <label class="col-sm-4" for="filterName">Filter Name</label>
+            <div class="controls col-sm-8">
+              <input type="text" class="form-control input-sm" id="filterName" placeholder="Filter Name" value="{if $filter}{$filter.name}{/if}">
+            </div>
           </div>
+
           <div class="form-group">
-            <label for="filterJQL">JQL</label>
-            <textarea id="filterJQL" class="form-control input-sm" rows="3" placeholder="e.g. assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC">{if $filter}{$filter.jql}{/if}</textarea>
+            <label class="col-sm-12" for="filterJQL">JQL</label>
+            <div class="controls col-sm-12">
+              <textarea id="filterJQL" class="form-control input-sm" rows="3" placeholder="e.g. assignee = currentUser() AND resolution = Unresolved ORDER BY dueDate ASC">{if $filter}{$filter.jql}{/if}</textarea>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        {if $filter}
-          <button type="button" class="btn btn-primary filter-save" data-dismiss="modal">Save</button>
-        {else}
-          <button type="button" class="btn btn-success filter-create" data-dismiss="modal">Create</button>
-        {/if}
+        <button type="button" class="btn btn-primary filter-save" data-dismiss="modal">Save</button>
       </div>
     </div>
   </div>
@@ -381,7 +399,7 @@
  */
 {template .error}
 <div class="alert alert-danger" role="alert">
-  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <span class="fa fa-exclamation-sign" aria-hidden="true"></span>
   {$message}
 </div>
 {/template}
