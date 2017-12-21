@@ -37,7 +37,7 @@ templates.issuePopover = function(opt_data, opt_ignored) {
 
 
 templates.issuesTable = function(opt_data, opt_ignored) {
-  return '<table class="table table-condensed table-responsive"><tbody></tbody></table>';
+  return '<table class="table table-condensed table-responsive table-striped table-hover"><tbody></tbody></table>';
 };
 
 

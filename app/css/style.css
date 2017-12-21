@@ -103,10 +103,10 @@ webview {
   line-height: 16px;
 }
 tr[statuscategory="yellow"] {
-  background: #ffd15136;
+  border-left: 10px solid #ffd351;
 }
 tr[statuscategory="green"] {
-  background: #14892b36;
+  border-left: 10px solid #14892c;
 }
 .issue-transit {
   max-width: 85px;

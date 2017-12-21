@@ -73,7 +73,7 @@ var IssueModel = Backbone.Model.extend({
 				return {
 					'name': version['name'],
 					'description': version['description'],
-					'url': issue['self'].replace(/\/rest\/api\/2\/issue\/.*/, 'browse/' + issue.fields['project']['key'] + '/fixforversion/' + version['id'])
+					'url': issue['self'].replace(/\/rest\/api\/2\/issue\/.*/, '/browse/' + issue.fields['project']['key'] + '/fixforversion/' + version['id'])
 				}
 			}),
 			'summary': issue.fields['summary'],
