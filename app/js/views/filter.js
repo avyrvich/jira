@@ -6,6 +6,9 @@ var FilterView = Backbone.View.extend({
 		return $(node).parents('[jira-key]').attr('jira-key');
 	},
 	events: {
+		'show.bs.tab': function() {
+			this.model.issues.fetch();
+		}
 		// 'click .comment-issue': function(evt) {
 		// 	new IssueEditView({
 		// 		options: {
@@ -97,7 +100,6 @@ var FilterView = Backbone.View.extend({
 		this.listenTo(this.model, {
 			'remove': this.remove
 		});
-		this.model.issues.fetch();
 	},
 	renderError: function(collection, xhr, options) {
 		console.log('renderError' , arguments);

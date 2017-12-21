@@ -4,6 +4,9 @@
 
 var NavBarBtnView = Backbone.View.extend({
 	events: {
+		'show.bs.tab': function() {
+			this.model.issues.fetch();
+		},
 		'click a.filter-show': function (e) {
 			$(e.target.getAttribute('href')).fullCalendar('render');
 		},

@@ -36,25 +36,11 @@ var ServerModel = Backbone.Model.extend({
 		this.favoriteFilters = new FavoritesFiltersCollection(null, {
 			server: this
 		});
-
-		this.on({
-			'sync': function() {},
-			'change:token': function() {
-				$.ajaxSetup({
-					beforeSend: (xhr) => { 
-						xhr.setRequestHeader('Authorization', 'Basic ' + this.get('token')); 
-					}
-				});
-			},
-		});
 	},
 	login: function(options) {
-		return $.ajax({
+		return this.ajax({
 			'url': options.url + '/rest/auth/1/session',
 			'type': 'GET',
-			'beforeSend': (xhr) => { 
-				xhr.setRequestHeader('Authorization', 'Basic ' + btoa(options.username + ':' + options.password)); 
-			},
 			'success': (response) => {
 				this.set({
 					url: options.url,
@@ -66,16 +52,18 @@ var ServerModel = Backbone.Model.extend({
 		});
 	},
 	checkAuthorization: function() {
-		return $.ajax({
+		return this.ajax({
 			url: this.get('url') + '/rest/auth/1/session',
 			type: 'GET',
-			beforeSend: (xhr) => { 
-				xhr.setRequestHeader('Authorization', 'Basic ' + this.get('token')); 
-			},
 			error: () => {
 				this.unset('token');
 			}
 		});
+	},
+	ajax: function(options) {
+		return $.ajax(_.extend({
+			beforeSend: xhr => xhr.setRequestHeader('Authorization', 'Basic ' + this.get('token'))
+		}, options));
 	},
 	fetch: function() {
 		this.resolutions.fetch();

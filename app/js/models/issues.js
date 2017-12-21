@@ -95,7 +95,7 @@ var IssueModel = Backbone.Model.extend({
 		this_.collection.filter.trigger('updated');
 	},
 	assign: function(username) {
-		return $.ajax({
+		return this.collection.filter.server.ajax({
 			url: this.get('self'),
 			type: 'PUT',
 			contentType: 'application/json', 
@@ -111,7 +111,7 @@ var IssueModel = Backbone.Model.extend({
 		}).then(() => this.fetch());
 	},
 	comment: function(data, callback) {
-		return $.ajax({
+		return this.collection.filter.server.ajax({
 			url: this.get('self') + '/comment', 
 			type: 'POST',
 			contentType: 'application/json', 
@@ -126,7 +126,7 @@ var IssueModel = Backbone.Model.extend({
 		});
 	},
 	getAssignableUsers: function(username, callback) {
-		return $.ajax({
+		return this.collection.filter.server.ajax({
 			url: this.collection.filter.server.get('url') + '/rest/api/2/user/assignable/search',
 			data: {
 				issueKey: this.id,
@@ -144,7 +144,7 @@ var IssueModel = Backbone.Model.extend({
 	},
 	getTransitions: function() {
 		var this_ = this;
-		return $.ajax({
+		return this.collection.filter.server.ajax({
 			url: this.get('self') + '/transitions',
 			success: function(data) {
 				this_.set({
@@ -164,7 +164,7 @@ var IssueModel = Backbone.Model.extend({
 		}));
 	},
 	post: function(url, data) {
-		return $.ajax({
+		return this.collection.filter.server.ajax({
 			url: this.get('self') + url,
 			method: 'POST',
 			contentType: 'application/json',
@@ -244,6 +244,11 @@ var IssuesCollection = Backbone.Collection.extend({
 			jql: this.filter.get('jql'),
 			//fields: 'id,key,summary,timetracking,duedate,fixVersions,issuetype,reporter,priority,status,assignee,progress,project'
 		});
-		return Backbone.Collection.prototype.fetch.call(this, options);
+		let server = this.filter.server;
+		return Backbone.Collection.prototype.fetch.call(this, _.extend({
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('Authorization', 'Basic ' + server.get('token')); 
+			}
+		}, options));
 	}
 });
